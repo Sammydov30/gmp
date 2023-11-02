@@ -87,7 +87,7 @@ class CustomerAuthController extends Controller
                 'email' => $user->email,
                 "status" => "success"
             ];
-            return response()->json($response, 201);
+            return response()->json($response, 200);
         }else{
             return response()->json(["message" => "Email Verification Failed. Try again", "status" => "error"], 400);
         }
