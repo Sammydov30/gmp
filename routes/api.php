@@ -46,7 +46,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
     Route::post('/customer/auth/register', [CustomerAuthController::class, 'register']);
     Route::post('/customer/auth/resetpassword', [CustomerAuthController::class, 'resetpassword']);
-    Route::post('/cuatomer/auth/forgotpasswordwithemail', [CustomerAuthController::class, 'forgotpasswordwithemail']);
+    Route::post('/customer/auth/forgotpasswordwithemail', [CustomerAuthController::class, 'forgotpasswordwithemail']);
     Route::post('/customer/auth/checkotp', [CustomerAuthController::class, 'checkotp']);
     Route::post('/customer/auth/login', [CustomerAuthController::class, 'login']);
 

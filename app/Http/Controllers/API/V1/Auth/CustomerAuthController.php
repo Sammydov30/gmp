@@ -106,7 +106,7 @@ class CustomerAuthController extends Controller
         $customer = Customer::where('email', $request->email)->update([
             'gmpid'=>'GMP'.time(),
             'firstname' => $request->firstname,
-            'surname' => $request->lastname,
+            'lastname' => $request->lastname,
             'email' => $request->email,
             'phone'=>$request->phone,
             'password' => Hash::make($request->password),
@@ -133,7 +133,7 @@ class CustomerAuthController extends Controller
             'token' => $token,
             'customer' => $customer,
             "status" => "success",
-            "message" => "Account Created successfully."
+            "message" => "GMP Account Created successfully."
         ];
         return response()->json($response, 201);
     }
