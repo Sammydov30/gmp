@@ -15,7 +15,7 @@
 <p>&nbsp; &nbsp;&nbsp;</p>
 
 <center><h2><span style="font-family: Montserrat"><strong>{{$details['subject']}}&nbsp;</strong></span></h2></center>
-<p style="line-height: 24px;margin-bottom:15px;">
+<p style="line-height: 12px;margin-bottom:8px;">
     Your sign up code for GMP is: <br><br>
 </p>
 
