@@ -21,7 +21,7 @@
 
 <p>
 
-    <span></span> <span><em>{{$details['otp']}}</em></span>
+    <span></span> <span style="font-size: 25px;"><em>{{$details['otp']}}</em></span>
 </p>
 
 
