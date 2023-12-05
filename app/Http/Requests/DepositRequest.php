@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class AddHistoryRequest extends FormRequest
+class DepositRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,10 +28,7 @@ class AddHistoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'appointmentid' => ['required', 'string'],
-            'title' => ['required'],
-            'prescription' => ['required'],
-            'description' => ['required'],
+            'amount' => ['required|numeric|gte:100'],
         ];
     }
 

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WithdrawalRequest;
 use App\Models\Account;
+use App\Models\Customer;
 use App\Models\Doctor;
+use App\Models\FundingHistory;
 use App\Models\WithdrawalHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,11 +18,11 @@ class WithdrawalController extends Controller
 
     public function index()
     {
-        $result = DB::table('withdrawal_histories');
+        $result = WithdrawalHistory::with('customer');
 
-        if (request()->input("doctorid") != null) {
-            $search=request()->input("doctorid");
-            $result->where('doctorid', $search);
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
         }
         if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortBy");
@@ -59,57 +61,136 @@ class WithdrawalController extends Controller
     public function makewithdrawal(WithdrawalRequest $request)
     {
         $user=auth()->user();
-        $account=Account::where('id', $request->account)->first();
-        if (!$account) {
-            return response()->json(["message" => "Account Doesn't Exist", "status" => "error"], 400);
-        }
         //check balance
-        $check=Doctor::where('id', $user->id)->first();
+        $check=Customer::where('gmpid', $user->gmpid)->first();
         if ($check) {
-            $balance=$check->balance;
+            if ($check->pin==$request->pin) {
+                return response()->json(["message" => "Incorrect PIN", "status" => "error"], 400);
+            }
+            $balance=$check->ngnbalance;
             if ($balance<$request->amount) {
                 return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
             }
         }else{
             return response()->json(["message" => "An Error Occured", "status" => "error"], 400);
         }
-        $txref='WT'.time();
-        $withdrawalrequest = Http::withHeaders([
+
+        $accountnumber= $request->accountnumber;
+        $bankcode= $request->bank;
+        $acctrequest = Http::withHeaders([
             "content-type" => "application/json",
-            "Authorization" => "Bearer ".env('PAYSTACK_KEY_TEST'),
-        ])->post('https://api.paystack.co/transfer', [
-            "source" => "balance",
-            "reason" => "Cash Out",
-            "amount" => (float)$request->amount,
-            "recipient" => $account->recipient,
-            "reference" => $txref
+            "Authorization" => "Bearer ".env('FW_KEY'),
+        ])->post('https://api.flutterwave.com/v3/accounts/resolve', [
+            "account_number"=> $accountnumber,
+            "account_bank"=> $bankcode,
         ]);
-        $res=$withdrawalrequest->json();
-        //print_r($res); exit();
+        $res=$acctrequest->json();
+        //print_r($res);
         if (!$res['status']) {
-            return response()->json(["message" => "An Error occurred while requesting for Withdrawal", "status" => "error"], 400);
+            return response()->json(["message" => "An Error occurred while fetching account", "status" => "error"], 400);
         }else{
             $details=$res['data'];
-            $transfercode=$res['data']['transfer_code'];
-            //debit
-            $newbal=$balance-$request->amount;
-            Doctor::where('id', $user->id)->update(['balance'=>$newbal]);
-            $account = WithdrawalHistory::create([
-                'doctorid' => $user->doctorid,
-                'amount' => $request->amount,
-                'accountid' => $request->account,
-                'tx_ref'=> $txref,
-                'wtime'=> time(),
-                'status'=> '1',
-                'transfer_code' => $transfercode,
-            ]);
-            $response=[
-                "message" => "Withdrawal Requested Successfully",
-                'transaction' => $details,
-                "status" => "success"
-            ];
-            return response()->json($response, 201);
+            $accountname=$details['account_name'];
         }
+
+        $txref='GMPWT'.time();
+        $date=date("d-m-Y");
+        //debit
+        $newbal=$balance-$request->amount;
+        Customer::where('gmpid', $user->gmpid)->update(['ngnbalance'=>$newbal]);
+        $withdrawal = WithdrawalHistory::create([
+            'gmpid' => $user->gmpid,
+            'amount' => $request->amount,
+            'bank' => $request->bank,
+            'accountnumber'=>$request->account,
+            'accountname'=>$accountname,
+            'withdrawalid'=> $txref,
+            'wtime'=> time(),
+            'narration'=>'GMP Withdrawal On '.$date,
+            'currency'=>'NGN',
+            'status'=> '0',
+        ]);
+        $response=[
+            "message" => "Withdrawal Requested Successfully",
+            'transaction' => $withdrawal,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
+
+    }
+
+    public function confirmwithdrawal(Request $request)
+    {
+        if (empty($request->withdrawalid)) {
+            return response()->json(["message"=>"Withdrawal Id is required", "status"=>"error"], 400);
+        }
+        $withdrawal=WithdrawalHistory::where('withdrawalid', $request->withdrawalid)->first();
+        if (!$withdrawal) {
+            return response()->json(["message"=>"This record doesn't exist", "status"=>"error"], 400);
+        }
+        if ($withdrawal->status!='0') {
+            return response()->json(["message"=>"Withdrawal already processed", "status"=>"error"], 400);
+        }
+        $date=date("d-m-Y");
+        $paymentrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            "Authorization" => "Bearer ".env('FW_KEY'),
+        ])->post('https://api.flutterwave.com/v3/transfers', [
+            "account_number"=> $withdrawal->accountnumber,
+            "account_bank"=> $withdrawal->bank,
+            "amount"=> intval($withdrawal->amount),
+            "narration"=> $withdrawal->narration,
+            "currency"=> $withdrawal->currency,
+            "reference"=> $withdrawal->withdrawalid,
+            "debit_currency"=> $withdrawal->currency,
+        ]);
+        $res=$paymentrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while fetching account", "status" => "error"], 400);
+        }
+        if ($res['status']=='error') {
+            return response()->json(["message" => "An Error occurred while fetching account", "status" => "error"], 400);
+        }
+        FundingHistory::create([
+            'fundingid' => $withdrawal->id,
+            'gmpid' => $withdrawal->gmpid,
+            'amount'=>$withdrawal->amount,
+            'ftime'=>time(),
+            'currency'=>$withdrawal->currency,
+            'status'=>'1',
+            'type'=>'2'
+        ]);
+        $withdrawal=WithdrawalHistory::where('withdrawalid', $withdrawal->withdrawalid)->update([
+            'status' => '1'
+        ]);
+        return response()->json([
+            "message"=>"Withdrawal Successful",
+            "status" => "success",
+            'payment' => $withdrawal,
+        ], 200);
+    }
+
+    public function declinewithdrawal(Request $request)
+    {
+        if (empty($request->withdrawalid)) {
+            return response()->json(["message"=>"Withdrawal Id is required", "status"=>"error"], 400);
+        }
+        $withdrawal=WithdrawalHistory::where('withdrawalid', $request->withdrawalid)->first();
+        if (!$withdrawal) {
+            return response()->json(["message"=>"This record doesn't exist", "status"=>"error"], 400);
+        }
+        if ($withdrawal->status!='0') {
+            return response()->json(["message"=>"Withdrawal already processed", "status"=>"error"], 400);
+        }
+        $withdrawal=WithdrawalHistory::where('withdrawalid', $withdrawal->withdrawalid)->update([
+            'status' => '2'
+        ]);
+        return response()->json([
+            "message"=>"Withdrawal Declined",
+            "status" => "success",
+            'payment' => $withdrawal,
+        ], 200);
     }
 
 }

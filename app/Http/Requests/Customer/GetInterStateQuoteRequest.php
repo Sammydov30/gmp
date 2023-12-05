@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Customer;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class WithdrawalRequest extends FormRequest
+class GetInterStateQuoteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,10 +28,14 @@ class WithdrawalRequest extends FormRequest
     public function rules()
     {
         return [
-            'accountnumber' => ['required', 'string'],
-            'bank' => ['required', 'string'],
-            'amount' => ['required', 'numeric'],
-            'pin' => ['required', 'numeric'],
+            "pickupvehicle"=>['required'],
+            "deliverymode"=>['required'],
+            "pickupcenter"=>['required'],
+            "sourceregion"=>['required'],
+            "destinationregion"=>['required'],
+            "stype"=>['required'],
+            "sweight"=>['required'],
+            "svalue_declaration"=>['required'],
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Customer;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class WithdrawalRequest extends FormRequest
+class CreateInterStateShipmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,10 +28,32 @@ class WithdrawalRequest extends FormRequest
     public function rules()
     {
         return [
-            'accountnumber' => ['required', 'string'],
-            'bank' => ['required', 'string'],
-            'amount' => ['required', 'numeric'],
-            'pin' => ['required', 'numeric'],
+            "pickupvehicle"=>['required'],
+            "gmpid"=>['required'],
+            "pickupdate"=>['required'],
+            "gmppayment"=>['required'],
+            "deliverymode"=>['required'],
+            "pickupcenter"=>['required'],
+            "cname"=>['required'],
+            "cphone"=>['required', 'numeric'],
+            "caddress"=>['required'],
+            "rname"=>['required'],
+            "rphone"=>['required', 'numeric'],
+            "raddress"=>['required'],
+            "sourceregion"=>['required'],
+            "destinationregion"=>['required'],
+            "totalweight"=>['required'],
+            "totalamount"=>['required'],
+            "stype"=>['required'],
+            "item"=>['required'],
+            "sname"=>['required'],
+            //"sweighttype"=>['required'],
+            "sweight"=>['required'],
+            // "squantity"=>['required'],
+            // "slength"=>['required'],
+            // "swidth"=>['required'],
+            // "sheight"=>['required'],
+            "svalue_declaration"=>['required'],
         ];
     }
 

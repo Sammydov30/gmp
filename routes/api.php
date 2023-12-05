@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
+use App\Http\Controllers\API\V1\Customer\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,6 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/updateprofile', [CustomerController::class, 'changeprofile']);
         Route::post('/customer/updateaddress', [CustomerController::class, 'changeaddressinfo']);
         Route::post('/customer/updateemail', [CustomerController::class, 'changeemail']);
-        Route::post('/customer/updatemedicaldetails', [CustomerController::class, 'changemedicaldetails']);
         Route::post('/customer/changeprofilepicture', [CustomerController::class, 'uploadimage']);
         Route::post('/customer/changepassword', [CustomerController::class, 'changepassword']);
         Route::post('/customer/deleteaccount', [CustomerController::class, 'deleteaccount']);

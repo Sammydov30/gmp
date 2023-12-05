@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class WithdrawalRequest extends FormRequest
+class FetchAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,10 +28,8 @@ class WithdrawalRequest extends FormRequest
     public function rules()
     {
         return [
-            'accountnumber' => ['required', 'string'],
-            'bank' => ['required', 'string'],
-            'amount' => ['required', 'numeric'],
-            'pin' => ['required', 'numeric'],
+            'accountnumber' => ['required', 'string', 'max:300'],
+            'bank' => ['required', 'string', 'max:300'],
         ];
     }
 

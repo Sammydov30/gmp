@@ -37,9 +37,9 @@ class CheckOtpRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        $message = '';
+        $message = array();
         foreach ($validator->errors()->all() as $error) {
-            $message .= "$error <br/> ";
+            array_push($message, $error);
         }
         $response = response()->json([
             'status' => 'error',

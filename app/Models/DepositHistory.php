@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class DepositHistory extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'depositid',
+        'gmpid',
+        'amount',
+        'wtime',
+        'currency',
+        'status'
+    ];
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'gmpid', 'gmpid');
+    }
 }
