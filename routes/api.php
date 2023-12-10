@@ -30,7 +30,7 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth:sanctum', 'type.customer'])->group(function () {
         Route::post('/customer/logout', [CustomerAuthController::class, 'logout']);
         Route::get('/customer', [CustomerController::class, 'index']);
-        Route::get('/customer/editprofile', [CustomerController::class, 'editprofile']);
+        Route::get('/customer/fetchprofile', [CustomerController::class, 'editprofile']);
         Route::post('/customer/updateprofile', [CustomerController::class, 'updateprofile']);
         Route::get('/customer/listaddress', [CustomerController::class, 'listaddress']);
         Route::post('/customer/addaddress', [CustomerController::class, 'addaddress']);
