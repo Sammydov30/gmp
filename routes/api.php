@@ -3,6 +3,10 @@
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
+use App\Http\Controllers\API\V1\Customer\LogisticsController;
+use App\Http\Controllers\API\V1\PickupCenterController;
+use App\Http\Controllers\API\V1\RegionController;
+use App\Http\Controllers\API\V1\SpecialItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,11 +30,13 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth:sanctum', 'type.customer'])->group(function () {
         Route::post('/customer/logout', [CustomerAuthController::class, 'logout']);
         Route::get('/customer', [CustomerController::class, 'index']);
-        Route::post('/customer/updateprofile', [CustomerController::class, 'changeprofile']);
-        Route::post('/customer/updateaddress', [CustomerController::class, 'changeaddressinfo']);
-        Route::post('/customer/updateemail', [CustomerController::class, 'changeemail']);
-        Route::post('/customer/changeprofilepicture', [CustomerController::class, 'uploadimage']);
-        Route::post('/customer/changepassword', [CustomerController::class, 'changepassword']);
+        Route::get('/customer/editprofile', [CustomerController::class, 'editprofile']);
+        Route::post('/customer/updateprofile', [CustomerController::class, 'updateprofile']);
+        Route::get('/customer/listaddress', [CustomerController::class, 'listaddress']);
+        Route::post('/customer/addaddress', [CustomerController::class, 'addaddress']);
+        Route::post('/customer/updateaddress', [CustomerController::class, 'updateaddress']);
+        Route::post('/customer/changeprofilepicture', [CustomerController::class, 'updateprofilepicture']);
+        Route::post('/customer/changepassword', [CustomerController::class, 'updatepassword']);
         Route::post('/customer/deleteaccount', [CustomerController::class, 'deleteaccount']);
         Route::post('/customer/deactivateaccount', [CustomerController::class, 'deactivateaccount']);
         Route::post('/customer/toggleemailnotification', [CustomerController::class, 'toggleemailnotification']);
@@ -41,6 +47,11 @@ Route::prefix('v1')->group(function () {
         //Complaint
         Route::get('/customer/complaint/fetchall', [ComplaintController::class, 'index']);
         Route::post('/customer/complaint/makeacomplain', [ComplaintController::class, 'addcomplaint']);
+
+        //Logistics
+        Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
+        Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
+        Route::get('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
@@ -71,7 +82,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/admin/auth/login', [AdminAuthController::class, 'login']);
     Route::post('/admin/auth/verifyotp', [AdminAuthController::class, 'check_otp']);
 
-
     Route::middleware(['auth:sanctum'])->group(function () {
         //account
         Route::apiResource('/user/accounts', AccountController::class);
@@ -79,6 +89,15 @@ Route::prefix('v1')->group(function () {
 
     //states
     Route::apiResource('/states', StateController::class);
+    //regions
+    Route::get('/regions', [RegionController::class, 'index']);
+    Route::get('/region', [RegionController::class, 'getRegionName']);
+    //pickupcenters
+    Route::get('/pickupcenters', [PickupCenterController::class, 'index']);
+    Route::get('/pickupcenter', [PickupCenterController::class, 'getCenter']);
+    //specialitems
+    Route::get('/specialitems', [SpecialItemController::class, 'index']);
+    Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
 
 });
 

@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class CustomerProfileRequest extends FormRequest
+class AddAddressRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,14 +28,10 @@ class CustomerProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstname' => ['required', 'string', 'max:300'],
-            'lastname' => ['required', 'string', 'max:300'],
-            'phone' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/',
-            'email' => 'required|email|max:255',
-            //'country' => ['required'],
-            // 'employmentstatus' => ['required'],
-            // 'weight' => ['required'],
-            // 'height' => ['required'],
+            'address' => ['required', 'string',],
+            'location' => ['required', 'string',],
+            'city' => 'required',
+            'setdefaultaddress'=>'required',
         ];
     }
 
