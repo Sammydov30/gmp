@@ -69,7 +69,8 @@ class CustomerController extends Controller
         // if ($request->cnewpin!=$request->newpin) {
         //     array_push($error,"New Pin Mismatch");
         // }
-        $user=Customer::where('id', $user->id);
+
+        $user=Customer::where('id', $user->id)->first();
         if ( $user) {
             array_push($error,"User doesn't exist");
         }
