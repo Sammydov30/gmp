@@ -83,6 +83,7 @@ class CustomerController extends Controller
             Customer::where('id', $user->id)->update([
                 'pin' => $newpin,
             ]);
+            $user=Customer::where('id', $user->id)->first();
             $response=[
                 "status" => "success",
                 "message" => "Pin Changed Successfully",
