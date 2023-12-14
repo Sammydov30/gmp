@@ -33,9 +33,9 @@ class GetInterStateQuoteRequest extends FormRequest
             "pickupcenter"=>['required'],
             "sourceregion"=>['required'],
             "destinationregion"=>['required'],
-            "stype"=>['required'],
-            "sweight"=>['required'],
-            "svalue_declaration"=>['required'],
+            "itemtype"=>['required'],
+            "itemweight"=>['required'],
+            "itemvalue"=>['required'],
         ];
     }
 

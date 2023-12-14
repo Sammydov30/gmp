@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Account;
 use App\Models\CustomerTransaction;
+use App\Models\FundingHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -14,11 +15,11 @@ class TransactionController extends Controller
 
     public function index()
     {
-        $result = CustomerTransaction::with('plan');
+        $result = FundingHistory::with('customer');
 
-        if (request()->input("patientid") != null) {
-            $search=request()->input("patientid");
-            $result->where('patientid', $search);
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
         }
         if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortBy");
@@ -42,7 +43,7 @@ class TransactionController extends Controller
 
     public function show($id)
     {
-        $transaction=CustomerTransaction::with('plan')->find($id);
+        $transaction=FundingHistory::with('customer')->find($id);
         if (!$transaction) {
             return response()->json(["message" => "Transaction Not Found.", "status" => "error"], 400);
         }

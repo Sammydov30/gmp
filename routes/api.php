@@ -4,9 +4,13 @@ use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
+use App\Http\Controllers\API\V1\DepositHistoryController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\SpecialItemController;
+use App\Http\Controllers\API\V1\TransactionController;
+use App\Http\Controllers\API\V1\WithdrawalController;
+use App\Models\DepositHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,7 +55,22 @@ Route::prefix('v1')->group(function () {
         //Logistics
         Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
         Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
-        Route::get('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
+        Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
+
+        //Deposit
+        Route::get('/customer/deposit/fetchall', [DepositHistoryController::class, 'index']);
+        Route::get('/customer/deposit/getdeposit/{id}', [DepositHistoryController::class, 'show']);
+        Route::post('/customer/deposit/fundaccount', [DepositHistoryController::class, 'fundaccount']);
+        Route::post('/customer/deposit/verifypayment', [DepositHistoryController::class, 'verifypayment']);
+
+        //Withdrawal
+        Route::get('/customer/withdrawal/fetchall', [WithdrawalController::class, 'index']);
+        Route::get('/customer/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
+        Route::post('/customer/withdrawal/makewithdrawal', [WithdrawalController::class, 'makewithdrawal']);
+
+        //FundingHistory
+        Route::get('/customer/funding/fetchall', [TransactionController::class, 'index']);
+        Route::get('/customer/funding/getfunding/{id}', [TransactionController::class, 'show']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
@@ -76,6 +95,10 @@ Route::prefix('v1')->group(function () {
             Route::post('/admin/edit/{admin}', [AdminController::class, 'update']);
             Route::get('/admin/get-admins', [AdminController::class, 'index']);
             Route::delete('/admin/delete/{admin}', [AdminController::class, 'destroy']);
+
+            //Withdrawal
+            Route::post('/admin/withdrawal/acceptwithdrawal', [WithdrawalController::class, 'confirmwithdrawal']);
+            Route::post('/doctor/withdrawal/declinewithdrawal', [WithdrawalController::class, 'declinewithdrawal']);
         });
 
     });

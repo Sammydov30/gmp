@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateInterStateShipmentRequest;
+use App\Http\Requests\Customer\GetInterStateQuoteRequest;
 use App\Models\Customer;
 use App\Models\FundingHistory;
 use App\Models\Logistic;
@@ -14,11 +15,6 @@ use Illuminate\Support\Facades\Http;
 
 class LogisticsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         // $accounts=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
@@ -166,11 +162,13 @@ class LogisticsController extends Controller
 
     }
 
-    public function getquote(CreateInterStateShipmentRequest $request)
+    public function getquote(GetInterStateQuoteRequest $request)
     {
-        if ($request->stype=='2') {
-            if (empty($request->sitem)) {
-                return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
+        for ($i=0; $i < count($request->itemtype); $i++) {
+            if ($request->itemtype[$i]=='2') {
+                if (empty($request->item[$i])) {
+                    return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
+                }
             }
         }
         $createrequest = Http::withHeaders([
@@ -182,12 +180,13 @@ class LogisticsController extends Controller
             "pickupcenter"=>$request->pickupcenter,
             "sourceregion"=>$request->sourceregion,
             "destinationregion"=>$request->destinationregion,
-            "itemtype"=>serialize($request->stype),
-            "sitem"=>serialize($request->sitem),
-            "itemweight"=>serialize($request->sweight),
-            "itemvalue"=>serialize($request->svalue_declaration)
+            "itemtype"=>serialize($request->itemtype),
+            "sitem"=>serialize($request->item),
+            "itemweight"=>serialize($request->itemweight),
+            "itemvalue"=>serialize($request->itemvalue)
         ]);
         $res=$createrequest->json();
+        //print_r($res); exit();
         if (!$res['status']) {
             return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
         }else{

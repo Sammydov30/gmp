@@ -40,6 +40,20 @@ class DepositHistoryController extends Controller
         return response()->json($transactions, 200);
     }
 
+    public function show($id)
+    {
+        $transaction=DepositHistory::find($id);
+        if (!$transaction) {
+            return response()->json(["message" => "Transaction Not Found.", "status" => "error"], 400);
+        }
+        $response=[
+            "message" => "Transaction found",
+            'transaction' => $transaction,
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
+
     public function fundAccount(Request $request)
     {
         $error = array();
