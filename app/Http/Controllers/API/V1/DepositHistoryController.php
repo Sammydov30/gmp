@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DepositRequest;
 use App\Models\Customer;
 use App\Models\DepositHistory;
 use App\Models\FundingHistory;
@@ -54,7 +55,7 @@ class DepositHistoryController extends Controller
         return response()->json($response, 200);
     }
 
-    public function fundAccount(Request $request)
+    public function fundAccount(DepositRequest $request)
     {
         $error = array();
         $customer=auth()->user();

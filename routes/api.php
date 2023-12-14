@@ -86,10 +86,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/admin', [AdminController::class, 'getA']);
         Route::post('/admin/updateprofile', [AdminController::class, 'changeprofile']);
         Route::post('/admin/changepassword', [AdminController::class, 'changepassword']);
-
         //plan
         Route::apiResource('/admin/plans', PlanController::class);
+        //Deposit
+        Route::get('/admin/deposit/fetchall', [DepositHistoryController::class, 'index']);
+        Route::get('/admin/deposit/getdeposit/{id}', [DepositHistoryController::class, 'show']);
 
+        //Withdrawal
+        Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
+        Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
+
+        //Restricted
         Route::middleware(['restrictothers'])->group(function () {
             Route::post('/admin/create', [AdminController::class, 'register']);
             Route::post('/admin/edit/{admin}', [AdminController::class, 'update']);
@@ -98,17 +105,20 @@ Route::prefix('v1')->group(function () {
 
             //Withdrawal
             Route::post('/admin/withdrawal/acceptwithdrawal', [WithdrawalController::class, 'confirmwithdrawal']);
-            Route::post('/doctor/withdrawal/declinewithdrawal', [WithdrawalController::class, 'declinewithdrawal']);
+            Route::post('/admin/withdrawal/declinewithdrawal', [WithdrawalController::class, 'declinewithdrawal']);
         });
+        ///End Restricted
 
     });
     Route::post('/admin/auth/login', [AdminAuthController::class, 'login']);
     Route::post('/admin/auth/verifyotp', [AdminAuthController::class, 'check_otp']);
-
     Route::middleware(['auth:sanctum'])->group(function () {
         //account
         Route::apiResource('/user/accounts', AccountController::class);
     });
+
+
+
 
     //states
     Route::apiResource('/states', StateController::class);

@@ -30,7 +30,7 @@ class WithdrawalRequest extends FormRequest
         return [
             'accountnumber' => ['required', 'string'],
             'bank' => ['required', 'string'],
-            'amount' => ['required', 'numeric'],
+            'amount' => ['required', 'numeric', 'gte:100'],
             'pin' => ['required', 'numeric'],
         ];
     }
