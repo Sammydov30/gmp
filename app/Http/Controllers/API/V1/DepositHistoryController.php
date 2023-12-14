@@ -102,6 +102,7 @@ class DepositHistoryController extends Controller
 
             $response=[
                 "message" => "Deposit Initiated",
+                "deposit" => $deposit,
                 "paymentrequest"=>$payy,
                 "status" => "success"
             ];
