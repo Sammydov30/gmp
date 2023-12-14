@@ -51,7 +51,7 @@ Route::prefix('v1')->group(function () {
         //PIN
         Route::post('/customer/pin/checkpin', [CustomerController::class, 'checkpin']);
         Route::post('/customer/pin/setpin', [CustomerController::class, 'setpin']);
-        Route::post('/customer/changepin', [CustomerController::class, 'updatepin']);
+        Route::post('/customer/pin/changepin', [CustomerController::class, 'updatepin']);
 
         //Complaint
         Route::get('/customer/complaint/fetchall', [ComplaintController::class, 'index']);
