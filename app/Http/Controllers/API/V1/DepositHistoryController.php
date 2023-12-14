@@ -177,9 +177,10 @@ class DepositHistoryController extends Controller
                         'status'=>'1',
                         'type'=>'1'
                     ]);
-                    $deposit=DepositHistory::where('depositid', $tx_ref)->update([
+                    DepositHistory::where('depositid', $tx_ref)->update([
                         'status' => '1'
                     ]);
+                    $deposit=DepositHistory::where('depositid', $tx_ref)->first();
                     return response()->json([
                         'message' => 'Wallet Funded Successfully',
                         'details' => $deposit,
