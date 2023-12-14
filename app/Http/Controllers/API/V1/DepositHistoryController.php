@@ -89,7 +89,7 @@ class DepositHistoryController extends Controller
                 'tx_ref' => $depositid,
                 'amount' => $pamount,
                 'currency' => 'NGN',
-                //'redirect_url' => URL.'/verifypayment?ticketno='.$depositid,
+                'redirect_url' => "https://gavice.com/gmp-funding",
                 "customer" => [
                     'email' => $email,
                 ],

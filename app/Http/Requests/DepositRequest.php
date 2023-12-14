@@ -28,7 +28,7 @@ class DepositRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount' => ['required|numeric|gte:100'],
+            'amount' => ['required', 'numeric', 'gte:100'],
         ];
     }
 

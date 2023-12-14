@@ -140,7 +140,7 @@ class LogisticsController extends Controller
                 'tx_ref' => $logisticid,
                 'amount' => $pamount,
                 'currency' => 'NGN',
-                'redirect_url' => 'https://gavice.ng/gmp-payment',
+                'redirect_url' => 'https://gavice.com/gmp-payment',
                 "customer" => [
                     'email' => $user->email,
                 ],
