@@ -33,6 +33,21 @@ class CustomerController extends Controller
         ], 200);
     }
 
+    public function checkpin(Request $request)
+    {
+        $user=auth()->user();
+        $check=Customer::where('gmpid', $user->gmpid)->first();
+        if ($check) {
+            if ($check->pin==null) {
+                return response()->json(["message" => "PIN Not Set", "status" => "error"], 400);
+            }else{
+                return response()->json(["message" => "Pin Set", "status" => "success"], 200);
+            }
+        }else{
+            return response()->json(["message" => "An Error Occured", "status" => "error"], 400);
+        }
+    }
+
     public function setpin(SetPinRequest $request)
     {
         $user=auth()->user();
