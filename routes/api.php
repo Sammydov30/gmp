@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
+use App\Http\Controllers\API\V1\BankController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
@@ -122,9 +123,8 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('/user/accounts', AccountController::class);
     });
 
-
-
-
+    //Banks
+    Route::get('/fetchbanks', [BankController::class, 'fetchbanks']);
     //states
     Route::apiResource('/states', StateController::class);
     //regions
