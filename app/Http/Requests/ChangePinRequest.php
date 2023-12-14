@@ -29,7 +29,7 @@ class ChangePinRequest extends FormRequest
     {
         return [
             'newpin' => ['required', 'numeric'],
-            'confirmnewpin' => ['required', 'numeric'],
+            //'cnewpin' => ['required', 'numeric'],
             'oldpin' => ['required', 'numeric'],
         ];
     }
