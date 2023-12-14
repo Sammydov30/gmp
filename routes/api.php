@@ -48,6 +48,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/togglesubscriptionduenotification', [CustomerController::class, 'togglesubscriptionduenotification']);
         Route::post('/customer/togglecheckupschedulednotification', [CustomerController::class, 'togglecheckupschedulednotification']);
 
+        //PIN
+        Route::post('/customer/pin/checkpin', [CustomerController::class, 'checkpin']);
+        Route::post('/customer/pin/setpin', [CustomerController::class, 'setpin']);
+        Route::post('/customer/updatepin', [CustomerController::class, 'updatepin']);
+
         //Complaint
         Route::get('/customer/complaint/fetchall', [ComplaintController::class, 'index']);
         Route::post('/customer/complaint/makeacomplain', [ComplaintController::class, 'addcomplaint']);
