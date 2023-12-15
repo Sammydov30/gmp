@@ -129,6 +129,7 @@ class CustomerController extends Controller
     public function updateprofilepicture(CustomerImageRequest $request)
     {
         $user=auth()->user();
+
         if ($request->file('profilepicture')) {
             $file =$request->file('profilepicture');
             $extension = $file->getClientOriginalExtension();
