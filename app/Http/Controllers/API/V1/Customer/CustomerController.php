@@ -144,7 +144,8 @@ class CustomerController extends Controller
         Customer::where('id', $user->id)->update([
             'profilepicture' => $profilepicture,
         ]);
-        $customer=Customer::where('id', $user->id)->first();
+        $customer=Customer::where('id', $user->id)->select('profilepicture')->first();
+        //$profilepicture=$customer->profilepicture;
         $response=[
             "message" => "Profile Picture Changed Successfully",
             'customer' => $customer,
