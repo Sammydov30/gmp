@@ -102,7 +102,7 @@ class WithdrawalController extends Controller
             'gmpid' => $user->gmpid,
             'amount' => $request->amount,
             'bank' => $request->bank,
-            'accountnumber'=>$request->account,
+            'accountnumber'=>$request->accountnumber,
             'accountname'=>$accountname,
             'withdrawalid'=> $txref,
             'wtime'=> time(),
