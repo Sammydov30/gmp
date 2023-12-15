@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\API\V1\BankController;
@@ -125,6 +126,7 @@ Route::prefix('v1')->group(function () {
 
     //Banks
     Route::get('/fetchbanks', [BankController::class, 'fetchbanks']);
+    Route::get('/fetchaccountdetails', [AccountController::class, 'getAccountName']);
     //states
     Route::apiResource('/states', StateController::class);
     //regions

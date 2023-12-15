@@ -60,8 +60,11 @@ class AccountController extends Controller
         $bankcode= $request->bank;
         $acctrequest = Http::withHeaders([
             "content-type" => "application/json",
-            "Authorization" => "Bearer ".env('PAYSTACK_KEY'),
-        ])->get('https://api.paystack.co/bank/resolve?account_number='.$accountnumber.'&bank_code='.$bankcode);
+            "Authorization" => "Bearer ".env('FW_KEY'),
+        ])->post('https://api.flutterwave.com/v3/accounts/resolve', [
+            "account_number"=> $request->accountnumber,
+            "account_bank"=> $request->bank,
+        ]);
         $res=$acctrequest->json();
         //print_r($res);
         if (!$res['status']) {
