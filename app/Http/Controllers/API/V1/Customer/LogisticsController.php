@@ -62,7 +62,7 @@ class LogisticsController extends Controller
             "totalweight"=>$request->totalweight,
             "amount"=>$request->totalamount,
         ]);
-        for ($i=0; $i < count($request->stype[$i]); $i++) {
+        for ($i=0; $i < count($request->itemtype); $i++) {
             LogisticInfo::create([
                 "shipment_id"=>$logistics->id,
                 "type"=>$request->itemtype[$i],
@@ -122,6 +122,7 @@ class LogisticsController extends Controller
                 'which'=>'2'
             ]);
             $res=$createrequest->json();
+            print_r($res); exit();
             if (!$res['status']) {
                 return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
             }else{

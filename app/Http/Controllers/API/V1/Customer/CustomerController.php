@@ -129,9 +129,20 @@ class CustomerController extends Controller
     public function updateprofilepicture(CustomerImageRequest $request)
     {
         $user=auth()->user();
+
+        if ($request->file('profilepicture')) {
+            $file =$request->file('profilepicture');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time().'.' . $extension;
+            $file->move(public_path('uploads/profilepicture/'), $filename);
+            $profilepicture= 'uploads/profilepicture/'.$filename;
+        }else{
+            $profilepicture=null;
+        }
+
         $customer=Customer::where('id', $user->id)->first();
         Customer::where('id', $user->id)->update([
-            'profilepicture' => $request->picture,
+            'profilepicture' => $profilepicture,
         ]);
         $customer=Customer::where('id', $user->id)->first();
         $response=[
