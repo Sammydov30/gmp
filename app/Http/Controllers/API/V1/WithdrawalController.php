@@ -64,7 +64,7 @@ class WithdrawalController extends Controller
         //check balance
         $check=Customer::where('gmpid', $user->gmpid)->first();
         if ($check) {
-            if ($check->pin==$request->pin) {
+            if ($check->pin!=$request->pin) {
                 return response()->json(["message" => "Incorrect PIN", "status" => "error"], 400);
             }
             $balance=$check->ngnbalance;
