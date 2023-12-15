@@ -23,6 +23,17 @@ class LogisticsController extends Controller
 
     public function store(CreateInterStateShipmentRequest $request)
     {
+        for ($i=0; $i < count($request->itemtype); $i++) {
+            if ($request->itemtype[$i]=='2') {
+                if (empty($request->item[$i])) {
+                    return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
+                }
+            }elseif ($request->itemtype[$i]=='1') {
+                if (empty($request->itemname[$i])) {
+                    return response()->json(["message" => "Item Name is Required", "status" => "error"], 400);
+                }
+            }
+        }
         $user=auth()->user();
         if ($request->gmppayment=='1') {
             $this->checkWallet($request->totalamount);
@@ -54,16 +65,16 @@ class LogisticsController extends Controller
         for ($i=0; $i < count($request->stype[$i]); $i++) {
             LogisticInfo::create([
                 "shipment_id"=>$logistics->id,
-                "type"=>$request->stype[$i],
-                "item"=>$request->sitem[$i],
-                "name"=>$request->sname[$i],
-                "weight"=>$request->sweight[$i],
+                "type"=>$request->itemtype[$i],
+                "item"=>$request->item[$i],
+                "name"=>$request->itemname[$i],
+                "weight"=>$request->itemweight[$i],
                 "weighttype"=>'1',
                 "quantity"=>'1',
                 "length"=>'1',
                 "width"=>'1',
                 "height"=>'1',
-                "value_declaration"=>$request->svalue_declaration[$i]
+                "value_declaration"=>$request->itemvalue[$i]
             ]);
         }
         if ($request->gmppayment=='1') {
@@ -89,16 +100,16 @@ class LogisticsController extends Controller
                 "destinationregion"=>$request->destinationregion,
                 "totalweight"=>$request->totalweight,
                 "totalamount"=>$request->totalamount,
-                "stype"=>$request->stype,
-                "item"=>$request->sitem,
-                "sname"=>$request->sname,
-                "sweighttype"=>$request->sweighttype,
-                "sweight"=>$request->sweight,
-                "squantity"=>$request->squantity,
-                "slength"=>$request->slength,
-                "swidth"=>$request->swidth,
-                "sheight"=>$request->sheight,
-                "svalue_declaration"=>$request->svalue_declaration
+                "type"=>$request->itemtype,
+                "item"=>$request->item,
+                "sname"=>$request->itemname,
+                "weight"=>$request->itemweight,
+                "weighttype"=>'1',
+                "quantity"=>'1',
+                "length"=>'1',
+                "width"=>'1',
+                "height"=>'1',
+                "value_declaration"=>$request->itemvalue
             ]);
             FundingHistory::create([
                 'fundingid' => $logistics->id,

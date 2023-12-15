@@ -44,16 +44,15 @@ class CreateInterStateShipmentRequest extends FormRequest
             "destinationregion"=>['required'],
             "totalweight"=>['required'],
             "totalamount"=>['required'],
-            "stype"=>['required'],
-            "item"=>['required'],
-            "sname"=>['required'],
+            "itemtype"=>['required'],
+            "itemweight"=>['required'],
+            "itemvalue"=>['required'],
+            //"name"=>['required'],
             //"sweighttype"=>['required'],
-            "sweight"=>['required'],
             // "squantity"=>['required'],
             // "slength"=>['required'],
             // "swidth"=>['required'],
             // "sheight"=>['required'],
-            "svalue_declaration"=>['required'],
         ];
     }
 
