@@ -100,16 +100,16 @@ class LogisticsController extends Controller
                 "destinationregion"=>$request->destinationregion,
                 "totalweight"=>$request->totalweight,
                 "totalamount"=>$request->totalamount,
-                "type"=>$request->itemtype,
-                "item"=>$request->item,
+                "stype"=>$request->itemtype,
+                "sitem"=>$request->item,
                 "sname"=>$request->itemname,
-                "weight"=>$request->itemweight,
-                "weighttype"=>'1',
-                "quantity"=>'1',
-                "length"=>'1',
-                "width"=>'1',
-                "height"=>'1',
-                "value_declaration"=>$request->itemvalue
+                "sweight"=>$request->itemweight,
+                "sweighttype"=>'1',
+                "squantity"=>'1',
+                "slength"=>'1',
+                "swidth"=>'1',
+                "sheight"=>'1',
+                "svalue_declaration"=>$request->itemvalue
             ]);
             FundingHistory::create([
                 'fundingid' => $logistics->id,
@@ -305,7 +305,7 @@ class LogisticsController extends Controller
                         "totalamount"=>$logistics->amount,
                         //Package Informations
                         "stype"=>$logisticsinfo->type,
-                        "item"=>$logisticsinfo->item,
+                        "sitem"=>$logisticsinfo->item,
                         "sname"=>$logisticsinfo->name,
                         "sweighttype"=>$logisticsinfo->weighttype,
                         "sweight"=>$logisticsinfo->weight,
