@@ -104,11 +104,11 @@ class LogisticsController extends Controller
                 "sitem"=>$request->item,
                 "sname"=>$request->itemname,
                 "sweight"=>$request->itemweight,
-                "sweighttype"=>'1',
-                "squantity"=>'1',
-                "slength"=>'1',
-                "swidth"=>'1',
-                "sheight"=>'1',
+                // "sweighttype"=>'1',
+                // "squantity"=>'1',
+                // "slength"=>'1',
+                // "swidth"=>'1',
+                // "sheight"=>'1',
                 "svalue_declaration"=>$request->itemvalue
             ]);
             FundingHistory::create([
