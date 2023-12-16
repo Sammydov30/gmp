@@ -282,6 +282,18 @@ class LogisticsController extends Controller
                     ]);
                     $logistics=Logistic::where('logisticid', $tx_ref)->first();
                     $logisticsinfo=LogisticInfo::where('shipment_id', $logistics->id)->get();
+                    $logisticsinfo=json_decode(json_encode($logisticsinfo), true);
+                    $stype=$sitem=$sname=$sweighttype=$sweight=$squantity=$slength=$swidth=$sheight=$svalue=[];
+
+                    foreach ($logisticsinfo as $l) {
+                        //$cart[$c]['item']['vendorname']=$this->getvendorname($v['item']['vendor']);
+                        array_push($stype, $l['type']);array_push($svalue, $l['value_declaration']);
+                        array_push($sitem, $l['item']);array_push($sname, $l['name']);
+                        array_push($sweighttype, $l['weighttype']);array_push($sweight, $l['weight']);
+                        array_push($squantity, $l['quantity']);array_push($slength, $l['length']);
+                        array_push($swidth, $l['width']);array_push($sheight, $l['height']);
+                    }
+                    //print_r($svalue); exit();
                     $createrequest = Http::withHeaders([
                         "content-type" => "application/json",
                         // "Authorization" => "Bearer ",
@@ -304,16 +316,16 @@ class LogisticsController extends Controller
                         "totalweight"=>$logistics->totalweight,
                         "totalamount"=>$logistics->amount,
                         //Package Informations
-                        "stype"=>$logisticsinfo->type,
-                        "sitem"=>$logisticsinfo->item,
-                        "sname"=>$logisticsinfo->name,
-                        "sweighttype"=>$logisticsinfo->weighttype,
-                        "sweight"=>$logisticsinfo->weight,
-                        "squantity"=>$logisticsinfo->quantity,
-                        "slength"=>$logisticsinfo->length,
-                        "swidth"=>$logisticsinfo->width,
-                        "sheight"=>$logisticsinfo->height,
-                        "svalue_declaration"=>$logisticsinfo->value_declaration
+                        "stype"=>$stype,
+                        "sitem"=>$sitem,
+                        "sname"=>$sname,
+                        "sweighttype"=>$sweighttype,
+                        "sweight"=>$sweight,
+                        "squantity"=>$squantity,
+                        "slength"=>$slength,
+                        "swidth"=>$swidth,
+                        "sheight"=>$sheight,
+                        "svalue_declaration"=>$svalue
                     ]);
                     $res=$createrequest->json();
                     if (!$res['status']) {
