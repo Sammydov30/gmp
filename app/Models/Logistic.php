@@ -9,6 +9,7 @@ class Logistic extends Model
 {
     use HasFactory;
     protected $fillable = [
+        "logisticsid",
         "pickupvehicle",
         "gmpid",
         "pickupdate",

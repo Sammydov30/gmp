@@ -13,6 +13,7 @@ use App\Http\Controllers\API\V1\SpecialItemController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\WithdrawalController;
 use App\Models\DepositHistory;
+use App\Models\Logistic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
         Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
         Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
+        Route::post('/customer/logistics/verifypayment', [LogisticsController::class, 'verifypayment']);
 
         //Deposit
         Route::get('/customer/deposit/fetchall', [DepositHistoryController::class, 'index']);
