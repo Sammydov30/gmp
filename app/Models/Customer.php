@@ -29,6 +29,7 @@ class Customer extends Authenticatable
         'loginid',
         'phone',
         'password',
+        'refcode',
         'profilepicture',
         'token',
         'seller',

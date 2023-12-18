@@ -4,17 +4,13 @@ namespace App\Http\Controllers\API\V1\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddAddressRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ChangePinRequest;
-use App\Http\Requests\Customer\ChangePasswordRequest;
-use App\Http\Requests\Customer\ChangeProfilePictureRequest;
-use App\Http\Requests\Customer\ChangeProfileRequest;
 use App\Http\Requests\CustomerImageRequest;
 use App\Http\Requests\CustomerProfileRequest;
 use App\Http\Requests\SetPinRequest;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
-use App\Models\Logistics;
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 

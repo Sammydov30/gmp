@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Customer;
+namespace App\Http\Requests;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Validation\Validator;
