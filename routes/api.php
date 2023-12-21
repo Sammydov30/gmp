@@ -7,6 +7,8 @@ use App\Http\Controllers\API\V1\BankController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
+use App\Http\Controllers\API\V1\GeneralController;
+use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\SpecialItemController;
@@ -65,6 +67,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
         Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
         Route::post('/customer/logistics/verifypayment', [LogisticsController::class, 'verifypayment']);
+
+        //Haulages
+        Route::get('/customer/haulages/fetchall', [HaulageController::class, 'index']);
+        Route::post('/customer/haulages/bookhaulage', [HaulageController::class, 'store']);
+        Route::get('/customer/haulages/fetch/{haulage}', [HaulageController::class, 'show']);
 
         //Deposit
         Route::get('/customer/deposit/fetchall', [DepositHistoryController::class, 'index']);
@@ -140,6 +147,8 @@ Route::prefix('v1')->group(function () {
     //specialitems
     Route::get('/specialitems', [SpecialItemController::class, 'index']);
     Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
+
+    Route::get('/getestimate', [GeneralController::class, 'getquote']);
 
 });
 

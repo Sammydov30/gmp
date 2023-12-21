@@ -36,7 +36,9 @@ class LogisticsController extends Controller
         }
         $user=auth()->user();
         if ($request->gmppayment=='1') {
-            $this->checkWallet($request->totalamount);
+            if(!$this->checkWallet($request->totalamount)){
+                return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
+            }
             $p_status='1';
         }else{
             $p_status='0';
@@ -216,11 +218,12 @@ class LogisticsController extends Controller
         if ($check) {
             $balance=$check->ngnbalance;
             if ($balance<$amount) {
-                return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
+                return false;
             }
         }else{
-            return response()->json(["message" => "An Error Occured", "status" => "error"], 400);
+            return false;
         }
+        return true;
     }
 
     public function chargeWallet($amount) {
