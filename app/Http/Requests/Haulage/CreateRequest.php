@@ -31,7 +31,7 @@ class CreateRequest extends FormRequest
             'name' => 'required|string',
             'address' => ['required', 'string', 'max:300'],
             'phone' => ['required', 'string', 'max:300'],
-            'state' => ['required', 'string'],
+            'source_region' => ['required', 'string'],
             'destination_region' => ['required', 'string'],
             'description' => ['required', 'string'],
         ];
