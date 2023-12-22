@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\Admin\State\StateController;
+use App\Http\Controllers\API\V1\Auth\AdminAuthController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\API\V1\BankController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
 use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
+use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\SpecialItemController;
@@ -128,6 +130,7 @@ Route::prefix('v1')->group(function () {
     });
     Route::post('/admin/auth/login', [AdminAuthController::class, 'login']);
     Route::post('/admin/auth/verifyotp', [AdminAuthController::class, 'check_otp']);
+
     Route::middleware(['auth:sanctum'])->group(function () {
         //account
         Route::apiResource('/user/accounts', AccountController::class);
@@ -144,6 +147,11 @@ Route::prefix('v1')->group(function () {
     //pickupcenters
     Route::get('/pickupcenters', [PickupCenterController::class, 'index']);
     Route::get('/pickupcenter', [PickupCenterController::class, 'getCenter']);
+    //country
+    Route::apiResource('/admin/countries', CountryController::class);
+    //marketplace
+    Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
+    Route::apiResource('/marketplaces', MarketPlaceController::class);
     //specialitems
     Route::get('/specialitems', [SpecialItemController::class, 'index']);
     Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);

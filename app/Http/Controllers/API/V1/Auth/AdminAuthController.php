@@ -31,7 +31,7 @@ class AdminAuthController extends Controller
         $details = [
             'email'=>$request->email,
             'otp'=>$otp,
-            'subject' => 'Call a Doc Account Verification',
+            'subject' => 'GMP Account Verification',
         ];
         try {
             dispatch(new EmailOtpJob($details))->delay(now()->addSeconds(1));
@@ -59,7 +59,7 @@ class AdminAuthController extends Controller
                 ['lastlogin'=>time()],
             );
             $response=[
-                'token' => $admin->createToken('calladoctor', ['role:admin'])->plainTextToken,
+                'token' => $admin->createToken('gmp', ['role:admin'])->plainTextToken,
                 "status" => "success",
                 'admin' => $admin,
             ];
