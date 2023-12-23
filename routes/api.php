@@ -14,6 +14,7 @@ use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\SpecialItemController;
+use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\WithdrawalController;
 use App\Models\DepositHistory;
@@ -89,6 +90,11 @@ Route::prefix('v1')->group(function () {
         //FundingHistory
         Route::get('/customer/funding/fetchall', [TransactionController::class, 'index']);
         Route::get('/customer/funding/getfunding/{id}', [TransactionController::class, 'show']);
+
+        //subscriptions
+        Route::get('/customer/subscription/checksubscription', [SubscriptionController::class, 'checkseller']);
+        Route::post('/customer/subscription/sellongmp', [SubscriptionController::class, 'sellongmp']);
+        Route::post('/customer/subscription/subscribe', [SubscriptionController::class, 'addsubscription']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
