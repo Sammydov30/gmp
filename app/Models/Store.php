@@ -11,17 +11,18 @@ class Store extends Model
     protected $fillable=[
         'storeid',
         'marketid',
+        'gmpid',
         'name',
-        'location',
-        'state',
-        'region',
+        'category',
+        'phone',
+        'website',
         'open',
         'status'
     ];
 
-    public function region()
+    public function market()
     {
-        return $this->belongsTo(Region::class, 'region');
+        return $this->belongsTo(MarketPlace::class, 'marketid');
     }
 
 }

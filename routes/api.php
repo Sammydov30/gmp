@@ -5,6 +5,7 @@ use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\AdminAuthController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
 use App\Http\Controllers\API\V1\BankController;
+use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
@@ -12,8 +13,10 @@ use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\PickupCenterController;
+use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\SpecialItemController;
+use App\Http\Controllers\API\V1\StoreController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\WithdrawalController;
@@ -95,6 +98,12 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/subscription/checksubscription', [SubscriptionController::class, 'checkseller']);
         Route::post('/customer/subscription/sellongmp', [SubscriptionController::class, 'sellongmp']);
         Route::post('/customer/subscription/subscribe', [SubscriptionController::class, 'addsubscription']);
+
+        //store
+        Route::apiResource('/customer/gmpstores', StoreController::class);
+
+        //product
+        Route::apiResource('/customer/products', ProductController::class);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
@@ -158,6 +167,9 @@ Route::prefix('v1')->group(function () {
     //marketplace
     Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
     Route::apiResource('/marketplaces', MarketPlaceController::class);
+    //category
+    Route::apiResource('/admin/categories', CategoryController::class);
+    Route::apiResource('/categories', CategoryController::class);
     //specialitems
     Route::get('/specialitems', [SpecialItemController::class, 'index']);
     Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);

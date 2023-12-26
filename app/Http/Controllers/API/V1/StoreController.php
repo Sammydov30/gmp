@@ -3,28 +3,22 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MarketPlace\CreateRequest;
-use App\Models\MarketPlace;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Store\CreateRequest;
+use App\Models\Store;
 
-class MarketPlaceController extends Controller
+class StoreController extends Controller
 {
 
     public function index()
     {
-        $result = MarketPlace::with('region');
+        $result = Store::with('market');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
         }
-        if (request()->input("region") != null) {
-            $region=request()->input("region");
-            $result->where('region', $region);
-        }
-        if (request()->input("location") != null) {
-            $location=request()->input("location");
-            $result->where('location', $location);
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
         }
         if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortBy");
@@ -46,114 +40,74 @@ class MarketPlaceController extends Controller
         return response()->json($park, 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(CreateRequest $request)
     {
-        $query=MarketPlace::where('name', "like", "%{$request->name}%")->where('region', $request->region)->first();
+        $user=auth()->user();
+        $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->first();
         if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+            return response()->json(["message" => 'Store Already created in this Market.', "status" => "error"], 400);
         }
-        $marketplace = MarketPlace::create([
-            'marketid' => 'GMKP'.time(),
+        $store = Store::create([
+            'storeid' => 'GMPS'.time(),
+            'marketid'=> $request->market,
+            'gmpid' => $user->gmpid,
             'name' => $request->name,
-            'region'=> $request->region,
-            'location'=> $request->location,
+            'category'=> $request->category,
+            'phone'=> $request->phone,
+            'website' => $request->website,
         ]);
 
         $response=[
-            "message" => "Market Place Created Successfully",
-            'marketplace' => $marketplace,
+            "message" => "Store Created Successfully",
+            'store' => $store,
             "status" => "success"
         ];
 
         return response()->json($response, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        $marketplace=MarketPlace::find($id);
-        if (!$marketplace) {
+        $store=Store::find($id);
+        if (!$store) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }
         $response=[
-            "message" => "Market Place found",
-            'marketplace' => $marketplace,
+            "message" => " Store found",
+            'store' => $store,
             "status" => "success"
         ];
         return response()->json($response, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function update(CreateRequest $request, Store $store)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(CreateRequest $request, MarketPlace $marketplace)
-    {
-        $query=MarketPlace::where('name', "like", "%{$request->name}%")->where('region', $request->region)->
-        where('id', '!=', $marketplace->id)->first();
+        $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->
+        where('id', '!=', $store->id)->first();
         if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+            return response()->json(["message" => 'Store Already created in this Market.', "status" => "error"], 400);
         }
-        $marketplace->update([
+        $store->update([
+            'marketid'=> $request->market,
             'name' => $request->name,
-            'region'=> $request->region,
-            'location'=> $request->location,
+            'category'=> $request->category,
+            'phone'=> $request->phone,
+            'website' => $request->website,
         ]);
         $response=[
-            "message" => "Market Place Updated Successfully",
-            'market' => $marketplace,
+            "message" => "Store Updated Successfully",
+            'store' => $store,
             "status" => "success"
         ];
 
         return response()->json($response, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(MarketPlace $marketplace)
+    public function destroy(Store $store)
     {
-        $marketplace->delete();
+        $store->delete();
         $response=[
-            "message" => "Market Place Deleted Successfully",
+            "message" => "Store Deleted Successfully",
             "status" => "success"
         ];
         return response()->json($response, 200);
