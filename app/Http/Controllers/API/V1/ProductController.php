@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CreateRequest;
+use App\Http\Resources\API\V1\Customer\ProductResource;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Store;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -38,14 +40,15 @@ class ProductController extends Controller
             $perPage=10;
         }
 
-        $park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        return response()->json($park, 200);
+        $products=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return ProductResource::collection($products);
+        //return response()->json($products, 200);
     }
 
     public function store(CreateRequest $request)
     {
         $user=auth()->user();
-        $query=Product::where('name', "like", "%{$request->name}%")->where('storeid', $request->store)->first();
+        $query=Product::where('name', $request->name)->where('storeid', $request->store)->first();
         if ($query) {
             return response()->json(["message" => 'Product Already created in this Store.', "status" => "error"], 400);
         }
@@ -59,23 +62,30 @@ class ProductController extends Controller
             'category'=> $request->category,
             'description'=> $request->description,
         ]);
-
-        if ($request->file('productimage')) {
-            $file =$request->file('productimage');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time().'.' . $extension;
-            $file->move(public_path('uploads/productimage/'.$product->productid), $filename);
-            $productimage= 'uploads/productimage/'.$filename;
-        }else{
-            $productimage=null;
+        if ($images =$request->file('images')) {
+            foreach ($images as $image) {
+                // $product->addMedia('productimages/'.$product->productid.'/'.$image)->toMediaCollection('images');
+                $product->addMedia($image)->toMediaCollection('images');
+            }
         }
-        $productimage = ProductImage::create([
-            'productid' => $product->productid,
-            'image' => $productimage,
-        ]);
+        // for ($i=0; $i < count($request->file('images')); $i++) {
+        //     if ($request->file('images')[$i]) {
+        //         $file =$request->file('images')[$i];
+        //         $extension = $file->getClientOriginalExtension();
+        //         $filename = time().'.' . $extension;
+        //         $file->move(public_path('uploads/productimages/'.$product->productid), $filename);
+        //         $productimage= 'uploads/productimages/'.$filename;
+        //     }else{
+        //         $productimage=null;
+        //     }
+        //     $productimage = ProductImage::create([
+        //         'productid' => $product->productid,
+        //         'image' => $productimage,
+        //     ]);
+        // }
         $response=[
             "message" => "Product Created Successfully",
-            'product' => $product,
+            'product' => new ProductResource($product),
             "status" => "success"
         ];
 
@@ -90,14 +100,15 @@ class ProductController extends Controller
         }
         $response=[
             "message" => "Product found",
-            'product' => $product,
+            'product' => new ProductResource($product),
             "status" => "success"
         ];
         return response()->json($response, 200);
     }
 
-    public function update(CreateRequest $request, Product $product)
+    public function update(CreateRequest $request, $id)
     {
+        $product=Product::find($id);
         $query=Product::where('name', "like", "%{$request->name}%")->where('storeid', $request->store)->
         where('id', '!=', $product->id)->first();
         if ($query) {

@@ -29,10 +29,18 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'store' => ['required',],
+            'store' => 'required',
             'category' => 'required',
-            'description' => ['required'],
-            'productimage' => 'required|image|mimes:jpg,png,jpeg,svg|max:2048',
+            'description' => 'required',
+            'images.*' => 'nullable|image|mimes:jpg,png,jpeg,svg|max:2048',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'productimages.mimes' => 'Only jpeg,png and bmp images are allowed',
+            'productimages.max' => 'Sorry! Maximum allowed size for an image is 20MB',
         ];
     }
 
