@@ -108,7 +108,7 @@ class ProductController extends Controller
     public function update(CreateRequest $request, $id)
     {
         $product=Product::find($id);
-        $query=Product::where('name', "like", "%{$request->name}%")->where('storeid', $request->store)->
+        $query=Product::where('name', $request->name)->where('storeid', $request->store)->
         where('id', '!=', $product->id)->first();
         if ($query) {
             return response()->json(["message" => 'Product Already created in this Market.', "status" => "error"], 400);
