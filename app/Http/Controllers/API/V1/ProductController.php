@@ -64,7 +64,6 @@ class ProductController extends Controller
         ]);
         if ($images =$request->file('images')) {
             foreach ($images as $image) {
-                // $product->addMedia('productimages/'.$product->productid.'/'.$image)->toMediaCollection('images');
                 $product->addMedia($image)->toMediaCollection('images');
             }
         }
@@ -122,24 +121,32 @@ class ProductController extends Controller
             'category'=> $request->category,
             'description'=> $request->description,
         ]);
+        if ($images = $request->images) {
+            $product->clearMediaCollection('images');
+            foreach ($images as $image) {
+                $product->addMedia($image)->toMediaCollection('images');
+            }
+        }
         $response=[
             "message" => "Product Updated Successfully",
-            'product' => $product,
+            'product' => new ProductResource($product),
             "status" => "success"
         ];
 
         return response()->json($response, 200);
     }
 
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        $productid=$product->productid;
+        // $productid=$product->productid;
+        // $product->delete();
+        // ProductImage::where('productid', $productid)->delete();
+        $product = Product::find($id);
         $product->delete();
-        ProductImage::where('productid', $productid)->delete();
         $response=[
             "message" => "Product Deleted Successfully",
             "status" => "success"
         ];
-        return response()->json($response, 200);
+        return response()->json($response, 204);
     }
 }
