@@ -111,6 +111,7 @@ class CustomerAuthController extends Controller
             'phone'=>$request->phone,
             'password' => Hash::make($request->password),
             'state' => $request->location,
+            'refcode' => $this->getReferralNO(),
             'status' => '1'
         ]);
         $customer = Customer::where('email', $request->email)->first();
@@ -197,6 +198,23 @@ class CustomerAuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json(["message" => "Logout successful", "status" => "success"], 200);
+    }
+
+    public function getReferralNO() {
+        $i=$k=0;
+        while ( $i==0) {
+          $refcode=rand(100000, 999999);
+          $refcode=strtoupper($this->generateRandomString(5).$refcode);
+          $checkref=Customer::where('refcode', $refcode)->count();
+          $k++;
+          if ($k==20) {
+            return strtoupper($this->generateRandomString(3).time());
+          }
+          if ($checkref<1) {
+            $i=1;
+          }
+        }
+        return strtoupper($refcode);
     }
 
     public function generate_otp(){

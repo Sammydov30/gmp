@@ -20,7 +20,11 @@ class CustomerController extends Controller
     {
         $customer=auth()->user();
         if (!empty($request->token) || $request->token=="0") {
-            $customer=Customer::with('ngnbalance')->where('id', $customer->id)->update(['token'=> $request->token]);
+            Customer::where('id', $customer->id)->update(['token'=> $request->token]);
+        }
+        if ($customer->refcode==null) {
+            $refcode=$this->getReferralNO();
+            Customer::where('id', $customer->id)->update(['refcode'=> $refcode]);
         }
         $customer=Customer::where('id', $customer->id)->first();
         return response()->json([
@@ -219,6 +223,33 @@ class CustomerController extends Controller
             "status" => "success"
         ];
         return response()->json($response, 201);
+    }
+
+    public function getReferralNO() {
+        $i=$k=0;
+        while ( $i==0) {
+          $refcode=rand(100000, 999999);
+          $refcode=strtoupper($this->generateRandomString(5).$refcode);
+          $checkref=Customer::where('refcode', $refcode)->count();
+          $k++;
+          if ($k==20) {
+            return strtoupper($this->generateRandomString(3).time());
+          }
+          if ($checkref<1) {
+            $i=1;
+          }
+        }
+        return strtoupper($refcode);
+    }
+
+    public function generateRandomString($length = 25) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 }
