@@ -16,6 +16,7 @@ class Product extends Model implements HasMedia
         'marketid',
         'gmpid',
         'name',
+        'amount',
         'category',
         'description',
         'status'

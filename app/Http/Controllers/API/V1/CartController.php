@@ -60,7 +60,6 @@ class ProductController extends Controller
             'gmpid' => $user->gmpid,
             'name' => $request->name,
             'category'=> $request->category,
-            'amount'=> $request->price,
             'description'=> $request->description,
         ]);
         if ($images =$request->file('images')) {
@@ -120,7 +119,6 @@ class ProductController extends Controller
             'marketid'=> $market,
             'name' => $request->name,
             'category'=> $request->category,
-            'amount'=> $request->price,
             'description'=> $request->description,
         ]);
         if ($images = $request->images) {

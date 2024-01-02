@@ -20,6 +20,7 @@ class ProductResource extends JsonResource
             'marketid' => $this->marketid,
             'gmpid' => $this->gmpid ,
             'name' => $this->name,
+            'price' => $this->amount,
             'categoryid' => $this->category,
             'description' => $this->description,
             'market'   => $this->market,
