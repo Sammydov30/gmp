@@ -159,7 +159,8 @@ class WithdrawalController extends Controller
             'ftime'=>time(),
             'currency'=>$withdrawal->currency,
             'status'=>'1',
-            'type'=>'2'
+            'type'=>'2',
+            'which'=> '1'
         ]);
         $withdrawal=WithdrawalHistory::where('withdrawalid', $withdrawal->withdrawalid)->update([
             'status' => '1'

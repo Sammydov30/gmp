@@ -9,12 +9,15 @@ use App\Models\Customer;
 use App\Models\FundingHistory;
 use App\Models\Logistic;
 use App\Models\LogisticInfo;
+use App\Traits\GMPCustomerBalanceTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class LogisticsController extends Controller
 {
+    use GMPCustomerBalanceTrait;
+
     public function index()
     {
         // $accounts=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
@@ -144,7 +147,6 @@ class LogisticsController extends Controller
             $useragent=$_SERVER['HTTP_USER_AGENT'];
             // $pamount=(int)$amount*100;
             $pamount=(int)$request->totalamount;
-
             $paymentrequest = Http::withHeaders([
                 "Authorization" => "Bearer ".env('FW_KEY'),
                 "content-type" => "application/json",
@@ -210,28 +212,6 @@ class LogisticsController extends Controller
                 return response()->json($res, 201);
             }
         }
-    }
-
-    public function checkWallet($amount) {
-        $user=auth()->user();
-        $check=Customer::where('gmpid', $user->gmpid)->first();
-        if ($check) {
-            $balance=$check->ngnbalance;
-            if ($balance<$amount) {
-                return false;
-            }
-        }else{
-            return false;
-        }
-        return true;
-    }
-
-    public function chargeWallet($amount) {
-        $user=auth()->user();
-        $check=Customer::where('gmpid', $user->gmpid)->first();
-        $balance=$check->ngnbalance;
-        $newbal=$balance-$amount;
-        Customer::where('gmpid', $user->gmpid)->update(['ngnbalance'=>$newbal]);
     }
 
     public function verifypayment(Request $request)

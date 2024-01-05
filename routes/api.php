@@ -13,9 +13,11 @@ use App\Http\Controllers\API\V1\CountryController;
 use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
+use App\Http\Controllers\API\V1\CartController;
 use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
+use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\API\V1\RegionController;
@@ -106,6 +108,23 @@ Route::prefix('v1')->group(function () {
 
         //product
         Route::apiResource('/customer/products', ProductController::class);
+
+        //Cart
+        Route::get('/customer/cart/getcartitems', [CartController::class, 'index']);
+        Route::post('/customer/cart/addtocart', [CartController::class, 'addtocart']);
+        Route::post('/customer/cart/removefromcart', [CartController::class, 'removefromcart']);
+        Route::post('/customer/cart/increase', [CartController::class, 'increaseQuantity']);
+        Route::post('/customer/cart/decrease', [CartController::class, 'decreaseQuantity']);
+        Route::get('/customer/cart/confirmavailability', [CartController::class, 'confirmavailability']);
+        Route::get('/customer/cart/checkout', [CartController::class, 'checkout']);
+        Route::post('/customer/cart/getshippingrate', [CartController::class, 'getShippingRate']);
+        Route::post('/customer/cart/addtoorder', [CartController::class, 'addToOrder']);
+
+        //orders
+        Route::get('/customer/order/getorders', [OrderController::class, 'index']);
+        Route::get('/all/order/getorderitems', [OrderController::class, 'getOrderItems']);
+        Route::get('/customer/order/getorder', [OrderController::class, 'getSingleOrder']);
+        //Route::get('/customer/seller/order/getorder', [OrderController::class, 'getSingleOrder']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
@@ -172,6 +191,10 @@ Route::prefix('v1')->group(function () {
     //category
     Route::apiResource('/admin/categories', CategoryController::class);
     Route::apiResource('/categories', CategoryController::class);
+    //Products
+    Route::get('/general/products', [ProductController::class, 'index']);
+    //Stores
+    Route::get('/general/stores', [StoreController::class, 'index']);
     //specialitems
     Route::get('/specialitems', [SpecialItemController::class, 'index']);
     Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);

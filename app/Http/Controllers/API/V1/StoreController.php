@@ -20,6 +20,10 @@ class StoreController extends Controller
             $search=request()->input("gmpid");
             $result->where('gmpid', $search);
         }
+        if (request()->input("marketid") != null) {
+            $search=request()->input("marketid");
+            $result->where('marketid', $search);
+        }
         if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortBy");
         }else{

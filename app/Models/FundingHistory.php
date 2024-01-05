@@ -15,7 +15,8 @@ class FundingHistory extends Model
         'ftime',
         'currency',
         'status',
-        'type'
+        'type',
+        'which'
     ];
     public function customer()
     {

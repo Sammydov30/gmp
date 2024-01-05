@@ -176,7 +176,8 @@ class DepositHistoryController extends Controller
                         'ftime'=>$tx->wtime,
                         'currency'=>$currency,
                         'status'=>'1',
-                        'type'=>'1'
+                        'type'=>'1',
+                        'which'=> '1'
                     ]);
                     DepositHistory::where('depositid', $tx_ref)->update([
                         'status' => '1'
