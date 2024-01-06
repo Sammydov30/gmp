@@ -3,54 +3,55 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
-use App\Jobs\DoctorNotifyJob;
-use App\Models\Appointment;
-use App\Models\Doctor;
-use App\Models\NotifyMe;
+use App\Models\Notification;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
-    public function openNotification(Request $request)
+    use NotificationTrait;
+
+    public function readnotification(Request $request)
     {
         if (empty($request->notificationid)) {
             return response()->json(["message" => "Invalid Request", "status" => "error"], 400);
         }
-        NotifyMe::where('id', $request->notificationid)->update(['seen'=>'1']);
+        Notification::where('id', $request->notificationid)->update(['status'=>'1']);
         return response()->json([
             "status" => "success",
         ], 200);
     }
 
-    public function fetchnotificationforpatient(Request $request)
+    public function fetchnotificationforuser(Request $request)
     {
         $customer=auth()->user();
-        $n=NotifyMe::where('patientid', $customer->patientid)
-        ->where('seen', '1')
-        ->where('who', '1')
-        ->get();
-        $count=count($n);
-        return response()->json([
-            'message' => $count." Notifications Found",
-            "status" => "success",
-            'n' => $n,
-        ], 200);
-    }
-
-    public function fetchnotificationfordoctor(Request $request)
-    {
-        $doctor=auth()->user();
-        $n=NotifyMe::where('doctorid', $doctor->doctorid)
-        ->where('seen', '1')
-        ->where('who', '2')
-        ->get();
-        $count=count($n);
-        return response()->json([
-            'message' => $count." Notifications Found",
-            "status" => "success",
-            'n' => $n,
-        ], 200);
+        $result = Notification::where('gmpid', $customer->id);
+        if (empty($request->read)) {
+            $result->where('status', $request->read);
+        }
+        if (empty($request->type)) {
+            $result->where('type', $request->type);
+        }
+        if (empty($request->which)) {
+            $result->where('which', $request->which);
+        }
+        if (!empty($request->sortBy) && in_array($request->sortBy, ['id', 'created_at'])) {
+            $sortBy=$request->sortBy;
+        }else{
+            $sortBy='id';
+        }
+        if (!empty($request->sortorder) && in_array($request->sortorder, ['asc', 'desc'])) {
+            $sortOrder=$request->sortorder;
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty($request->perpage)) {
+            $perPage=$request->perpage;
+        } else {
+            $perPage=10;
+        }
+        $notification=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return response()->json($notification, 200);
     }
 
 }

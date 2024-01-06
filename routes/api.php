@@ -17,6 +17,7 @@ use App\Http\Controllers\API\V1\CartController;
 use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
+use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\ProductController;
@@ -125,6 +126,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/all/order/getorderitems', [OrderController::class, 'getOrderItems']);
         Route::get('/customer/order/getorder', [OrderController::class, 'getSingleOrder']);
         //Route::get('/customer/seller/order/getorder', [OrderController::class, 'getSingleOrder']);
+
+        //Notification
+        Route::get('/customer/notification/fetchnotifications', [NotificationController::class, 'fetchnotificationforuser']);
+        Route::post('/customer/notification/markread', [NotificationController::class, 'readnotification']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);
