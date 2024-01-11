@@ -157,6 +157,9 @@ class CustomerController extends Controller
     public function addaddress(AddAddressRequest $request)
     {
         $user=auth()->user();
+        if ($request->setdefaultaddress=='1') {
+            CustomerAddress::where('gmpid', $user->gmpid)->update(['status'=>'0']);
+        }
         $address=CustomerAddress::create([
             'gmpid' => $user->gmpid,
             'location' => $request->location,
@@ -164,9 +167,6 @@ class CustomerController extends Controller
             'city' => $request->city,
             'status'=>$request->setdefaultaddress
         ]);
-        if ($request->setdefaultaddress=='1') {
-            CustomerAddress::where('gmpid', $user->gmpid)->where('id', '!=', $address->id)->update(['status'=>'0']);
-        }
         $response=[
             "message" => "Address Created Successfully",
             'customer' => $address,
@@ -178,6 +178,9 @@ class CustomerController extends Controller
     public function editaddress(AddAddressRequest $request)
     {
         $user=auth()->user();
+        if ($request->setdefaultaddress=='1') {
+            CustomerAddress::where('gmpid', $user->gmpid)->update(['status'=>'0']);
+        }
         $address=CustomerAddress::where('id', $request->addressid)->update([
             'gmpid' => $user->gmpid,
             'location' => $request->location,
@@ -185,9 +188,6 @@ class CustomerController extends Controller
             'city' => $request->city,
             'status'=>$request->setdefaultaddress
         ]);
-        if ($request->setdefaultaddress=='1') {
-            CustomerAddress::where('gmpid', $user->gmpid)->where('id', '!=', $address->id)->update(['status'=>'0']);
-        }
         $response=[
             "message" => "Address saved Successfully",
             'customer' => $address,
