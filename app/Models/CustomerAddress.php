@@ -16,4 +16,9 @@ class CustomerAddress extends Model
         'city',
         'status'
     ];
+
+    public function customer()
+    {
+        return $this->hasOne(Customer::class, 'gmpid', 'gmpid');
+    }
 }

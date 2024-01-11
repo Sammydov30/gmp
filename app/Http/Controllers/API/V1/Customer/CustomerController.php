@@ -214,7 +214,7 @@ class CustomerController extends Controller
     public function listaddress(Request $request)
     {
         $customer=auth()->user();
-        $addresses=CustomerAddress::where('gmpid', $customer->gmpid)->get();
+        $addresses=CustomerAddress::with('customer')->where('gmpid', $customer->gmpid)->get();
         return response()->json([
             'addresses' => $addresses,
             "status" => "success"
