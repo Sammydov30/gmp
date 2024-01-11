@@ -55,6 +55,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/listaddress', [CustomerController::class, 'listaddress']);
         Route::post('/customer/addaddress', [CustomerController::class, 'addaddress']);
         Route::post('/customer/updateaddress', [CustomerController::class, 'editaddress']);
+        Route::post('/customer/deleteaddress', [CustomerController::class, 'deleteaddress']);
         Route::post('/customer/changeprofilepicture', [CustomerController::class, 'updateprofilepicture']);
         Route::post('/customer/changepassword', [CustomerController::class, 'updatepassword']);
         Route::post('/customer/deleteaccount', [CustomerController::class, 'deleteaccount']);
