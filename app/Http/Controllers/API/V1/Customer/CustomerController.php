@@ -205,8 +205,7 @@ class CustomerController extends Controller
         CustomerAddress::where('gmpid', $user->gmpid)->latest()->update(['status'=>'1']);
 
         $response=[
-            "message" => "Address saved Successfully",
-            'customer' => $address,
+            "message" => "Address Deleted Successfully",
             "status" => "success"
         ];
         return response()->json($response, 201);
