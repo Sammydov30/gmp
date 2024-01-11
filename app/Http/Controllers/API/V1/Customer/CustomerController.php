@@ -196,6 +196,22 @@ class CustomerController extends Controller
         return response()->json($response, 201);
     }
 
+    public function deleteaddress(Request $request)
+    {
+        $user=auth()->user();
+        $address = CustomerAddress::find($request->id);
+        $address->delete();
+
+        CustomerAddress::where('gmpid', $user->gmpid)->latest()->update(['status'=>'1']);
+
+        $response=[
+            "message" => "Address saved Successfully",
+            'customer' => $address,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
+    }
+
     public function listaddress(Request $request)
     {
         $customer=auth()->user();

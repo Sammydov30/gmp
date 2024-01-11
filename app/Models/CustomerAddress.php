@@ -13,6 +13,7 @@ class CustomerAddress extends Model
         'gmpid',
         'address',
         'location',
-        'city'
+        'city',
+        'status'
     ];
 }
