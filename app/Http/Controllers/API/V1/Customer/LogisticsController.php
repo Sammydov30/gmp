@@ -180,7 +180,7 @@ class LogisticsController extends Controller
             if ($res['status']=="error") {
                 return response()->json(["message" => $res['message'], "status" => "error"], 400);
             }else{
-                return response()->json($res, 201);
+                return response()->json($res, 200);
             }
         }
     }
