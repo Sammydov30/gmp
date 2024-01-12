@@ -77,6 +77,7 @@ Route::prefix('v1')->group(function () {
         //Logistics
         Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
         Route::get('/customer/logistics/fetch', [LogisticsController::class, 'getshipment']);
+        Route::get('/customer/logistics/track', [LogisticsController::class, 'track']);
         Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
         Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
         Route::post('/customer/logistics/verifypayment', [LogisticsController::class, 'verifypayment']);

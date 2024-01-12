@@ -185,6 +185,27 @@ class LogisticsController extends Controller
         }
     }
 
+    public function track(Request $request)
+    {
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/track', [
+            "trackingno"=>$request->trackingno,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                return response()->json($res, 200);
+            }
+        }
+    }
+
     public function store(CreateInterStateShipmentRequest $request)
     {
         for ($i=0; $i < count($request->itemtype); $i++) {
