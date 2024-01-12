@@ -164,7 +164,7 @@ class LogisticsController extends Controller
         }
     }
 
-    public function getShipment(Request $request)
+    public function getshipment(Request $request)
     {
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
