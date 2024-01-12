@@ -202,7 +202,9 @@ class CustomerController extends Controller
         $address = CustomerAddress::find($request->id);
         $address->delete();
 
-        CustomerAddress::where('gmpid', $user->gmpid)->latest()->update(['status'=>'1']);
+        $laddr=CustomerAddress::where('gmpid', $user->gmpid)->latest()->first();
+
+        CustomerAddress::where('id', $laddr->id)->update(['status'=>'1']);
 
         $response=[
             "message" => "Address Deleted Successfully",

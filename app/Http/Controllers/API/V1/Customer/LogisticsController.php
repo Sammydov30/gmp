@@ -18,10 +18,150 @@ class LogisticsController extends Controller
 {
     use GMPCustomerBalanceTrait;
 
-    public function index()
+    public function index(Request $request)
     {
-        // $accounts=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        // return response()->json($accounts, 200);
+        $user=auth()->user();
+        $pageno=(isset($request->page)) ? $request->page : 1;
+        $perpage=(isset($request->per_page)) ? $request->per_page : 20; $perpage=intval($perpage);
+        $gmpid=$user->gmpid;
+        $parcelid=(!empty($request->parcelid)) ? $request->parcelid : '';
+        $trackingid=(!empty($request->trackingid)) ? $request->trackingid : '';
+        $status=(!empty($request->status)) ? $request->status : '';
+        $cphone=(!empty($request->cphone)) ? $request->cphone : '';
+        $rphone=(!empty($request->rphone)) ? $request->rphone : '';
+        $startdate=(!empty($request->startdate)) ? $request->startdate : '';
+        $enddate=(!empty($request->enddate)) ? $request->enddate: '';
+
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/lists/shipmentlist', [
+            "parcelid"=>$parcelid,
+            "trackingid"=>$trackingid,
+            "gmpid"=>$gmpid,
+            "status"=>$status,
+            "cphone"=>$cphone,
+            "rphone"=>$rphone,
+            "startdate"=>$startdate,
+            "enddate"=>$enddate,
+            "per_page"=>$perpage,
+            "page"=>$pageno,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+
+                $url=env('APP_URL').'/api/v1/shipments?trackingid='.$trackingid.'&parcelid='.$parcelid.'&status='.$status.'&cphone='.$cphone.'&rphone='.$rphone.'&startdate='.$startdate.'&enddate='.$enddate.'&per_page='.$perpage;
+                $total_rows=$res['total'];
+                $total_pages=$res['total_pages'];
+                $res_arr=$res['data'];
+                $from=($perpage*$pageno)-($perpage-1);
+                $to=(($perpage*$pageno)>$total_rows) ? $total_rows : ($perpage*$pageno);
+                $prevpage=$pageno-1;
+                $nextpage=$pageno+1;
+                if ($total_pages>0) {
+                  $output['data']=$res_arr;
+                  $output['total']=$total_rows;
+                  $output['current_page']=$output['page']=$pageno;
+                  $output['per_page']=$perpage;
+                  $output['from']=$from;
+                  $output['to']=$to;
+                  $output['last_page']=$total_pages;
+                  $output['first_page_url']=$url.'&page=1';
+                  $output['last_page_url']=$url.'&page='.$total_pages;
+                  $output['prev_page_url']=($prevpage>=1) ? $url.'&page='.$prevpage : null;
+                  $output['next_page_url']=($nextpage<$total_pages) ? $url.'&page='.$nextpage : null;
+                  $output['path']=$url;
+
+                  //Form Links
+                  /////////////////////
+                  ///////////////
+
+                  $total_links = $total_pages;
+                  $page=$pageno;
+                  //echo $total_links;
+                  if($total_links > 4){
+                    if($page < 5){
+                      for($count = 1; $count <= 5; $count++)
+                      {
+                        $page_array[] = $count;
+                      }
+                      $page_array[] = '...';
+                      $page_array[] = $total_links;
+                    }else{
+                      $end_limit = $total_links - 5;
+                      if($page > $end_limit){
+                        $page_array[] = 1;
+                        $page_array[] = '...';
+                        for($count = $end_limit; $count <= $total_links; $count++){
+                          $page_array[] = $count;
+                        }
+                      }else{
+                        $page_array[] = 1;
+                        $page_array[] = '...';
+                        for($count = $page - 1; $count <= $page + 1; $count++){
+                          $page_array[] = $count;
+                        }
+                        $page_array[] = '...';
+                        $page_array[] = $total_links;
+                      }
+                    }
+                  }else{
+                    for($count = 1; $count <= $total_links; $count++){
+                      $page_array[] = $count;
+                    }
+                  }
+
+                  $links=[];
+                  for($count = 0; $count < count($page_array); $count++){
+                    $pgcount=($page_array[$count] == '...') ? '...' : $page_array[$count];
+                    if($page == $page_array[$count]){
+                      $linkdetails = array(
+                        "url" => $url.'&page='.$pgcount,
+                        "label" => $pgcount,
+                        "active" => true,
+                      );
+                    }else{
+
+                      if($page_array[$count] == '...'){
+                        $linkdetails = array(
+                          "url" => $pgcount,
+                          "label" => $pgcount,
+                          "active" => false,
+                        );
+                      }else{
+                        $linkdetails = array(
+                          "url" => $url.'&page='.$pgcount,
+                          "label" => $pgcount,
+                          "active" => true,
+                        );
+                      }
+
+                    }
+
+                    array_push($links, $linkdetails);
+                  }
+                  $output['links']=$links;
+                }else{
+                  //Empty Table
+                  /////////////////
+                  //////////
+                  $output['data']=[];
+                  $output['total']=0;
+                  $output['per_page']=$perpage;
+                  $output['current_page']=$output['from']=$output['to']=$output['last_page']=$output['first_page_url']=$output['last_page_url']=$output['prev_page_url']=$output['next_page_url']=null;
+                  $output['path']=$url;
+                }
+                $output['message']="Fetched Successfully";
+
+                return response()->json($output, 201);
+            }
+        }
     }
 
     public function store(CreateInterStateShipmentRequest $request)
