@@ -56,9 +56,9 @@ class LogisticsController extends Controller
                 return response()->json(["message" => $res['message'], "status" => "error"], 400);
             }else{
 
-                $url=env('APP_URL').'/api/v1/shipments?trackingid='.$trackingid.'&parcelid='.$parcelid.'&status='.$status.'&cphone='.$cphone.'&rphone='.$rphone.'&startdate='.$startdate.'&enddate='.$enddate.'&per_page='.$perpage;
+                $url=env('APP_URL').'/api/v1/customer/logistics/fetchall?trackingid='.$trackingid.'&parcelid='.$parcelid.'&status='.$status.'&cphone='.$cphone.'&rphone='.$rphone.'&startdate='.$startdate.'&enddate='.$enddate.'&per_page='.$perpage;
                 $total_rows=$res['total'];
-                $total_pages=$res['total_pages'];
+                $total_pages=$res['last_page'];
                 $res_arr=$res['data'];
                 $from=($perpage*$pageno)-($perpage-1);
                 $to=(($perpage*$pageno)>$total_rows) ? $total_rows : ($perpage*$pageno);
@@ -160,6 +160,27 @@ class LogisticsController extends Controller
                 $output['message']="Fetched Successfully";
 
                 return response()->json($output, 201);
+            }
+        }
+    }
+
+    public function getShipment(Request $request)
+    {
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getshipmentdetails', [
+            "id"=>$request->shipmentid,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                return response()->json($res, 201);
             }
         }
     }
