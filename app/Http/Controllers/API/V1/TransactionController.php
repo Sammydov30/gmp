@@ -18,6 +18,23 @@ class TransactionController extends Controller
     {
         $result = FundingHistory::with('customer');
 
+
+        if (request()->input("enddate") != null) {
+            if (request()->input("startdate") == null) {
+                return response()->json(["message" => "start-date required if end-date given.", "status" => "error"], 400);
+            }
+            $startdate= date('Y-m-d',strtotime(request()->input("startdate")));
+            $enddate=date('Y-m-d',strtotime(request()->input("enddate")));
+            $result->where(function($query) use($startdate, $enddate){
+                $query->whereBetween('created_at', array($startdate,$enddate));
+            });
+        }elseif(request()->input("startdate") != null){
+            $startdate= date('Y-m-d',strtotime(request()->input("startdate")));
+            $enddate=date("Y-m-d");
+            $result->where(function($query) use($startdate, $enddate){
+                $query->whereBetween('created_at', array($startdate,$enddate));
+            });
+        }
         if (request()->input("gmpid") != null) {
             $search=request()->input("gmpid");
             $result->where('gmpid', $search);
