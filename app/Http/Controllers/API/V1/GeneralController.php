@@ -50,8 +50,8 @@ class GeneralController extends Controller
     public function fetchvehicles()
     {
         $result = DB::table('pickupvehicle')->select('type', 'name', 'description');
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
-            $sortBy=request()->input("sortBy");
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
+            $sortBy=request()->input("sortby");
         }else{
             $sortBy='id';
         }

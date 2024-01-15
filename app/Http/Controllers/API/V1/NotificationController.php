@@ -35,8 +35,8 @@ class NotificationController extends Controller
         if (empty($request->which)) {
             $result->where('which', $request->which);
         }
-        if (!empty($request->sortBy) && in_array($request->sortBy, ['id', 'created_at'])) {
-            $sortBy=$request->sortBy;
+        if (!empty($request->sortby) && in_array($request->sortby, ['id', 'created_at'])) {
+            $sortBy=$request->sortby;
         }else{
             $sortBy='id';
         }

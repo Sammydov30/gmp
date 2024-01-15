@@ -35,8 +35,8 @@ class AdminController extends Controller
             $search=$request->status;
             $result->where('status', $search);
         }
-        if (!empty($request->sortBy) && in_array($request->sortBy, ['id', 'created_at'])) {
-            $sortBy=$request->sortBy;
+        if (!empty($request->sortby) && in_array($request->sortby, ['id', 'created_at'])) {
+            $sortBy=$request->sortby;
         }else{
             $sortBy='id';
         }

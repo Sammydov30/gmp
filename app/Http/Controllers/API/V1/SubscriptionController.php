@@ -27,8 +27,8 @@ class SubscriptionController extends Controller
         if (request()->input("used")!=null) {
             $result->where('used', request()->input("used"));
         }
-        if (!empty($request->sortBy) && in_array($request->sortBy, ['id', 'created_at'])) {
-            $sortBy=$request->sortBy;
+        if (!empty($request->sortby) && in_array($request->sortby, ['id', 'created_at'])) {
+            $sortBy=$request->sortby;
         }else{
             $sortBy='id';
         }

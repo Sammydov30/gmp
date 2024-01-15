@@ -26,8 +26,8 @@ class OrderController extends Controller
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
         }
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
-            $sortBy=request()->input("sortBy");
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
+            $sortBy=request()->input("sortby");
         }else{
             $sortBy='id';
         }
@@ -118,8 +118,8 @@ class OrderController extends Controller
             $status= request()->input("status");
             $result->where('status', $status);
         }
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
-            $sortBy=request()->input("sortBy");
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
+            $sortBy=request()->input("sortby");
         }else{
             $sortBy='id';
         }

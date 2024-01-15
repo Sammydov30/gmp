@@ -24,8 +24,8 @@ class StoreController extends Controller
             $search=request()->input("marketid");
             $result->where('marketid', $search);
         }
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'name', 'created_at'])) {
-            $sortBy=request()->input("sortBy");
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
+            $sortBy=request()->input("sortby");
         }else{
             $sortBy='id';
         }
