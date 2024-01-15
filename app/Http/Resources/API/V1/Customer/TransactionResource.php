@@ -45,7 +45,9 @@ class TransactionResource extends JsonResource
             'details' => $which,
             'currency' => $this->currency,
             'status'   => $this->status,
-            'date'   => $this->created_at,
+            'date'   => $this->created_at->toDateString(),
+            'time'   => $this->created_at->toTimeString(),
+            'datetime'   => $this->created_at,
         ];
     }
 }
