@@ -22,4 +22,20 @@ class FundingHistory extends Model
     {
         return $this->hasOne(Customer::class, 'gmpid', 'gmpid');
     }
+    public function withdrawal()
+    {
+        return $this->hasOne(WithdrawalHistory::class, 'id', 'fundingid');
+    }
+    public function deposit()
+    {
+        return $this->hasOne(DepositHistory::class, 'id', 'fundingid');
+    }
+    public function logistic()
+    {
+        return $this->hasOne(Logistic::class, 'id', 'fundingid');
+    }
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'id', 'fundingid');
+    }
 }
