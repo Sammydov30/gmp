@@ -47,7 +47,6 @@ class TransactionResource extends JsonResource
             'status'   => $this->status,
             'date'   => $this->created_at->toDateString(),
             'time'   => $this->created_at->toTimeString(),
-            'datetime'   => $this->created_at,
         ];
     }
 }
