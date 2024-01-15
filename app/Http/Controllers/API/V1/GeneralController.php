@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GetQuoteRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class GeneralController extends Controller
@@ -45,5 +46,27 @@ class GeneralController extends Controller
                 return response()->json($res, 201);
             }
         }
+    }
+    public function fetchvehicles()
+    {
+        $result = DB::table('pickupvehicle')->select('id', 'name');
+        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
+            $sortBy=request()->input("sortBy");
+        }else{
+            $sortBy='id';
+        }
+        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
+            $sortOrder=request()->input("sortorder");
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty(request()->input("perpage"))) {
+            $perPage=request()->input("perpage");
+        } else {
+            $perPage=10;
+        }
+
+        $data=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return response()->json($data, 200);
     }
 }
