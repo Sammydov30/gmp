@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Customer;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateInterStateShipmentRequest;
 use App\Http\Requests\Customer\GetInterStateQuoteRequest;
+use App\Jobs\Customer\SendTrackingNoJob;
 use App\Models\Customer;
 use App\Models\FundingHistory;
 use App\Models\Logistic;
@@ -13,6 +14,7 @@ use App\Traits\GMPCustomerBalanceTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class LogisticsController extends Controller
 {
@@ -320,6 +322,18 @@ class LogisticsController extends Controller
                         "trackingid"=>$res['data']['trackingid'],
                         "orderid"=>$res['data']['orderid'],
                     ]);
+                    $details = [
+                        'trackingid'=>$res['data']['trackingid'],
+                        'orderid'=>$res['data']['orderid'],
+                        'rphone'=>'234'.substr($logistics->rphone, 0),
+                        'cphone'=>'234'.substr($logistics->cphone, 0),
+                    ];
+                    try {
+                        dispatch(new SendTrackingNoJob($details))->delay(now()->addSeconds(1));
+                    } catch (\Throwable $e) {
+                        report($e);
+                        Log::error('Error in sending sms: '.$e->getMessage());
+                    }
                     return response()->json($res, 201);
                 }
             }
