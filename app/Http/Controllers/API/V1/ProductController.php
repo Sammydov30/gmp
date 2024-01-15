@@ -32,7 +32,7 @@ class ProductController extends Controller
             $search=request()->input("storeid");
             $result->where('storeid', $search);
         }
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
+        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortBy");
         }else{
             $sortBy='id';

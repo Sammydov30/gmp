@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\API\V1\Customer\TransactionResource;
 use App\Models\Account;
 use App\Models\CustomerTransaction;
 use App\Models\FundingHistory;
@@ -38,7 +39,8 @@ class TransactionController extends Controller
         }
 
         $transactions=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        return response()->json($transactions, 200);
+        //return response()->json($transactions, 200);
+        return TransactionResource::collection($transactions);
     }
 
     public function show($id)

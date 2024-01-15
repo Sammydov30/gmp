@@ -26,7 +26,7 @@ class MarketPlaceController extends Controller
             $location=request()->input("location");
             $result->where('location', $location);
         }
-        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'created_at'])) {
+        if ((request()->input("sortBy")!=null) && in_array(request()->input("sortBy"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortBy");
         }else{
             $sortBy='id';
