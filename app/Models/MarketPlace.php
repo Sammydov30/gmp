@@ -22,5 +22,9 @@ class MarketPlace extends Model
     {
         return $this->belongsTo(Region::class, 'region');
     }
+    public function stores()
+    {
+        return $this->hasMany(Store::class, 'marketid', 'id');
+    }
 
 }

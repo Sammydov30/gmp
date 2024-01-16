@@ -13,7 +13,7 @@ class MarketPlaceController extends Controller
 
     public function index()
     {
-        $result = MarketPlace::with('region');
+        $result = MarketPlace::with('region')->withCount('stores');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -42,7 +42,8 @@ class MarketPlaceController extends Controller
             $perPage=10;
         }
 
-        $park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        //$park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        $park=$result->orderBY($sortBy, $sortOrder)->get();
         return response()->json($park, 200);
     }
 
