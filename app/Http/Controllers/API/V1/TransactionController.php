@@ -56,6 +56,11 @@ class TransactionController extends Controller
         }
 
         $transactions=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+
+//         $model->select(DB::raw('count(id) as `data`'), DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date"),  DB::raw('YEAR(created_at) year, MONTH(created_at) month'))
+// ->groupby('year','month')
+// ->get();
+
         //return response()->json($transactions, 200);
         return TransactionResource::collection($transactions);
     }
