@@ -42,8 +42,8 @@ class MarketPlaceController extends Controller
             $perPage=10;
         }
 
-        //$park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        $park=$result->orderBY($sortBy, $sortOrder)->get();
+        $park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        //$park=$result->orderBY($sortBy, $sortOrder)->get();
         return response()->json($park, 200);
     }
 
