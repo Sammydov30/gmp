@@ -11,7 +11,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        $result = Store::with('market');
+        $result = Store::with('market')->withCount('products');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");

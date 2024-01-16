@@ -24,5 +24,9 @@ class Store extends Model
     {
         return $this->belongsTo(MarketPlace::class, 'marketid');
     }
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'storeid', 'id');
+    }
 
 }
