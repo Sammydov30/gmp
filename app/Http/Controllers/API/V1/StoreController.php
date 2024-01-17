@@ -72,7 +72,7 @@ class StoreController extends Controller
 
     public function show($id)
     {
-        $store=Store::find($id);
+        $store=Store::with('market')->withCount('products')->find($id);
         if (!$store) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }

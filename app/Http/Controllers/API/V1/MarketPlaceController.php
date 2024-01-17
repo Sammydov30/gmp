@@ -93,7 +93,7 @@ class MarketPlaceController extends Controller
      */
     public function show($id)
     {
-        $marketplace=MarketPlace::find($id);
+        $marketplace=MarketPlace::with('region')->withCount('stores')->find($id);
         if (!$marketplace) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }
