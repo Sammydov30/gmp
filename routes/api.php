@@ -100,6 +100,7 @@ Route::prefix('v1')->group(function () {
 
         //FundingHistory
         Route::get('/customer/funding/fetchall', [TransactionController::class, 'index']);
+        Route::get('/customer/funding/fetchrecent', [TransactionController::class, 'fetchrecenttransactions']);
         Route::get('/customer/funding/getfunding/{id}', [TransactionController::class, 'show']);
 
         //subscriptions

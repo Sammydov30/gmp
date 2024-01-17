@@ -7,12 +7,29 @@ use App\Http\Resources\API\V1\Customer\TransactionResource;
 use App\Models\Account;
 use App\Models\CustomerTransaction;
 use App\Models\FundingHistory;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class TransactionController extends Controller
 {
+
+    public function fetchrecenttransactions()
+    {
+        $result = FundingHistory::with('customer');
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
+        }
+        $transactions=$result->orderBy('created_at', 'desc')
+        ->get()
+        ->groupBy(function ($val) {
+            return Carbon::parse($val->created_at)->format('F Y');
+        });
+
+        return response()->json($transactions, 200);
+    }
 
     public function index()
     {
