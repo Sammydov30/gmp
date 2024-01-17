@@ -23,6 +23,7 @@ class TransactionController extends Controller
             $result->where('gmpid', $search);
         }
         $transactions=$result->orderBy('created_at', 'desc')
+        ->limit(25)
         ->get()
         ->groupBy(function ($val) {
             return Carbon::parse($val->created_at)->format('F Y');
