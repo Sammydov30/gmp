@@ -38,4 +38,35 @@ class FundingHistory extends Model
     {
         return $this->hasOne(Order::class, 'id', 'fundingid');
     }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        //$array['activename'] = ($this->active=='1')? "Online" : 'Offline';
+        $which=[];
+        $whichname="";
+        switch ($this->which) {
+            case '1':
+                $which=($this->type=='1') ? $this->deposit : $this->withdrawal;
+                $whichname = "Deposit/Withdrawal";
+                break;
+            case '2':
+                $which=$this->logistic;
+                $whichname = "Logistics";
+                break;
+            case '3':
+                $which=$this->order;
+                $whichname = "Orders";
+                break;
+            default:
+                $which=$which;
+                $whichname = "Unknown";
+                break;
+        }
+        $array['typenamee'] = ($this->type=='1') ? 'Credit' : 'Debit';
+        $array['details'] = $which;
+        $array['date']   = $this->created_at->toDateString();
+        $array['time']   = $this->created_at->toTimeString();
+        return $array;
+    }
 }
