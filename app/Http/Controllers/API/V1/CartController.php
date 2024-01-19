@@ -383,7 +383,8 @@ class CartController extends Controller
             $this->clearCart($user->id);
 
             if ($request->paymentmethod=='1') {
-                $this->chargeWallet($request->totalamount);
+                $this->chargeWallet($totalamount);
+                Order::where('id', $order->id)->update(['p_status' => '1']);
                 FundingHistory::create([
                     'fundingid' => $order->id,
                     'gmpid' => $order->gmpid,
@@ -444,8 +445,6 @@ class CartController extends Controller
         }
     }
 
-
-
     public function verifypayment(Request $request)
     {
         $tranx=$request->tx_ref;
@@ -501,7 +500,7 @@ class CartController extends Controller
                 $sup=Order::where('id', $purchaseid)->first();
                 $customer=Customer::where('gmpid', $sup->customer)->first();
                 $personnelphones=[];
-                $items=explode(",", $sup->items); $item = explode("|", $items[0]);
+                $items=explode(",", $sup->products); $item = explode("|", $items[0]);
                 $itemowner=$this->GetItemOwner($item[0]);
                 $ownerphone=Customer::where('gmpid', $itemowner)->first()->phone;
                 array_push($personnelphones, $ownerphone);

@@ -14,7 +14,8 @@ class Cart extends Model
         'quantity',
         'customer',
         'description',
-        'availability'
+        'availability',
+        'confirmed',
     ];
 
     public function item()
