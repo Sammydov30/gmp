@@ -334,7 +334,7 @@ class CartController extends Controller
         if(!$this->checkcartItemsA($user->id)){
             return response()->json(["message" => "Some Items may not be Available.", "status" => "error"], 400);
         }
-        if ($request->gmppayment=='1') {
+        if ($request->paymentmethod=='1') {
             if(!$this->checkWallet($request->totalamount)){
                 return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
             }
@@ -387,7 +387,7 @@ class CartController extends Controller
                 FundingHistory::create([
                     'fundingid' => $order->id,
                     'gmpid' => $order->gmpid,
-                    'amount'=>$request->totalamount,
+                    'amount'=>$totalamount,
                     'ftime'=>time(),
                     'currency'=>'NGN',
                     'status'=>'1',
@@ -404,7 +404,7 @@ class CartController extends Controller
                 ///Pay with payment gateway
                 $useragent=$_SERVER['HTTP_USER_AGENT'];
                 // $pamount=(int)$amount*100;
-                $pamount=(int)$request->totalamount;
+                $pamount=(int)$totalamount;
                 $paymentrequest = Http::withHeaders([
                     "Authorization" => "Bearer ".env('FW_KEY'),
                     "content-type" => "application/json",

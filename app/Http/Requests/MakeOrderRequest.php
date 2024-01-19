@@ -28,14 +28,14 @@ class MakeOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstname' => ['required', 'string', 'max:300'],
-            'lastname' => ['required', 'string', 'max:300'],
+            'address' => ['required', 'string',],
+            'region' => ['required', 'string'],
             'phone' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/',
-            'email' => 'required|email|max:255',
-            //'country' => ['required'],
-            // 'employmentstatus' => ['required'],
-            // 'weight' => ['required'],
-            // 'height' => ['required'],
+            'orderamount' => 'required',
+            'servicefee' => ['required'],
+            'totalamount' => ['required'],
+            'paymentmethod' => ['required'],
+            'deliverymode' => ['required'],
         ];
     }
 
