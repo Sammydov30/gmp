@@ -357,6 +357,7 @@ class CartController extends Controller
         $error = array();
         if(empty($items)){
           unset($request->totalamount);
+          unset($request->orderamount);
           array_push($error, 'Cart is Empty');
         }
         if(empty($phone) || empty($address) || empty($region)){
