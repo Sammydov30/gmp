@@ -166,6 +166,33 @@ class LogisticsController extends Controller
         }
     }
 
+    public function fetchrecent(Request $request)
+    {
+        $user=auth()->user();
+        $gmpid=$user->gmpid;
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/lists/recentshipmentlist', [
+            "gmpid"=>$gmpid,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                $res_arr=$res['data'];
+                $output['data']=$res_arr;
+                $output['message']="Fetched Successfully";
+
+                return response()->json($output, 201);
+            }
+        }
+    }
+
     public function getshipment(Request $request)
     {
         $getrequest = Http::withHeaders([
