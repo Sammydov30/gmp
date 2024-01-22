@@ -403,7 +403,7 @@ class LogisticsController extends Controller
 
     public function getquote(GetInterStateQuoteRequest $request)
     {
-        for ($i=0; $i < count($request->itemtype); $i++) {
+        for ($i=0; $i < count($request->json('itemtype')); $i++) {
             if ($request->itemtype[$i]=='2') {
                 if (empty($request->item[$i])) {
                     return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
