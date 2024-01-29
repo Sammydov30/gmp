@@ -53,6 +53,14 @@ class ProductController extends Controller
         //return response()->json($products, 200);
     }
 
+    public function getproductgroup(Request $request)
+    {
+        $result = Product::with('productimages', 'market', 'store');
+        $products=$result->whereIn('id', $request->productlist)->get();
+        return ProductResource::collection($products);
+        //return response()->json($products, 200);
+    }
+
     public function store(CreateRequest $request)
     {
         $user=auth()->user();

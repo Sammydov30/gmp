@@ -204,6 +204,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/categories', CategoryController::class);
     //Products
     Route::get('/general/products', [ProductController::class, 'index']);
+    Route::post('/general/productarray', [ProductController::class, 'getproductgroup']);
     //Stores
     Route::get('/general/stores', [StoreController::class, 'index']);
     //specialitems
