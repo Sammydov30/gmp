@@ -95,7 +95,7 @@ class DepositHistoryController extends Controller
                 ],
                 "customizations" => [
                     "title" => "Gavice Market Place",
-                    "logo" => "https://gavice.ng/img/logo/logo.png"
+                    "logo" => "https://gavice.ng/img/logo/small-logo.jpg"
                 ]
             ]);
             $payy=$paymentrequest->json();
