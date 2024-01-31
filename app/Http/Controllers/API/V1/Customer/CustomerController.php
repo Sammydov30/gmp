@@ -32,6 +32,16 @@ class CustomerController extends Controller
             "status" => "success"
         ], 200);
     }
+    public function getbalance(Request $request)
+    {
+        $customer=auth()->user();
+        $customer=Customer::where('id', $customer->id)->first();
+        $balance=$customer->ngnbalance;
+        return response()->json([
+            'ngnbalance' => $balance,
+            "status" => "success"
+        ], 200);
+    }
 
     public function checkpin(Request $request)
     {
