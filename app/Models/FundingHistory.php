@@ -65,6 +65,7 @@ class FundingHistory extends Model
         }
         $array['typenamee'] = ($this->type=='1') ? 'Credit' : 'Debit';
         $array['details'] = $which;
+        $array['whichname'] = $whichname;
         $array['date']   = $this->created_at->toDateString();
         $array['time']   = $this->created_at->toTimeString();
         return $array;
