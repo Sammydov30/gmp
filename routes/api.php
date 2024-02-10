@@ -22,6 +22,7 @@ use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\API\V1\RegionController;
+use App\Http\Controllers\API\V1\RegionsController;
 use App\Http\Controllers\API\V1\SpecialItemController;
 use App\Http\Controllers\API\V1\StoreController;
 use App\Http\Controllers\API\V1\SubscriptionController;
@@ -190,7 +191,7 @@ Route::prefix('v1')->group(function () {
     //states
     Route::apiResource('/states', StateController::class);
     //regions
-    Route::get('/regions', [RegionController::class, 'index']);
+    Route::get('/regions', [RegionsController::class, 'index']);
     Route::get('/region', [RegionController::class, 'getRegionName']);
     //pickupcenters
     Route::get('/pickupcenters', [PickupCenterController::class, 'index']);
