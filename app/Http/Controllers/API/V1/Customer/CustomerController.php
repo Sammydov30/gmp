@@ -11,6 +11,7 @@ use App\Http\Requests\CustomerProfileRequest;
 use App\Http\Requests\SetPinRequest;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +28,15 @@ class CustomerController extends Controller
             Customer::where('id', $customer->id)->update(['refcode'=> $refcode]);
         }
         $customer=Customer::where('id', $customer->id)->first();
+        $checkcustomeraddress=CustomerAddress::where('gmpid', $customer->gmpid)->where('status', '1')->first();
+
+        if ($checkcustomeraddress) {
+            $customer->location=$checkcustomeraddress->location;
+            $customer->locationname=@$this->getRegioname($customer->location);
+        }else{
+            $customer->location=$customer->state;
+            $customer->locationname=@$this->getRegioname($customer->location);
+        }
         return response()->json([
             'customer' => $customer,
             "status" => "success"
@@ -41,6 +51,12 @@ class CustomerController extends Controller
             'ngnbalance' => $balance,
             "status" => "success"
         ], 200);
+    }
+
+    public function getRegioname($region)
+    {
+        $regionname=Region::where('id', $region)->first()->name;
+        return $regionname;
     }
 
     public function checkpin(Request $request)

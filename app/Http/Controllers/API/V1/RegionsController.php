@@ -13,7 +13,7 @@ class RegionsController extends Controller
 
     public function index()
     {
-        $result = Region::with('country');
+        $result = Region::with('country')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");

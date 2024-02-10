@@ -30,7 +30,7 @@ class AddAddressRequest extends FormRequest
         return [
             'address' => ['required', 'string',],
             'location' => ['required', 'string',],
-            'city' => 'required',
+            //'city' => 'required',
             'setdefaultaddress'=>'required',
         ];
     }
