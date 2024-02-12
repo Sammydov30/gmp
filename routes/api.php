@@ -216,5 +216,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/getestimate', [GeneralController::class, 'getquote']);
     Route::get('/getpickupvehicle', [GeneralController::class, 'fetchvehicles']);
 
+    Route::get('/track', [LogisticsController::class, 'track']);
+
 });
 
