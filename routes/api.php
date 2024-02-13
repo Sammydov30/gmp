@@ -116,6 +116,8 @@ Route::prefix('v1')->group(function () {
 
         //product
         Route::apiResource('/customer/products', ProductController::class);
+        Route::post('/customer/product/makeavailable', [ProductController::class, 'available']);
+        Route::post('/customer/product/makeunavailable', [ProductController::class, 'unavailable']);
 
         //Cart
         Route::get('/customer/cart/getcartitems', [CartController::class, 'index']);

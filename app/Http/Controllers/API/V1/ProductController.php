@@ -154,6 +154,31 @@ class ProductController extends Controller
         return response()->json($response, 200);
     }
 
+    public function available(Request $request)
+    {
+        $product=Product::where('id', $request->productid)->update([
+            'status' => '0',
+        ]);
+        $response=[
+            "message" => "Product is Available",
+            'product' => $product,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
+    }
+    public function unavailable(Request $request)
+    {
+        $product=Product::where('id', $request->productid)->update([
+            'status' => '1',
+        ]);
+        $response=[
+            "message" => "Product is Unavailable",
+            'product' => $product,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
+    }
+
     public function destroy($id)
     {
         // $productid=$product->productid;
