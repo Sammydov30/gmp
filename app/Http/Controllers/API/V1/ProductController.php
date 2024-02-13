@@ -156,6 +156,9 @@ class ProductController extends Controller
 
     public function available(Request $request)
     {
+        if(empty($request->productid)){
+            return response()->json(["message" => "Product ID is required", "status" => "error"], 400);
+        }
         $product=Product::where('id', $request->productid)->update([
             'status' => '0',
         ]);
@@ -168,6 +171,9 @@ class ProductController extends Controller
     }
     public function unavailable(Request $request)
     {
+        if(empty($request->productid)){
+            return response()->json(["message" => "Product ID is required", "status" => "error"], 400);
+        }
         $product=Product::where('id', $request->productid)->update([
             'status' => '1',
         ]);
