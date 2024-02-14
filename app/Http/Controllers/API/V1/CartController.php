@@ -151,6 +151,46 @@ class CartController extends Controller
 
         return response()->json($response, 201);
     }
+    public function addToCartGroup(Request $request)
+    {
+        $user=auth()->user();
+        $cartnum=Cart::where('customer', $user->id)->delete();
+        foreach ($request->itemlist as $item) {
+            $checkitem=Product::find($item);
+            if (!$checkitem) {
+                return response()->json(["message" => "An Item not available.", "status" => "error"], 400);
+            }
+            $query=Cart::where('product', $item)->where('customer', $user->id)->first();
+            if ($query) {
+                $cart = Cart::where('product', $item)->where('customer', $user->id)->update([
+                    'quantity' => $query->quantity+1,
+                ]);
+            }else{
+                Cart::create([
+                    'product' => $item,
+                    'customer' => $user->id,
+                    'quantity' => '1',
+                    'availability' => '1',
+                    'confirmed' => '1',
+                    // 'description'=> $request->description,
+                ]);
+            }
+        }
+
+        $cartnum=Cart::where('customer', $user->id)->get();
+        $tcartnum=0;
+        foreach ($cartnum as $c) {
+            $tcartnum=$tcartnum+$c['quantity'];
+        }
+        $response=[
+            "totalcartnum" => $tcartnum,
+            "message" => "Item Added to Cart",
+            'cart' => $cartnum,
+            "status" => "success"
+        ];
+
+        return response()->json($response, 201);
+    }
 
     public function removeFromCart(Request $request)
     {
