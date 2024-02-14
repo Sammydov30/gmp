@@ -122,10 +122,11 @@ Route::prefix('v1')->group(function () {
         //Cart
         Route::get('/customer/cart/getcartitems', [CartController::class, 'index']);
         Route::post('/customer/cart/addtocart', [CartController::class, 'addtocart']);
+        Route::post('/customer/cart/addtocartgroup', [CartController::class, 'addtocartgroup']);
         Route::post('/customer/cart/removefromcart', [CartController::class, 'removefromcart']);
         Route::post('/customer/cart/increase', [CartController::class, 'increaseQuantity']);
         Route::post('/customer/cart/decrease', [CartController::class, 'decreaseQuantity']);
-        Route::get('/customer/cart/confirmavailability', [CartController::class, 'confirmavailability']);
+        //Route::get('/customer/cart/confirmavailability', [CartController::class, 'confirmavailability']);
         Route::get('/customer/cart/checkout', [CartController::class, 'checkout']);
         Route::post('/customer/cart/getshippingrate', [CartController::class, 'getShippingRate']);
         Route::post('/customer/cart/addtoorder', [CartController::class, 'addToOrder']);

@@ -115,7 +115,7 @@ class CartController extends Controller
     {
         return Store::where('id', $store)->first()->name;
     }
-    public function addToCart(Request $request)
+    public function addtocart(Request $request)
     {
         $user=auth()->user();
         $checkitem=Product::find($request->item);
@@ -151,7 +151,7 @@ class CartController extends Controller
 
         return response()->json($response, 201);
     }
-    public function addToCartGroup(Request $request)
+    public function addtocartgroup(Request $request)
     {
         $user=auth()->user();
         $cartnum=Cart::where('customer', $user->id)->delete();
@@ -192,7 +192,7 @@ class CartController extends Controller
         return response()->json($response, 201);
     }
 
-    public function removeFromCart(Request $request)
+    public function removefromcart(Request $request)
     {
         $user=auth()->user();
         $cart=Cart::where('id', $request->id);
