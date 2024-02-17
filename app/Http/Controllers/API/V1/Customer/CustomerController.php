@@ -33,6 +33,7 @@ class CustomerController extends Controller
         if ($checkcustomeraddress) {
             $customer->location=$checkcustomeraddress->location;
             $customer->locationname=@$this->getRegioname($customer->location);
+            $customer->address=$checkcustomeraddress->address;
         }else{
             $customer->location=$customer->state;
             $customer->locationname=@$this->getRegioname($customer->location);
