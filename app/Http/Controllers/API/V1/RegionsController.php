@@ -107,14 +107,14 @@ class RegionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CreateRequest $request, Region $region)
+    public function update(CreateRequest $request, $id)
     {
-        $query=Region::where('name', "like", "%{$request->name}%")->where('country', $request->country)->
-        where('id', '!=', $region->id)->first();
-        if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
-        }
-        $region->update([
+        // $query=Region::where('name', "like", "%{$request->name}%")->where('country', $request->country)->
+        // where('id', '!=', $region->id)->first();
+        // if ($query) {
+        //     return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+        // }
+        $region=Region::find($id)->update([
             'name' => $request->name,
             'country' => $request->country,
         ]);
@@ -132,9 +132,9 @@ class RegionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Region $region)
+    public function destroy($id)
     {
-        $region->delete();
+        Region::find($id)->update(['deleted'=>'1']);
         $response=[
             "message" => "Region Deleted Successfully",
             "status" => "success"

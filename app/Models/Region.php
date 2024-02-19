@@ -13,7 +13,8 @@ class Region extends Model
         'entity_guid',
         'country',
         'name',
-        'status'
+        'status',
+        'deleted'
     ];
 
     public function country()

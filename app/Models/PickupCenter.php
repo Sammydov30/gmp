@@ -16,7 +16,8 @@ class PickupCenter extends Model
         'phone',
         'email',
         'address',
-        'status'
+        'status',
+        'deleted'
     ];
 
     public function region()

@@ -198,12 +198,14 @@ Route::prefix('v1')->group(function () {
     Route::get('/regions', [RegionsController::class, 'index']);
     Route::get('/region/{id}', [RegionsController::class, 'show']);
     Route::post('/region/add', [RegionsController::class, 'store']);
-    Route::post('/region/delete', [RegionsController::class, 'destroy']);
+    Route::post('/region/update/{id}', [RegionsController::class, 'update']);
+    Route::post('/region/delete/{id}', [RegionsController::class, 'destroy']);
     //pickupcenters
     Route::get('/pickupcenters', [PickupCentersController::class, 'index']);
     Route::get('/pickupcenter/{id}', [PickupCentersController::class, 'show']);
     Route::post('/pickupcenter/add', [PickupCentersController::class, 'store']);
-    Route::post('/pickupcenter/delete', [PickupCentersController::class, 'destroy']);
+    Route::post('/pickupcenter/update/{id}', [PickupCentersController::class, 'update']);
+    Route::post('/pickupcenter/delete/{id}', [PickupCentersController::class, 'destroy']);
     //country
     Route::apiResource('/admin/countries', CountryController::class);
     //marketplace

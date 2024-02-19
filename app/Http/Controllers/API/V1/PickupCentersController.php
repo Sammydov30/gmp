@@ -8,6 +8,7 @@ use App\Models\PickupCenter;
 use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PickupCentersController extends Controller
 {
@@ -60,6 +61,7 @@ class PickupCentersController extends Controller
         //     return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
         // }
         $pickupcenter = PickupCenter::create([
+            'entity_guid'=>Str::uuid(),
             'name' => $request->name,
             'state' => $request->region,
             'email' => $request->email,
@@ -109,14 +111,14 @@ class PickupCentersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(CreateRequest $request, PickupCenter $pickupcenter)
+    public function update(CreateRequest $request, $id)
     {
-        $query=PickupCenter::where('name', "like", "%{$request->name}%")->where('state', $request->region)->
-        where('id', '!=', $pickupcenter->id)->first();
-        if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
-        }
-        $pickupcenter->update([
+        // $query=PickupCenter::where('name', "like", "%{$request->name}%")->where('state', $request->region)->
+        // where('id', '!=', $pickupcenter->id)->first();
+        // if ($query) {
+        //     return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+        // }
+        $pickupcenter=PickupCenter::find($id)->update([
             'name' => $request->name,
             'state' => $request->region,
             'email' => $request->email,
@@ -137,9 +139,9 @@ class PickupCentersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PickupCenter $pickupcenter)
+    public function destroy($id)
     {
-        $pickupcenter->update(['deleted'=>'1']);
+        PickupCenter::find($id)->update(['deleted'=>'1']);
         $response=[
             "message" => "Pickup Center Deleted Successfully",
             "status" => "success"
