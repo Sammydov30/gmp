@@ -20,6 +20,7 @@ use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\PickupCenterController;
+use App\Http\Controllers\API\V1\PickupCentersController;
 use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\RegionsController;
@@ -195,10 +196,12 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/states', StateController::class);
     //regions
     Route::get('/regions', [RegionsController::class, 'index']);
-    Route::get('/region', [RegionController::class, 'getRegionName']);
+    Route::get('/region/{id}', [RegionsController::class, 'show']);
+    Route::post('/region/add', [RegionsController::class, 'store']);
     //pickupcenters
-    Route::get('/pickupcenters', [PickupCenterController::class, 'index']);
-    Route::get('/pickupcenter', [PickupCenterController::class, 'getCenter']);
+    Route::get('/pickupcenters', [PickupCentersController::class, 'index']);
+    Route::get('/pickupcenter/{id}', [PickupCentersController::class, 'show']);
+    Route::post('/pickupcenter/add', [PickupCentersController::class, 'store']);
     //country
     Route::apiResource('/admin/countries', CountryController::class);
     //marketplace
