@@ -10,6 +10,7 @@ class PickupCenter extends Model
     use HasFactory;
     protected $table="branches";
     protected $fillable = [
+        'entity_guid',
         'state',
         'name',
         'phone',

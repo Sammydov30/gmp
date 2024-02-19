@@ -55,10 +55,10 @@ class PickupCentersController extends Controller
 
     public function store(CreateRequest $request)
     {
-        $query=PickupCenter::where('name', "like", "%{$request->name}%")->where('state', $request->region)->first();
-        if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
-        }
+        // $query=PickupCenter::where('name', "like", "%{$request->name}%")->where('state', $request->region)->first();
+        // if ($query) {
+        //     return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+        // }
         $pickupcenter = PickupCenter::create([
             'name' => $request->name,
             'state' => $request->region,
@@ -139,7 +139,7 @@ class PickupCentersController extends Controller
      */
     public function destroy(PickupCenter $pickupcenter)
     {
-        $pickupcenter->delete();
+        $pickupcenter->update(['deleted'=>'1']);
         $response=[
             "message" => "Pickup Center Deleted Successfully",
             "status" => "success"

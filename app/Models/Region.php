@@ -10,6 +10,7 @@ class Region extends Model
     use HasFactory;
     protected $table="regions";
     protected $fillable = [
+        'entity_guid',
         'country',
         'name',
         'status'

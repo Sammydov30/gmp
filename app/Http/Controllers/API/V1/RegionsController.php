@@ -7,6 +7,7 @@ use App\Http\Requests\Region\CreateRequest;
 use App\Models\Region;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class RegionsController extends Controller
 {
@@ -54,11 +55,12 @@ class RegionsController extends Controller
 
     public function store(CreateRequest $request)
     {
-        $query=Region::where('name', "like", "%{$request->name}%")->where('country', $request->country)->first();
-        if ($query) {
-            return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
-        }
+        // $query=Region::where('name', "like", "%{$request->name}%")->where('country', $request->country)->first();
+        // if ($query) {
+        //     return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
+        // }
         $region = Region::create([
+            'entity_guid'=>Str::uuid(),
             'name' => $request->name,
             'country' => $request->country,
             'status' => '1'
