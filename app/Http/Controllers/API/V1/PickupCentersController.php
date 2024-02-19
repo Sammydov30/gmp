@@ -14,7 +14,7 @@ class PickupCentersController extends Controller
 
     public function index()
     {
-        $result =PickupCenter::with('region')->where('deleted', '0');
+        $result =PickupCenter::with('region')->where('deleted', '0')->where('status', '1');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -79,7 +79,7 @@ class PickupCentersController extends Controller
 
     public function show($id)
     {
-        $pickupcenter=PickupCenter::find($id);
+        $pickupcenter=PickupCenter::with('region')->find($id);
         if (!$pickupcenter) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }

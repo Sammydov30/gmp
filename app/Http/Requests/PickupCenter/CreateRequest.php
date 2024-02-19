@@ -29,7 +29,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'state' => ['required', 'max:300'],
+            'region' => ['required', 'max:300'],
         ];
     }
 

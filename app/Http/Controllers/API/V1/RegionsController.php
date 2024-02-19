@@ -13,7 +13,7 @@ class RegionsController extends Controller
 
     public function index()
     {
-        $result = Region::with('country')->where('deleted', '0');
+        $result = Region::with('country')->where('deleted', '0')->where('status', '1');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -60,7 +60,8 @@ class RegionsController extends Controller
         }
         $region = Region::create([
             'name' => $request->name,
-            'country'=> $request->country,
+            'country' => $request->country,
+            'status' => '1'
         ]);
 
         $response=[
@@ -74,7 +75,7 @@ class RegionsController extends Controller
 
     public function show($id)
     {
-        $region=Region::find($id);
+        $region=Region::with('country')->find($id);
         if (!$region) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }
@@ -113,7 +114,7 @@ class RegionsController extends Controller
         }
         $region->update([
             'name' => $request->name,
-            'country'=> $request->country,
+            'country' => $request->country,
         ]);
         $response=[
             "message" => "Region Updated Successfully",
