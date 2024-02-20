@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Order::where('customer', $user->id)->where('p_status', '1');
+        $result = Order::where('customer', $user->gmpid)->where('p_status', '1');
         if (request()->input("orderid") != null) {
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
