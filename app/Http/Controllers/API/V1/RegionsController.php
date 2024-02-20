@@ -36,7 +36,7 @@ class RegionsController extends Controller
         if (!empty(request()->input("perpage"))) {
             $perPage=request()->input("perpage");
         } else {
-            $perPage=10;
+            $perPage=100;
         }
 
         $data=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
