@@ -23,7 +23,7 @@ class RegionsController extends Controller
             $country=request()->input("country");
             $result->where('country', $country);
         }
-        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortby");
         }else{
             $sortBy='id';
