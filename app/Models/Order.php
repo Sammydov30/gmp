@@ -60,8 +60,8 @@ class Order extends Model
         $product=Product::with('market', 'store', 'productimages')->find($item);
         $product = new ProductResource($product);
         //Convert to json then to array (To get Pure array)
-        $item=json_decode(json_encode($product), true);
+        //$item=json_decode(json_encode($productt), true);
         //print_r($item); exit();
-        return $item;
+        return $product;
     }
 }
