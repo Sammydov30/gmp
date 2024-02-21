@@ -21,7 +21,7 @@ class OrderController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Order::where('customer', $user->gmpid)->where('p_status', '1');
+        $result = Order::with('customer')->where('customer', $user->gmpid)->where('p_status', '1');
         if (request()->input("orderid") != null) {
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
@@ -85,7 +85,7 @@ class OrderController extends Controller
         $order->customername=$this->GetCustomerName($order->customer);
         $order->regionname=$this->GetRegionName($order->region);
         $fooditems=array();
-        $items=explode(",", $order->items);
+        $items=explode(",", $order->products);
         foreach ($items as $item => $value) {
             $pp=explode("|", $value);
             $pt=[
