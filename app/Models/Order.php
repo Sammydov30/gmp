@@ -58,6 +58,9 @@ class Order extends Model
     }
     private function GetProductDetails($item){
         $product=Product::with('market', 'store', 'productimages')->find($item);
+        if (!$product) {
+            return null;
+        }
         $product = new ProductResource($product);
         //Convert to json then to array (To get Pure array)
         //$item=json_decode(json_encode($productt), true);
