@@ -74,8 +74,8 @@ class TransactionController extends Controller
 
         $transactions=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
 
-        //return response()->json($transactions, 200);
-        return TransactionResource::collection($transactions);
+        return response()->json($transactions, 200);
+        //return TransactionResource::collection($transactions);
     }
 
     public function show($id)
