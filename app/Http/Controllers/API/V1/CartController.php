@@ -427,7 +427,7 @@ class CartController extends Controller
                 Order::where('id', $order->id)->update(['p_status' => '1']);
                 FundingHistory::create([
                     'fundingid' => $order->id,
-                    'gmpid' => $order->gmpid,
+                    'gmpid' => $order->customer,
                     'amount'=>$totalamount,
                     'ftime'=>time(),
                     'currency'=>'NGN',
