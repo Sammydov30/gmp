@@ -2,7 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CustomerMiddleware;
+use App\Http\Middleware\CustomerSupport;
+use App\Http\Middleware\RestrictotherAdmins;
+use App\Http\Middleware\TechnicalSupport;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
