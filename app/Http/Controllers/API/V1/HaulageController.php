@@ -102,7 +102,7 @@ class HaulageController extends Controller
         ]);
         //$this->notifyrider('2348067108399');
         //$this->notifyWhatsapp('2348166273168');
-        $this->NotifyMe("Haulage Created Successfully", $haulage->orderid, "3", "2");
+        $this->NotifyMe("Haulage Created Successfully", "Your Order ID is $haulage->orderid", "3", "2");
         $response=[
             "message" => "Haulage Created Successfully",
             'haulage' => $haulage,
