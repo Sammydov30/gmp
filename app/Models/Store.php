@@ -37,8 +37,8 @@ class Store extends Model
     }
 
     private function GetCategoriesDetails($categories){
-        $cat=explode(',',$categories);
-        $category=Category::whereIn('id', [$cat]);
+        $cat=explode(',', $categories);
+        $category=Category::whereIn('id', $cat);
         if (!$category) {
             return null;
         }
