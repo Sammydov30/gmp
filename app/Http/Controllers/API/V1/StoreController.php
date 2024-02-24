@@ -84,9 +84,9 @@ class StoreController extends Controller
         return response()->json($response, 200);
     }
 
-    public function update(CreateRequest $request, Store $store)
+    public function update(CreateRequest $request, $id)
     {
-        //$store=Store::find($id);
+        $store=Store::find($id);
         $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->
         where('id', '!=', $store->id)->first();
         if ($query) {
@@ -108,8 +108,9 @@ class StoreController extends Controller
         return response()->json($response, 200);
     }
 
-    public function destroy(Store $store)
+    public function destroy($id)
     {
+        $store=Store::find($id);
         $store->delete();
         $response=[
             "message" => "Store Deleted Successfully",
