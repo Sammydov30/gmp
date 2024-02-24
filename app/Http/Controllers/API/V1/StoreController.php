@@ -77,16 +77,16 @@ class StoreController extends Controller
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }
         $response=[
-            "message" => " Store found",
+            "message" => "Store found",
             'store' => $store,
             "status" => "success"
         ];
         return response()->json($response, 200);
     }
 
-    public function update(CreateRequest $request, $id)
+    public function update(CreateRequest $request, Store $store)
     {
-        $store=Store::find($id);
+        //$store=Store::find($id);
         $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->
         where('id', '!=', $store->id)->first();
         if ($query) {
