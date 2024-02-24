@@ -29,4 +29,19 @@ class Store extends Model
         return $this->hasMany(Product::class, 'storeid', 'id');
     }
 
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['categories'] = $this->GetCategoriesDetails($this->category);
+        return $array;
+    }
+
+    private function GetCategoriesDetails($categories){
+        $category=Category::whereIn('id', [$categories]);
+        if (!$category) {
+            return null;
+        }
+        return $category;
+    }
+
 }
