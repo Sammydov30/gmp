@@ -7,12 +7,13 @@ use App\Http\Requests\DepositRequest;
 use App\Models\Customer;
 use App\Models\DepositHistory;
 use App\Models\FundingHistory;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class DepositHistoryController extends Controller
 {
-
+    use NotificationTrait;
     public function index()
     {
         $result = DepositHistory::with('customer');
@@ -99,7 +100,7 @@ class DepositHistoryController extends Controller
                 ]
             ]);
             $payy=$paymentrequest->json();
-
+            $this->NotifyMe("Deposit Initiated", $depositid, "3", "1");
             $response=[
                 "message" => "Deposit Initiated",
                 "deposit" => $deposit,
@@ -183,6 +184,7 @@ class DepositHistoryController extends Controller
                         'status' => '1'
                     ]);
                     $deposit=DepositHistory::where('depositid', $tx_ref)->first();
+                    $this->NotifyMe("Wallet Funded Successfully", $deposit->depositid, "1", "1");
                     return response()->json([
                         'message' => 'Wallet Funded Successfully',
                         'details' => $deposit,

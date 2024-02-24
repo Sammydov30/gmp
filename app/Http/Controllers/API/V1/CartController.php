@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Store;
 use App\Traits\GMPCustomerBalanceTrait;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
-    use GMPCustomerBalanceTrait;
+    use GMPCustomerBalanceTrait, NotificationTrait;
 
     public function index()
     {
@@ -435,6 +436,8 @@ class CartController extends Controller
                     'type'=>'2',
                     'which'=>'3'
                 ]);
+                $this->NotifyMe("Order Booked Successfully", $order->orderid, "2", "3");
+                $this->NotifyMe("Account Debited", "Your wallet is Charged for ".$order->orderid, "2", "1");
                 $response=[
                     "message" => "Order Booked Successfully",
                     'order' => $order,
@@ -557,6 +560,7 @@ class CartController extends Controller
                         return response()->json(["message" => "Operation Failed", "status" => "error"], 400);
                     }
                 }
+                $this->NotifyMe("Order Booked Successfully", $sup->orderid, "3", "3");
                 return response()->json([
                     'message' => 'Payment Successful',
                     'delivery_details' => $sup,

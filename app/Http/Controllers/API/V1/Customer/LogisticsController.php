@@ -11,6 +11,7 @@ use App\Models\FundingHistory;
 use App\Models\Logistic;
 use App\Models\LogisticInfo;
 use App\Traits\GMPCustomerBalanceTrait;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -18,7 +19,7 @@ use Illuminate\Support\Facades\Log;
 
 class LogisticsController extends Controller
 {
-    use GMPCustomerBalanceTrait;
+    use GMPCustomerBalanceTrait, NotificationTrait;
 
     public function index(Request $request)
     {
@@ -337,6 +338,7 @@ class LogisticsController extends Controller
                 'type'=>'2',
                 'which'=>'2'
             ]);
+            $this->NotifyMe("Wallet Charged for Logistics", "You have been charged ".$request->totalamount, "2", "2");
             $res=$createrequest->json();
             //print_r($res); exit();
             if (!$res['status']) {
@@ -349,6 +351,7 @@ class LogisticsController extends Controller
                         "trackingid"=>$res['data']['trackingid'],
                         "orderid"=>$res['data']['orderid'],
                     ]);
+                    $this->NotifyMe("Logistics Booked", $res['data']['trackingid'], "3", "2");
                     $details = [
                         'trackingid'=>$res['data']['trackingid'],
                         'orderid'=>$res['data']['orderid'],
@@ -547,6 +550,7 @@ class LogisticsController extends Controller
                         if ($res['status']=="error") {
                             return response()->json(["message" => $res['message'], "status" => "error"], 400);
                         }else{
+                            $this->NotifyMe("Logistics Booked", $res['data']['trackingid'], "3", "2");
                             Logistic::where("id", $logistics->id)->update([
                                 "trackingid"=>$res['data']['trackingid'],
                                 "orderid"=>$res['data']['orderid'],

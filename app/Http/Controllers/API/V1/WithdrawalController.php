@@ -9,12 +9,14 @@ use App\Models\Customer;
 use App\Models\Doctor;
 use App\Models\FundingHistory;
 use App\Models\WithdrawalHistory;
+use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class WithdrawalController extends Controller
 {
+    use NotificationTrait;
 
     public function index()
     {
@@ -110,6 +112,7 @@ class WithdrawalController extends Controller
             'currency'=>'NGN',
             'status'=> '0',
         ]);
+        $this->NotifyMe("Withdrawal Requested Successfully", $withdrawal->withrawalid, "3", "1");
         $response=[
             "message" => "Withdrawal Requested Successfully",
             'transaction' => $withdrawal,
@@ -165,6 +168,7 @@ class WithdrawalController extends Controller
         $withdrawal=WithdrawalHistory::where('withdrawalid', $withdrawal->withdrawalid)->update([
             'status' => '1'
         ]);
+        $this->NotifyMe("Withdrawal Requested Successfully", $withdrawal->withrawalid, "2", "1");
         return response()->json([
             "message"=>"Withdrawal Successful",
             "status" => "success",
