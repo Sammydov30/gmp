@@ -25,7 +25,7 @@ class NotificationController extends Controller
     public function fetchnotificationforuser(Request $request)
     {
         $customer=auth()->user();
-        $result = Notification::where('gmpid', $customer->gmpid);
+        $result = Notification::where('gmpid', 'GMP1698940449');
         if (empty($request->read)) {
             $result->where('status', $request->read);
         }
