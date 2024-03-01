@@ -19,7 +19,9 @@ class Product extends Model implements HasMedia
         'amount',
         'category',
         'description',
-        'status'
+        'status',
+        'deleted',
+
     ];
 
     public function market()
