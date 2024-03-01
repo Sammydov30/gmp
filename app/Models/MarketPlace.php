@@ -15,7 +15,8 @@ class MarketPlace extends Model
         'state',
         'region',
         'open',
-        'status'
+        'status',
+        'deleted',
     ];
 
     public function region()

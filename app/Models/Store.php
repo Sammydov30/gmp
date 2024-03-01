@@ -17,7 +17,8 @@ class Store extends Model
         'phone',
         'website',
         'open',
-        'status'
+        'status',
+        'deleted',
     ];
 
     public function market()
