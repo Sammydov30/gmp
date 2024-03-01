@@ -192,6 +192,9 @@ class ProductController extends Controller
         // $product->delete();
         // ProductImage::where('productid', $productid)->delete();
         $product = Product::find($id);
+        if (!$product) {
+            return response()->json(["message" => "Product not found", "status" => "error"], 400);
+        }
         $product->update([
             'deleted' => '1',
         ]);
