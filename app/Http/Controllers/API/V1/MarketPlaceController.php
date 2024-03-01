@@ -13,7 +13,7 @@ class MarketPlaceController extends Controller
 
     public function index()
     {
-        $result = MarketPlace::with('region')->withCount('stores');
+        $result = MarketPlace::with('region')->withCount('stores')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -152,7 +152,9 @@ class MarketPlaceController extends Controller
      */
     public function destroy(MarketPlace $marketplace)
     {
-        $marketplace->delete();
+        $marketplace->update([
+            'deleted' => '1',
+        ]);
         $response=[
             "message" => "Market Place Deleted Successfully",
             "status" => "success"

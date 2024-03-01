@@ -11,7 +11,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        $result = Store::with('market')->withCount('products');
+        $result = Store::with('market')->withCount('products')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -111,7 +111,9 @@ class StoreController extends Controller
     public function destroy($id)
     {
         $store=Store::find($id);
-        $store->delete();
+        $store->update([
+            'deleted' => '1',
+        ]);
         $response=[
             "message" => "Store Deleted Successfully",
             "status" => "success"

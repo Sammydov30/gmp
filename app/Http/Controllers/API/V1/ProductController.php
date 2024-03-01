@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $result = Product::with('productimages', 'market', 'store');
+        $result = Product::with('productimages', 'market', 'store')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -68,7 +68,8 @@ class ProductController extends Controller
         if ($query) {
             return response()->json(["message" => 'Product Already created in this Store.', "status" => "error"], 400);
         }
-        $market=Store::where('id', $request->store)->first()->marketid;
+        $marketquery=Store::where('id', $request->store)->first();
+        $market=($marketquery)?$marketquery->marketid : null;
         $product = Product::create([
             'productid' => 'GMPP'.time(),
             'storeid' => $request->store,
@@ -191,7 +192,9 @@ class ProductController extends Controller
         // $product->delete();
         // ProductImage::where('productid', $productid)->delete();
         $product = Product::find($id);
-        $product->delete();
+        $product->update([
+            'deleted' => '1',
+        ]);
         $response=[
             "message" => "Product Deleted Successfully",
             "status" => "success"
