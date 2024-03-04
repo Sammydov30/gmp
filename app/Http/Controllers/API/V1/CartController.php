@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\BuyNowRequest;
 use App\Http\Requests\MakeOrderRequest;
 use App\Jobs\ConfirmAvailabilityJob;
 use App\Models\Cart;
@@ -401,6 +402,123 @@ class CartController extends Controller
           unset($request->orderamount);
           array_push($error, 'Cart is Empty');
         }
+        if(empty($phone) || empty($address) || empty($region)){
+            array_push($error, 'All fields are required');
+        }
+        if (empty($error)) {
+            $order = Order::create([
+                'orderid' => $orderid,
+                'customer' => $user->gmpid,
+                'products' => $items,
+                'address'=>$address,
+                'phone'=>$phone,
+                'region'=>$region,
+                'orderamount'=>$orderamount,
+                'servicefee'=>$servicefee,
+                'totalamount'=>$totalamount,
+                'odate'=>$order_date,
+                "paymentmethod" => $paymentmethod,
+                "deliverymode" => $deliverymode,
+                'tx_ref'=>$orderid,
+                'currency'=>'NGN'
+            ]);
+            $this->clearCart($user->id);
+
+            if ($request->paymentmethod=='1') {
+                $this->chargeWallet($totalamount);
+                Order::where('id', $order->id)->update(['p_status' => '1']);
+                FundingHistory::create([
+                    'fundingid' => $order->id,
+                    'gmpid' => $order->customer,
+                    'amount'=>$totalamount,
+                    'ftime'=>time(),
+                    'currency'=>'NGN',
+                    'status'=>'1',
+                    'type'=>'2',
+                    'which'=>'3'
+                ]);
+                $this->NotifyMe("Order Booked Successfully", $order->orderid, "2", "3");
+                $this->NotifyMe("Account Debited", "Your wallet is Charged for ".$order->orderid, "2", "1");
+                $response=[
+                    "message" => "Order Booked Successfully",
+                    'order' => $order,
+                    "status" => "success"
+                ];
+                return response()->json($response, 201);
+            }else{
+                ///Pay with payment gateway
+                $useragent=$_SERVER['HTTP_USER_AGENT'];
+                // $pamount=(int)$amount*100;
+                $pamount=(int)$totalamount;
+                $paymentrequest = Http::withHeaders([
+                    "Authorization" => "Bearer ".env('FW_KEY'),
+                    "content-type" => "application/json",
+                    "Cache-Control" => "no-cache",
+                    "User-Agent" => $useragent,
+                ])->post('https://api.flutterwave.com/v3/payments', [
+                    'tx_ref' => $orderid,
+                    'amount' => $pamount,
+                    'currency' => 'NGN',
+                    'redirect_url' => 'https://gavice.com/gmp-payment',
+                    "customer" => [
+                        'email' => $user->email,
+                    ],
+                    "customizations" => [
+                        "title" => "Gavice Market Place",
+                        "logo" => "https://gavice.ng/img/logo/small-logo.jpg"
+                    ]
+                ]);
+                $payy=$paymentrequest->json();
+                $response=[
+                    "message" => "Request Checked Out",
+                    "paymentrequest"=>$payy,
+                    'order' => $order,
+                    "status" => "success"
+                ];
+                return response()->json($response, 201);
+
+            }
+
+        }else{
+            $response=[
+                "message" => $error,
+                "status" => "error"
+            ];
+            //print_r($error); exit();
+            return response()->json($response, 400);
+        }
+    }
+
+    public function BuyNow(BuyNowRequest $request)
+    {
+        $user=auth()->user();
+        if ($request->paymentmethod=='1') {
+            if(!$this->checkWallet($request->totalamount)){
+                return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
+            }
+            $p_status='1';
+        }else{
+            $p_status='0';
+        }
+        $phone = $user->phone;
+        $address = $request->address;
+        $region = $request->region;
+        //getcartitems= ['items'=>'product|quantity', 'amount'=>'0'];
+        $items = $request->productid.'|'.$request->quantity;
+        $orderamount = str_replace(',', '', $request->orderamount);
+        $servicefee = str_replace(',', '', $request->servicefee);
+        $totalamount = $orderamount+$servicefee;
+        $paymentmethod = $request->paymentmethod;
+        $deliverymode = $request->deliverymode;
+        $orderid='GMPO'.time();
+        $order_date=time();
+
+        $error = array();
+        // if(empty($items)){
+        //   unset($request->totalamount);
+        //   unset($request->orderamount);
+        //   array_push($error, 'Cart is Empty');
+        // }
         if(empty($phone) || empty($address) || empty($region)){
             array_push($error, 'All fields are required');
         }
