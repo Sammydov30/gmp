@@ -131,6 +131,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/cart/checkout', [CartController::class, 'checkout']);
         Route::post('/customer/cart/getshippingrate', [CartController::class, 'getShippingRate']);
         Route::post('/customer/cart/addtoorder', [CartController::class, 'addToOrder']);
+        Route::post('/customer/cart/buynow', [CartController::class, 'BuyNow']);
         Route::post('/customer/cart/verifypayment', [CartController::class, 'verifypayment']);
 
         //orders
