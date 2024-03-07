@@ -72,7 +72,7 @@ class GeneralController extends Controller
     }
     public function getsubamount()
     {
-        $amount=ActivationValue::first()->supamount;
+        $amount=ActivationValue::first()->subscriptionamount;
         $response=[
             "message" => "Fetched",
             'subscription_amount' => $amount,
