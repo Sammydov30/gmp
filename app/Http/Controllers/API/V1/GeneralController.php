@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GetQuoteRequest;
+use App\Models\ActivationValue;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -68,5 +69,15 @@ class GeneralController extends Controller
 
         $data=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
         return response()->json($data, 200);
+    }
+    public function getsubamount()
+    {
+        $amount=ActivationValue::first()->supamount;
+        $response=[
+            "message" => "Fetched",
+            'subscription_amount' => $amount,
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
     }
 }
