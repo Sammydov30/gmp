@@ -87,7 +87,7 @@
         <p>Hi there,</p>
         <p>{{$details['subject']}}</p><br>
         <p>Your GMP Admin OTP is:</p>
-        <p>{{$details['otp']}}</p>
+        <p style="font-weight:700; font-size: 30px; font-style:italic;">{{$details['otp']}}</p>
       </div>
     </div>
     <br>
