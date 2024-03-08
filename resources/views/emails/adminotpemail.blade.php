@@ -23,7 +23,7 @@
     }
 
     .img {
-      height: 80px;
+      width: 100px;
     }
 
     .card {
