@@ -91,18 +91,6 @@
       </div>
     </div>
     <br>
-    <p class="inspire">Get inspired on social</p>
-    <div class="social-icons">
-      <a href=""><img src="{{ asset('assets/img/twitter.png') }}" alt="twitter" class="img-fluid"></a>
-      <a href=""><img src="{{ asset('assets/img/facebook.png') }}" alt="facebook" class="img-fluid"></a>
-      <a href=""><img src="{{ asset('assets/img/linkedin.png') }}" alt="linkedin" class="img-fluid"></a>
-    </div>
-    <p class="policy">Need help? Try our <b>HelpCenter</b> or reach out to <b><a class="link"
-          href="#">support@gavicemarketplace.com</a></b>. if you would rather
-      not receive this kind of email, you can <b>unsubscribe</b> or <b>manage your email preferences</b>
-      By continuing to use GMP, you are accepting our <b>Terms of Service</b> and <b>Privacy
-        policy</b>
-    </p>
 
   </div>
   </div>
