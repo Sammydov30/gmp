@@ -12,22 +12,29 @@
     rel="stylesheet">
   <style>
     body {
-      background-color: #f8eded;
-      font-family: 'Poppins', sans-serif;
-      height: auto;
+        background-color: #f8eded;
+        font-family: 'Poppins', sans-serif;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-content: center;
     }
 
     .container {
-      max-width: 800px;
-      margin: 0 auto;
+        max-width: 800px;
+        margin: 30px; auto;
     }
 
     .img {
       width: 100px;
     }
 
+    .logo-img{
+        margin: 10px;
+    }
+
     .card {
-      background-color: #fff;
+      background-color: #ffffff;
       border: 1px solid #ffffff;
       border-radius: 10px;
       padding: 20px;
@@ -81,7 +88,7 @@
 
 <body>
   <div class="container">
-    <img src="{{ asset('gmp-logo.png') }}" alt="Gavice Logistics" class="img">
+    <center><img src="{{ asset('gmp-logo.png') }}" alt="Gavice Market Place" class="img logo-img"></center>
     <div class="card">
       <div class="card-body">
         <h2>Welcome {{$details['name']}} ,&nbsp;</strong></span></h2>
