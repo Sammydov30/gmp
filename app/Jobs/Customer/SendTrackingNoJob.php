@@ -40,8 +40,8 @@ class SendTrackingNoJob implements ShouldQueue
 
     public function notify($phone, $msg){
         $curl = curl_init();
-        $data = array("api_key" => env('TERMII'), "to" => $phone,  "from" => "Gavice",
-        "sms" => $msg,  "type" => "plain",  "channel" => "generic" );
+        $data = array("api_key" => env('TERMII'), "to" => $phone,  "from" => "Gavice NG",
+        "sms" => $msg,  "type" => "plain",  "channel" => "dnd" );
         $post_data = json_encode($data);
         curl_setopt_array($curl, array(
         CURLOPT_URL => "https://api.ng.termii.com/api/sms/send",
