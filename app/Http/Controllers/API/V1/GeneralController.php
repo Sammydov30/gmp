@@ -15,12 +15,12 @@ class GeneralController extends Controller
     public function getquote(GetQuoteRequest $request)
     {
 
-        $response=[
-            "message" => "Quote Generated",
-            'quote' => '3500',
-            "status" => "success"
-        ];
-        return response()->json($response, 200);
+        // $response=[
+        //     "message" => "Quote Generated",
+        //     'quote' => '3500',
+        //     "status" => "success"
+        // ];
+        // return response()->json($response, 200);
 
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
