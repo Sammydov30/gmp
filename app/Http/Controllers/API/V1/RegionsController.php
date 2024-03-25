@@ -26,12 +26,12 @@ class RegionsController extends Controller
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortby");
         }else{
-            $sortBy='id';
+            $sortBy='name';
         }
         if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
             $sortOrder=request()->input("sortorder");
         }else{
-            $sortOrder='desc';
+            $sortOrder='asc';
         }
         if (!empty(request()->input("perpage"))) {
             $perPage=request()->input("perpage");
