@@ -430,7 +430,7 @@ class LogisticsController extends Controller
         $res=$createrequest->json();
         print_r($res); exit();
         if (!$res['status']) {
-            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+            return response()->json(["message" => "An Error occurred while getting quote", "status" => "error"], 400);
         }else{
             if ($res['status']=="error") {
                 return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
