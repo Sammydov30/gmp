@@ -21,20 +21,29 @@ class GeneralController extends Controller
         //     "status" => "success"
         // ];
         // return response()->json($response, 200);
-
+        $itemtype=["1"];
+        $sitem=["1"];
+        // $sitem=(is_array($request->item)) ? $request->item : ["1"];
+        $quantity=(is_array($request->quantity)) ? $request->quantity : [$request->quantity];
+        $itemweight=(is_array($request->itemweight)) ? $request->itemweight : [$request->itemweight];
+        $itemvalue=(is_array($request->itemvalue)) ? $request->itemvalue : [$request->itemvalue];
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
         ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
-            "pickupvehicle"=>$request->pickupvehicle,
-            "deliverymode"=>$request->deliverymode,
-            "pickupcenter"=>$request->pickupcenter,
+            // "pickupvehicle"=>$request->pickupvehicle,
+            // "deliverymode"=>$request->deliverymode,
+            // "pickupcenter"=>$request->pickupcenter,
+            "pickupvehicle"=>'3',
+            "deliverymode"=>'1',
+            "pickupcenter"=>'1',
             "sourceregion"=>$request->sourceregion,
             "destinationregion"=>$request->destinationregion,
-            "itemtype"=>serialize($request->itemtype),
-            "sitem"=>serialize($request->item),
-            "itemweight"=>serialize($request->itemweight),
-            "itemvalue"=>serialize($request->itemvalue)
+            "itemtype"=>serialize($itemtype),
+            "sitem"=>serialize($sitem),
+            "itemquantity"=>serialize($quantity),
+            "itemweight"=>serialize($itemweight),
+            "itemvalue"=>serialize($itemvalue)
         ]);
         $res=$createrequest->json();
         //print_r($res); exit();
