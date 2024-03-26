@@ -56,7 +56,7 @@ class GeneralController extends Controller
                 //return response()->json($res, 201);
                 $response=[
                     "message" => "Quote Generated",
-                    'quote' => $res['amount'],
+                    'quote' => strval($res['amount']),
                     "status" => "success"
                 ];
                 return response()->json($response, 200);
