@@ -406,12 +406,14 @@ class LogisticsController extends Controller
 
     public function getquote(GetInterStateQuoteRequest $request)
     {
+        $quantity=[];
         for ($i=0; $i < count($request->json('itemtype')); $i++) {
             if ($request->itemtype[$i]=='2') {
                 if (empty($request->item[$i])) {
                     return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
                 }
             }
+            array_push($quantity, "1");
         }
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
@@ -424,6 +426,7 @@ class LogisticsController extends Controller
             "destinationregion"=>$request->destinationregion,
             "itemtype"=>serialize($request->itemtype),
             "sitem"=>serialize($request->item),
+            "itemquantity"=>serialize($quantity),
             "itemweight"=>serialize($request->itemweight),
             "itemvalue"=>serialize($request->itemvalue)
         ]);
