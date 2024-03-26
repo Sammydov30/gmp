@@ -24,7 +24,7 @@ class GeneralController extends Controller
         $itemtype=["1"];
         $sitem=["1"];
         // $sitem=(is_array($request->item)) ? $request->item : ["1"];
-        $quantity=(is_array($request->quantity)) ? $request->quantity : [$request->quantity];
+        $quantity=(is_array($request->quantity)) ? $request->itemquantity : [$request->itemquantity];
         $itemweight=(is_array($request->itemweight)) ? $request->itemweight : [$request->itemweight];
         $itemvalue=(is_array($request->itemvalue)) ? $request->itemvalue : [$request->itemvalue];
         $createrequest = Http::withHeaders([
