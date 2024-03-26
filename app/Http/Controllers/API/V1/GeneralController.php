@@ -53,7 +53,13 @@ class GeneralController extends Controller
             if ($res['status']=="error") {
                 return response()->json(["message" => $res['message'], "status" => "error"], 400);
             }else{
-                return response()->json($res, 201);
+                //return response()->json($res, 201);
+                $response=[
+                    "message" => "Quote Generated",
+                    'quote' => $res['amount'],
+                    "status" => "success"
+                ];
+                return response()->json($response, 200);
             }
         }
     }
