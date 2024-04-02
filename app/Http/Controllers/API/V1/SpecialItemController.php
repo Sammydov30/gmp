@@ -40,7 +40,7 @@ class SpecialItemController extends Controller
         $res=$getrequest->json();
         $response=[
             "message" => "Fetched Successfully",
-            'regions' => $res,
+            'specialitems' => $res,
             "status" => "success"
         ];
         return response()->json($response, 200);
