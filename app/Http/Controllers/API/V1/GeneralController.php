@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\CreateInterStateShipmentRequestTP;
 use App\Http\Requests\GetQuoteRequest;
 use App\Models\ActivationValue;
 use App\Models\Customer;
@@ -94,5 +95,80 @@ class GeneralController extends Controller
             "status" => "success"
         ];
         return response()->json($response, 200);
+    }
+
+    public function store(CreateInterStateShipmentRequestTP $request)
+    {
+        for ($i=0; $i < count($request->itemtype); $i++) {
+            if ($request->itemtype[$i]=='2') {
+                if (empty($request->item[$i])) {
+                    return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
+                }
+            }elseif ($request->itemtype[$i]=='1') {
+                if (empty($request->itemname[$i])) {
+                    return response()->json(["message" => "Item Name is Required", "status" => "error"], 400);
+                }
+            }else{
+                return;
+            }
+        }
+
+        $logisticid="GMPLOG".time();
+
+        $createrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipment', [
+            "pickupvehicle"=>$request->pickupvehicle,
+            "gmpid"=>$request->userid,
+            "pickupdate"=>$request->pickupdate,
+            "gmppayment"=>$request->gmppayment,
+            "p_status"=>'1',
+            "deliverymode"=>$request->deliverymode,
+            "pickupcenter"=>$request->pickupcenter,
+            "cname"=>$request->customername,
+            "cphone"=>$request->customerphone,
+            "caddress"=>$request->customeraddress,
+            "rname"=>$request->recipientname,
+            "rphone"=>$request->recipientphone,
+            "raddress"=>$request->recipientaddress,
+            "sourceregion"=>$request->sourceregion,
+            "destinationregion"=>$request->destinationregion,
+            "totalweight"=>$request->totalweight,
+            "totalamount"=>$request->totalamount,
+            "stype"=>$request->itemtype,
+            "sitem"=>$request->item,
+            "sname"=>$request->itemname,
+            "sweight"=>$request->itemweight,
+            // "sweighttype"=>'1',
+            // "squantity"=>'1',
+            // "slength"=>'1',
+            // "swidth"=>'1',
+            // "sheight"=>'1',
+            "svalue_declaration"=>$request->itemvalue
+        ]);
+        $res=$createrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating record", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                //$this->NotifyMe("Logistics Booked", $res['data']['trackingid'], "3", "2");
+                $details = [
+                    'trackingid'=>$res['data']['trackingid'],
+                    'orderid'=>$res['data']['orderid'],
+                ];
+                // try {
+                //     dispatch(new SendTrackingNoJob($details))->delay(now()->addSeconds(1));
+                // } catch (\Throwable $e) {
+                //     report($e);
+                //     Log::error('Error in sending sms: '.$e->getMessage());
+                // }
+                return response()->json($res, 201);
+            }
+        }
+
     }
 }
