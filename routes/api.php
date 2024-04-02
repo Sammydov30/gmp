@@ -230,5 +230,9 @@ Route::prefix('v1')->group(function () {
     Route::get('/track', [LogisticsController::class, 'track']);
     Route::get('/subscriptionamount', [GeneralController::class, 'getsubamount']);
 
+    Route::post('/logistics/makelogistics', [GeneralController::class, 'createshipment']);
+    Route::post('/logistics/getquote', [LogisticsController::class, 'getquote']);
+
+
 });
 

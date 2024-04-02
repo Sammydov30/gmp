@@ -97,7 +97,7 @@ class GeneralController extends Controller
         return response()->json($response, 200);
     }
 
-    public function store(CreateInterStateShipmentRequestTP $request)
+    public function createshipment(CreateInterStateShipmentRequestTP $request)
     {
         for ($i=0; $i < count($request->itemtype); $i++) {
             if ($request->itemtype[$i]=='2') {
