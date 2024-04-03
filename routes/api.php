@@ -230,7 +230,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/track', [LogisticsController::class, 'track']);
     Route::get('/subscriptionamount', [GeneralController::class, 'getsubamount']);
 
-    Route::post('/logistics/makelogistics3p', [GeneralController::class, 'createshipmentfor3p']);
+    Route::post('/logistics/createshipment3p', [GeneralController::class, 'createshipmentfor3p']);
     Route::get('/track3p', [GeneralController::class, 'trackfor3p']);
     Route::post('/logistics/getquote', [LogisticsController::class, 'getquote']);
 
