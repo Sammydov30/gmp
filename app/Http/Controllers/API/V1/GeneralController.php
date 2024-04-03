@@ -118,7 +118,7 @@ class GeneralController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipment', [
+        ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipmentfortp', [
             "pickupvehicle"=>$request->pickupvehicle,
             "gmpid"=>$request->userid,
             "pickupdate"=>$request->pickupdate,
