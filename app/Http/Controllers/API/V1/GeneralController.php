@@ -97,7 +97,7 @@ class GeneralController extends Controller
         return response()->json($response, 200);
     }
 
-    public function createshipment(CreateInterStateShipmentRequestTP $request)
+    public function createshipmentfor3p(CreateInterStateShipmentRequestTP $request)
     {
         for ($i=0; $i < count($request->itemtype); $i++) {
             if ($request->itemtype[$i]=='2') {
@@ -170,5 +170,26 @@ class GeneralController extends Controller
             }
         }
 
+    }
+
+    public function trackfor3p(Request $request)
+    {
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/trackfor3p', [
+            "trackingno"=>$request->trackingno,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                return response()->json($res, 200);
+            }
+        }
     }
 }
