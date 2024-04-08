@@ -12,5 +12,11 @@ class State extends Model
     protected $fillable = [
         'code',
         'name',
+        'status',
     ];
+
+    public function regions()
+    {
+        return $this->hasMany(Region::class, 'state');
+    }
 }

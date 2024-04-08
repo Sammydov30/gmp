@@ -16,7 +16,7 @@ class StateController extends Controller
      */
     public function index()
     {
-        $result = DB::table('states');
+        $result = State::with('regions');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -24,6 +24,10 @@ class StateController extends Controller
         if (request()->input("code") != null) {
             $code=request()->input("code");
             $result->where('code', $code);
+        }
+        if (request()->input("status") != null) {
+            $status=request()->input("status");
+            $result->where('status', $status);
         }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortby");
