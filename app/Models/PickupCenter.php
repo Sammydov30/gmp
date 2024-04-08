@@ -22,6 +22,6 @@ class PickupCenter extends Model
 
     public function region()
     {
-        return $this->belongsTo(Region::class, 'state');
+        return $this->belongsTo(Region::class, 'state')->with('state');
     }
 }
