@@ -12,6 +12,7 @@ class Region extends Model
     protected $fillable = [
         'entity_guid',
         'country',
+        'state',
         'name',
         'status',
         'deleted'
@@ -20,5 +21,9 @@ class Region extends Model
     public function country()
     {
         return $this->belongsTo(Country::class, 'country');
+    }
+    public function states()
+    {
+        return $this->belongsTo(State::class, 'state');
     }
 }

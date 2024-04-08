@@ -63,6 +63,7 @@ class RegionsController extends Controller
             'entity_guid'=>Str::uuid(),
             'name' => $request->name,
             'country' => $request->country,
+            'state' => $request->state,
             'status' => '1'
         ]);
 
@@ -117,6 +118,7 @@ class RegionsController extends Controller
         $region=Region::find($id)->update([
             'name' => $request->name,
             'country' => $request->country,
+            'state' => $request->state,
         ]);
         $response=[
             "message" => "Region Updated Successfully",
