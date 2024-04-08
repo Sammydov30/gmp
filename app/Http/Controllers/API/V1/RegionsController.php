@@ -14,7 +14,7 @@ class RegionsController extends Controller
 
     public function index()
     {
-        $result = Region::with('country')->where('deleted', '0')->where('status', '1');
+        $result = Region::with('country', 'state')->where('deleted', '0')->where('status', '1');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
