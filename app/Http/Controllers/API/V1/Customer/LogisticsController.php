@@ -388,7 +388,7 @@ class LogisticsController extends Controller
                 ],
                 "customizations" => [
                     "title" => "Gavice Market Place",
-                    "logo" => "https://gavice.ng/img/logo/small-logo.jpg"
+                    "logo" => "https://gavice.com/small-logo.jpg"
                 ]
             ]);
             $payy=$paymentrequest->json();
