@@ -152,6 +152,12 @@ class MarketPlaceController extends Controller
      */
     public function destroy(MarketPlace $marketplace)
     {
+        $response=[
+            "message" => "Market Place Cannot be Deleted",
+            "status" => "error"
+        ];
+        return response()->json($response, 400);
+
         if (!$marketplace) {
             return response()->json(["message" => "Market not found", "status" => "error"], 400);
         }

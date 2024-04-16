@@ -168,6 +168,11 @@ Route::prefix('v1')->group(function () {
         Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
         Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
 
+        //marketplace
+        Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
+        //category
+        Route::apiResource('/admin/categories', CategoryController::class);
+
         //Restricted
         Route::middleware(['restrictothers'])->group(function () {
             Route::post('/admin/create', [AdminController::class, 'register']);
@@ -210,10 +215,8 @@ Route::prefix('v1')->group(function () {
     //country
     Route::apiResource('/admin/countries', CountryController::class);
     //marketplace
-    Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
     Route::apiResource('/marketplaces', MarketPlaceController::class);
     //category
-    Route::apiResource('/admin/categories', CategoryController::class);
     Route::apiResource('/categories', CategoryController::class);
     //Products
     Route::get('/general/products', [ProductController::class, 'index']);
