@@ -58,6 +58,7 @@ class GeneralController extends Controller
                 $response=[
                     "message" => "Quote Generated",
                     'quote' => strval($res['amount']),
+                    "delivery_time"=> "48 hours",
                     "status" => "success"
                 ];
                 return response()->json($response, 200);
