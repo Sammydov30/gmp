@@ -58,7 +58,7 @@ class GeneralController extends Controller
                 $response=[
                     "message" => "Quote Generated",
                     'quote' => strval($res['amount']),
-                    "delivery_time"=> $res['delivery_timeline']['timelineduration'],
+                    "delivery_time"=> intval($res['delivery_timeline']['timelineduration']),
                     "status" => "success"
                 ];
                 return response()->json($response, 200);
