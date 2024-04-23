@@ -31,7 +31,7 @@ class GeneralController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL2').'/api/shipment/getquote', [
             // "pickupvehicle"=>$request->pickupvehicle,
             // "deliverymode"=>$request->deliverymode,
             // "pickupcenter"=>$request->pickupcenter,
@@ -47,7 +47,7 @@ class GeneralController extends Controller
             "itemvalue"=>serialize($itemvalue)
         ]);
         $res=$createrequest->json();
-        print_r($res); exit();
+        //print_r($res); exit();
         if (!$res['status']) {
             return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
         }else{
@@ -58,7 +58,7 @@ class GeneralController extends Controller
                 $response=[
                     "message" => "Quote Generated",
                     'quote' => strval($res['amount']),
-                    "delivery_time"=> "48 hours",
+                    "delivery_time"=> $res['delivery_timeline']['timelineduration'],
                     "status" => "success"
                 ];
                 return response()->json($response, 200);
