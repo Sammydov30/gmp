@@ -5,11 +5,14 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateInterStateShipmentRequestTP;
 use App\Http\Requests\GetQuoteRequest;
+use App\Jobs\Admin\TPEmailJob;
+use App\Jobs\Customer\TPSMSJob;
 use App\Models\ActivationValue;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeneralController extends Controller
 {
@@ -160,13 +163,22 @@ class GeneralController extends Controller
                 $details = [
                     'trackingid'=>$res['data']['trackingid'],
                     'orderid'=>$res['data']['orderid'],
+                    'email' => 'samydov@gmail.com',
+                    'phone'=>'2347065975827',
+                    'subject' => 'Gavice/Shipbubble',
                 ];
-                // try {
-                //     dispatch(new SendTrackingNoJob($details))->delay(now()->addSeconds(1));
-                // } catch (\Throwable $e) {
-                //     report($e);
-                //     Log::error('Error in sending sms: '.$e->getMessage());
-                // }
+                try {
+                    dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending otp: '.$e->getMessage());
+                }
+                try {
+                    dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending otp: '.$e->getMessage());
+                }
                 return response()->json($res, 201);
             }
         }
