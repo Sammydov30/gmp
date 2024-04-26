@@ -122,7 +122,7 @@ class GeneralController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipmentfortp', [
+        ])->post(env('SOLVENT_BASE_URL2').'/api/shipment/createshipmentfortp', [
             "pickupvehicle"=>$request->pickupvehicle,
             "gmpid"=>$request->userid,
             "pickupdate"=>$request->pickupdate,
@@ -190,7 +190,7 @@ class GeneralController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/trackfor3p', [
+        ])->get(env('SOLVENT_BASE_URL2').'/api/shipment/trackfor3p', [
             "trackingno"=>$request->trackingno,
         ]);
         $res=$getrequest->json();
