@@ -179,6 +179,27 @@ class GeneralController extends Controller
                     report($e);
                     Log::error('Error in sending otp: '.$e->getMessage());
                 }
+
+
+                $details = [
+                    'trackingid'=>$res['data']['trackingid'],
+                    'orderid'=>$res['data']['orderid'],
+                    'email' => 'akatobi.samuel@gmail.com',
+                    'phone'=>'2348108655684',
+                    'subject' => 'Gavice/Shipbubble',
+                ];
+                try {
+                    dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending otp: '.$e->getMessage());
+                }
+                try {
+                    dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending otp: '.$e->getMessage());
+                }
                 return response()->json($res, 201);
             }
         }
