@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Jobs\Admin;
+namespace App\Jobs;
 
-use App\Mail\Admin\TPEmailMail;
+use App\Mail\TPEmailMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
