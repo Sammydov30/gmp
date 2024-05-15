@@ -181,25 +181,25 @@ class GeneralController extends Controller
                 }
 
 
-                // $details = [
-                //     'trackingid'=>$res['data']['trackingid'],
-                //     'orderid'=>$res['data']['orderid'],
-                //     'email' => 'akatobi.samuel@gmail.com',
-                //     'phone'=>'2348108655684',
-                //     'subject' => 'Gavice/Shipbubble',
-                // ];
-                // try {
-                //     dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
-                // } catch (\Throwable $e) {
-                //     report($e);
-                //     Log::error('Error in sending: '.$e->getMessage());
-                // }
-                // try {
-                //     dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
-                // } catch (\Throwable $e) {
-                //     report($e);
-                //     Log::error('Error in sending: '.$e->getMessage());
-                // }
+                $details = [
+                    'trackingid'=>$res['data']['trackingid'],
+                    'orderid'=>$res['data']['orderid'],
+                    'email' => 'akatobi.samuel@gmail.com',
+                    'phone'=>'2348108655684',
+                    'subject' => 'Gavice/Shipbubble',
+                ];
+                try {
+                    dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
+                try {
+                    dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
                 return response()->json($res, 201);
             }
         }
