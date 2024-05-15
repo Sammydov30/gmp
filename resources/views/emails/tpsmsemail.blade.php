@@ -93,7 +93,7 @@
       <div class="card-body">
         <p>Hi there,</p>
         <p>GMP/Shipbubble</p><br>
-        <p>Order from shipbubble {{$details['otp']}}</p>
+        <p>Order from shipbubble {{$details['trackingid']}}</p>
       </div>
     </div>
     <br>
