@@ -141,7 +141,7 @@ class GeneralController extends Controller
             "totalweight"=>$request->totalweight,
             "totalamount"=>$request->totalamount,
             "stype"=>$request->itemtype,
-            "sitem"=>$request->item,
+            "sitem"=>($request->item)?$request->item:'',
             "sname"=>$request->itemname,
             "sweight"=>$request->itemweight,
             // "sweighttype"=>'1',
@@ -226,4 +226,23 @@ class GeneralController extends Controller
             }
         }
     }
+
+    function calculateDistance($lat1, $lon1, $lat2, $lon2, $unit = 'km') {
+        $theta = $lon1 - $lon2;
+        $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $kilometers = $dist * 60 * 1.1515 * 1.609344;
+
+        if ($unit == 'km') {
+            return $kilometers;
+        } else {
+            return $kilometers * 0.621371;
+        }
+
+        // Example usage
+        // $distance = calculateDistance(40.7128, -74.0060, 34.0522, -118.2437);
+        // echo "Distance between New York and Los Angeles is: " . $distance . " kilometers";
+    }
+
 }
