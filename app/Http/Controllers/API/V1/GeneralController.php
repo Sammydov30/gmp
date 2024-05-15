@@ -171,13 +171,13 @@ class GeneralController extends Controller
                     dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
                 } catch (\Throwable $e) {
                     report($e);
-                    Log::error('Error in sending otp: '.$e->getMessage());
+                    Log::error('Error in sending: '.$e->getMessage());
                 }
                 try {
                     dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
                 } catch (\Throwable $e) {
                     report($e);
-                    Log::error('Error in sending otp: '.$e->getMessage());
+                    Log::error('Error in sending: '.$e->getMessage());
                 }
 
 
@@ -192,13 +192,13 @@ class GeneralController extends Controller
                     dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
                 } catch (\Throwable $e) {
                     report($e);
-                    Log::error('Error in sending otp: '.$e->getMessage());
+                    Log::error('Error in sending: '.$e->getMessage());
                 }
                 try {
                     dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
                 } catch (\Throwable $e) {
                     report($e);
-                    Log::error('Error in sending otp: '.$e->getMessage());
+                    Log::error('Error in sending: '.$e->getMessage());
                 }
                 return response()->json($res, 201);
             }
