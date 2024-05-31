@@ -433,7 +433,7 @@ class LogisticsController extends Controller
             "itemvalue"=>serialize($request->itemvalue)
         ]);
         $res=$createrequest->json();
-        print_r($res); exit();
+        //print_r($res); exit();
         if (!$res['status']) {
             return response()->json(["message" => "An Error occurred while getting quote", "status" => "error"], 400);
         }else{
@@ -453,7 +453,7 @@ class LogisticsController extends Controller
                     "delivery_time"=> intval($res['delivery_timeline']['timelineduration']),
                     "status" => "success"
                 ];
-                //return response()->json($response, 201);
+                return response()->json($response, 201);
             }
         }
     }
