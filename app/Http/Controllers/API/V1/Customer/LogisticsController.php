@@ -418,7 +418,7 @@ class LogisticsController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL2').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
             "pickupvehicle"=>$request->pickupvehicle,
             "deliverymode"=>$request->deliverymode,
             "pickupcenter"=>$request->pickupcenter,
