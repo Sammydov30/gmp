@@ -220,7 +220,7 @@ class LogisticsController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/track', [
+        ])->get(env('SOLVENT_BASE_URL2').'/api/shipment/track', [
             "trackingno"=>$request->trackingno,
         ]);
         $res=$getrequest->json();
