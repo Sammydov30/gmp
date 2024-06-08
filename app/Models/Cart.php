@@ -22,7 +22,7 @@ class Cart extends Model
     public function toArray()
     {
         $array = parent::toArray();
-        //$array['item'] = $this->GetProductDetails($this->product);
+        $array['item2'] = $this->GetProductDetails($this->product);
 
         return $array;
     }
