@@ -22,15 +22,15 @@ class Cart extends Model
     public function toArray()
     {
         $array = parent::toArray();
-        $array['item'] = $this->GetProductDetails($this->product);
+        //$array['item'] = $this->GetProductDetails($this->product);
 
         return $array;
     }
 
-    // public function item()
-    // {
-    //     return $this->hasOne(Product::class, 'id', 'product');
-    // }
+    public function item()
+    {
+        return $this->hasOne(Product::class, 'id', 'product');
+    }
     private function GetProductDetails($item){
         $product=Product::with('market', 'store', 'productimages')->find($item);
         if (!$product) {

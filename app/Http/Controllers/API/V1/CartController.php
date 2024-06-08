@@ -26,7 +26,7 @@ class CartController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Cart::where('customer', $user->id);
+        $result = Cart::with('item')->where('customer', $user->id);
 
         if (request()->input("item") != null) {
             $item=request()->input("item");
