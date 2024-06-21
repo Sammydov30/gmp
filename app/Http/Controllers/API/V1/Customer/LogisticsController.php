@@ -238,6 +238,7 @@ class LogisticsController extends Controller
 
     public function store(CreateInterStateShipmentRequest $request)
     {
+        $quantity=[];
         for ($i=0; $i < count($request->itemtype); $i++) {
             if (!is_numeric($request->itemvalue[$i])) {
                 return response()->json(["message" => "Some Item Value is invalid", "status" => "error"], 400);
@@ -254,12 +255,14 @@ class LogisticsController extends Controller
                     return response()->json(["message" => "Item Name is Required", "status" => "error"], 400);
                 }
             }
+            array_push($quantity, "1");
         }
 
         $res=$this->callToGetQuote($request->pickupvehicle, $request->deliverymode, $request->pickupcenter,
         $request->sourceregion, $request->destinationregion,
         $request->latitude, $request->longitude, $request->itemtype,
-        $request->quantity, $request->item, $request->itemweight, $request->itemvalue);
+        $quantity, $request->item, $request->itemweight, $request->itemvalue);
+        print_r($res);
         if (!$res['status']) {
             return response()->json(["message" => "An Error occurred while balancing quote", "status" => "error"], 400);
         }else{
