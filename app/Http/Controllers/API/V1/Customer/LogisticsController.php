@@ -262,7 +262,6 @@ class LogisticsController extends Controller
         $request->sourceregion, $request->destinationregion,
         $request->latitude, $request->longitude, $request->itemtype,
         $quantity, $request->item, $request->itemweight, $request->itemvalue);
-        print_r($res);
         if (!$res['status']) {
             return response()->json(["message" => "An Error occurred while balancing quote", "status" => "error"], 400);
         }else{
