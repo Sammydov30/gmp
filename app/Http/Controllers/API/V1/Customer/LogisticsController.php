@@ -239,6 +239,12 @@ class LogisticsController extends Controller
     public function store(CreateInterStateShipmentRequest $request)
     {
         for ($i=0; $i < count($request->itemtype); $i++) {
+            if (!is_numeric($request->itemvalue[$i])) {
+                return response()->json(["message" => "Some Item Value is invalid", "status" => "error"], 400);
+            }
+            if (!is_numeric($request->itemweight[$i]) && !is_float($request->itemweight[$i])) {
+                return response()->json(["message" => "Some Item Weight is invalid", "status" => "error"], 400);
+            }
             if ($request->itemtype[$i]=='2') {
                 if (empty($request->item[$i])) {
                     return response()->json(["message" => "A Special Item was not selected", "status" => "error"], 400);
@@ -249,9 +255,26 @@ class LogisticsController extends Controller
                 }
             }
         }
+
+        $res=$this->callToGetQuote($request->pickupvehicle, $request->deliverymode, $request->pickupcenter,
+        $request->sourceregion, $request->destinationregion,
+        $request->latitude, $request->longitude, $request->itemtype,
+        $request->quantity, $request->item, $request->itemweight, $request->itemvalue);
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while balancing quote", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
+            }else{
+                $tamount = strval($res['amount']);
+            }
+        }
+        //$tamount=$request->totalamount;
+
+
         $user=auth()->user();
         if ($request->gmppayment=='1') {
-            if(!$this->checkWallet($request->totalamount)){
+            if(!$this->checkWallet($tamount)){
                 return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
             }
             $p_status='1';
@@ -277,7 +300,7 @@ class LogisticsController extends Controller
             "fromregion"=>$request->sourceregion,
             "toregion"=>$request->destinationregion,
             "totalweight"=>$request->totalweight,
-            "amount"=>$request->totalamount,
+            "amount"=>$tamount,
         ]);
         for ($i=0; $i < count($request->itemtype); $i++) {
             LogisticInfo::create([
@@ -295,7 +318,7 @@ class LogisticsController extends Controller
             ]);
         }
         if ($request->gmppayment=='1') {
-            $this->chargeWallet($request->totalamount);
+            $this->chargeWallet($tamount);
             $createrequest = Http::withHeaders([
                 "content-type" => "application/json",
                 // "Authorization" => "Bearer ",
@@ -316,7 +339,7 @@ class LogisticsController extends Controller
                 "sourceregion"=>$request->sourceregion,
                 "destinationregion"=>$request->destinationregion,
                 "totalweight"=>$request->totalweight,
-                "totalamount"=>$request->totalamount,
+                "totalamount"=>$tamount,
                 "stype"=>$request->itemtype,
                 "sitem"=>$request->item,
                 "sname"=>$request->itemname,
@@ -331,14 +354,14 @@ class LogisticsController extends Controller
             FundingHistory::create([
                 'fundingid' => $logistics->id,
                 'gmpid' => $logistics->gmpid,
-                'amount'=>$request->totalamount,
+                'amount'=>$tamount,
                 'ftime'=>time(),
                 'currency'=>'NGN',
                 'status'=>'1',
                 'type'=>'2',
                 'which'=>'2'
             ]);
-            $this->NotifyMe("Wallet Charged for Logistics", "You have been charged ".$request->totalamount, "2", "2");
+            $this->NotifyMe("Wallet Charged for Logistics", "You have been charged ".$tamount, "2", "2");
             $res=$createrequest->json();
             //print_r($res); exit();
             if (!$res['status']) {
@@ -372,7 +395,7 @@ class LogisticsController extends Controller
             ///Pay with payment gateway
             $useragent=$_SERVER['HTTP_USER_AGENT'];
             // $pamount=(int)$amount*100;
-            $pamount=(int)$request->totalamount;
+            $pamount=(int)$tamount;
             $paymentrequest = Http::withHeaders([
                 "Authorization" => "Bearer ".env('FW_KEY'),
                 "content-type" => "application/json",
@@ -456,6 +479,27 @@ class LogisticsController extends Controller
                 return response()->json($response, 201);
             }
         }
+    }
+
+    public function callToGetQuote($pickupvehicle, $deliverymode, $pickupcenter, $sourceregion, $destinationregion, $latitude, $longitude, $itemtype, $quantity, $item, $itemweight, $itemvalue) {
+        $createrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+            "pickupvehicle"=>$pickupvehicle,
+            "deliverymode"=>$deliverymode,
+            "pickupcenter"=>$pickupcenter,
+            "sourceregion"=>$sourceregion,
+            "destinationregion"=>$destinationregion,
+            "lat"=>$latitude,
+            "lng"=>$longitude,
+            "itemtype"=>serialize($itemtype),
+            "sitem"=>serialize($item),
+            "itemquantity"=>serialize($quantity),
+            "itemweight"=>serialize($itemweight),
+            "itemvalue"=>serialize($itemvalue)
+        ]);
+        return $createrequest->json();
     }
 
     public function verifypayment(Request $request)
