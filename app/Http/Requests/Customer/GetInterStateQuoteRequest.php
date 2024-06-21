@@ -28,11 +28,11 @@ class GetInterStateQuoteRequest extends FormRequest
     public function rules()
     {
         return [
-            "pickupvehicle"=>['required'],
-            "deliverymode"=>['required'],
+            "pickupvehicle"=>['required', 'numeric'],
+            "deliverymode"=>['required', 'numeric'],
             "pickupcenter"=>['required'],
-            "sourceregion"=>['required'],
-            "destinationregion"=>['required'],
+            "sourceregion"=>['required', 'numeric'],
+            "destinationregion"=>['required', 'numeric'],
             "itemtype"=>['required'],
             "itemweight"=>['required'],
             "itemvalue"=>['required'],
