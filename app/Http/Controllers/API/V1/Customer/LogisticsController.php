@@ -515,7 +515,7 @@ class LogisticsController extends Controller
             if (!$tx) {
                 return response()->json(["message"=>"Shipment doesn't exist", "status"=>"error"], 400);
             }
-            if ($tx->status=="1") {
+            if ($tx->p_status=="1") {
                 return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
             }
             $amount = $tx->amount;
