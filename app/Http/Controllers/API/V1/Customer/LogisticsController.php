@@ -408,7 +408,7 @@ class LogisticsController extends Controller
                 'tx_ref' => $logisticid,
                 'amount' => $pamount,
                 'currency' => 'NGN',
-                'redirect_url' => 'https://gavice.com/gmp-payment',
+                'redirect_url' => ($request->payfrom=="1") ? 'http://localhost:5173/verifypaymentlogistics' : 'https://gavice.com/gmp-payment',
                 "customer" => [
                     'email' => $user->email,
                 ],
