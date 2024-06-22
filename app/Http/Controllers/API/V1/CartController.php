@@ -459,7 +459,7 @@ class CartController extends Controller
                     'tx_ref' => $orderid,
                     'amount' => $pamount,
                     'currency' => 'NGN',
-                    'redirect_url' => 'https://gavice.com/gmp-payment',
+                    'redirect_url' => ($request->payfrom=="2") ? 'http://localhost:5173/verifypaymentaddtoorder' : 'https://gavice.com/gmp-payment',
                     "customer" => [
                         'email' => $user->email,
                     ],
@@ -576,7 +576,7 @@ class CartController extends Controller
                     'tx_ref' => $orderid,
                     'amount' => $pamount,
                     'currency' => 'NGN',
-                    'redirect_url' => 'https://gavice.com/gmp-payment',
+                    'redirect_url' => ($request->payfrom=="2") ? 'http://localhost:5173/verifypaymentbuynow' : 'https://gavice.com/gmp-payment',
                     "customer" => [
                         'email' => $user->email,
                     ],

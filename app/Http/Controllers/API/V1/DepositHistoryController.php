@@ -90,7 +90,7 @@ class DepositHistoryController extends Controller
                 'tx_ref' => $depositid,
                 'amount' => $pamount,
                 'currency' => 'NGN',
-                'redirect_url' => "https://gavice.com/gmp-funding",
+                'redirect_url' => ($request->payfrom=="2") ? 'http://localhost:5173/verifypaymentfunding' : 'https://gavice.com/gmp-funding',
                 "customer" => [
                     'email' => $email,
                 ],
