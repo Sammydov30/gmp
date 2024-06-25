@@ -104,7 +104,7 @@ class HaulageController extends Controller
         //$this->notifyWhatsapp('2348166273168');
         $this->NotifyMe("Haulage Created Successfully", "Your Order ID is $haulage->orderid", "3", "2");
         $response=[
-            "message" => "Haulage Created Successfully",
+            "message" => "Haulage Created Successfully. Our team will reach out to you soon.",
             'haulage' => $haulage,
             "status" => "success"
         ];
