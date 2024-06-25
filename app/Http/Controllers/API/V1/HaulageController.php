@@ -92,6 +92,7 @@ class HaulageController extends Controller
             'gmpid' => $user->gmpid,
             'name' => $request->name,
             'phone'=> $request->phone,
+            'inspectiondate'=>$request->inspectiondate,
             'region'=> $request->source_region,
             'destination'=> $request->destination_region,
             'address'=> $request->address,

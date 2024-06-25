@@ -15,6 +15,7 @@ class Haulage extends Model
         'trackingid',
         'name',
         'phone',
+        'inspectiondate',
         'region',
         'address',
         'description',

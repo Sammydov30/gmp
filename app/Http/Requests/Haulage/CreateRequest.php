@@ -30,6 +30,7 @@ class CreateRequest extends FormRequest
         return [
             'name' => 'required|string',
             'address' => ['required', 'string', 'max:300'],
+            //'inspectiondate' => ['required', 'string', 'max:300'],
             'phone' => ['required', 'string', 'max:300'],
             'source_region' => ['required', 'string'],
             'destination_region' => ['required', 'string'],

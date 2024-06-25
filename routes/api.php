@@ -222,7 +222,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/general/products', [ProductController::class, 'index']);
     Route::post('/general/productarray', [ProductController::class, 'getproductgroup']);
     //Stores
-    Route::get('/general/stores', [StoreController::class, 'index']);
+    Route::apiResource('/general/stores', [StoreController::class]);
     //specialitems
     Route::get('/specialitems', [SpecialItemController::class, 'index']);
     Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
