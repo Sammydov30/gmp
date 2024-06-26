@@ -24,6 +24,10 @@ class Product extends Model implements HasMedia
 
     ];
 
+    public function categori()
+    {
+        return $this->belongsTo(Category::class, 'category');
+    }
     public function market()
     {
         return $this->belongsTo(MarketPlace::class, 'marketid');
