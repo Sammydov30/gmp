@@ -14,6 +14,7 @@ use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
 use App\Http\Controllers\API\V1\CartController;
+use App\Http\Controllers\API\V1\FeedBackRatingController;
 use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\PickupCentersController;
 use App\Http\Controllers\API\V1\ProductController;
+use App\Http\Controllers\API\V1\ProductReportingController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\RegionsController;
 use App\Http\Controllers\API\V1\SpecialItemController;
@@ -76,6 +78,14 @@ Route::prefix('v1')->group(function () {
         //Complaint
         Route::get('/customer/complaint/fetchall', [ComplaintController::class, 'index']);
         Route::post('/customer/complaint/makeacomplain', [ComplaintController::class, 'addcomplaint']);
+
+        //Feedback Rating
+        Route::get('/customer/order/feedback/fetchall', [FeedBackRatingController::class, 'index']);
+        Route::post('/customer/order/feedback/addfeedback', [FeedBackRatingController::class, 'store']);
+
+        //Product Report
+        Route::get('/product/report/fetchall', [ProductReportingController::class, 'index']);
+        Route::post('/product/report/addreport', [ProductReportingController::class, 'store']);
 
         //Logistics
         Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
