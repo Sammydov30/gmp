@@ -115,7 +115,7 @@ class CustomerAuthController extends Controller
             'status' => '1'
         ]);
         $customer = Customer::where('email', $request->email)->first();
-        $message="Welcome ".$request->name;
+        $message="Welcome ".$request->firstname;
         $subject = 'GMP Customer Registration';
         $details = [
             'name'=>$request->firstname,
