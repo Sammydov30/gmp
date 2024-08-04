@@ -194,7 +194,7 @@ class CustomerController extends Controller
             'phonenumber' => $request->phonenumber,
             'location' => $request->location,
             'address' => $request->address,
-            'city' => $request->city,
+            //'city' => $request->city,
             'status'=>$request->setdefaultaddress
         ]);
         $response=[
@@ -218,7 +218,7 @@ class CustomerController extends Controller
             'phonenumber' => $request->phonenumber,
             'location' => $request->location,
             'address' => $request->address,
-            'city' => $request->city,
+            //'city' => $request->city,
             'status'=>$request->setdefaultaddress
         ]);
         $response=[
