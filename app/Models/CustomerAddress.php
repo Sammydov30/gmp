@@ -24,4 +24,8 @@ class CustomerAddress extends Model
     {
         return $this->hasOne(Customer::class, 'gmpid', 'gmpid');
     }
+    public function locationdata()
+    {
+        return $this->hasOne(Region::class, 'id', 'location')->with('country');
+    }
 }
