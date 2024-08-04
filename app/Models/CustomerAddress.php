@@ -26,6 +26,6 @@ class CustomerAddress extends Model
     }
     public function locationdata()
     {
-        return $this->hasOne(Region::class, 'id', 'location')->with('country')->select('id', 'name');
+        return $this->hasOne(Region::class, 'id', 'location')->with('country')->select('id', 'name', 'country');
     }
 }
