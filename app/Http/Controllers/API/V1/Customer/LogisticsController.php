@@ -312,8 +312,8 @@ class LogisticsController extends Controller
                 "item"=>$request->item[$i],
                 "name"=>$request->itemname[$i],
                 "weight"=>$request->itemweight[$i],
+                "quantity"=>$request->itemquantity[$i],
                 "weighttype"=>'1',
-                "quantity"=>'1',
                 "length"=>'1',
                 "width"=>'1',
                 "height"=>'1',
@@ -348,7 +348,7 @@ class LogisticsController extends Controller
                 "sname"=>$request->itemname,
                 "sweight"=>$request->itemweight,
                 // "sweighttype"=>'1',
-                // "squantity"=>'1',
+                "squantity"=>$request->itemquantity,
                 // "slength"=>'1',
                 // "swidth"=>'1',
                 // "sheight"=>'1',
@@ -454,7 +454,7 @@ class LogisticsController extends Controller
             "lng"=>$request->longitude,
             "itemtype"=>serialize($request->itemtype),
             "sitem"=>serialize($request->item),
-            "itemquantity"=>serialize($quantity),
+            "itemquantity"=>serialize($request->itemquantity),
             "itemweight"=>serialize($request->itemweight),
             "itemvalue"=>serialize($request->itemvalue)
         ]);
