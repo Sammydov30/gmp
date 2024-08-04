@@ -189,6 +189,9 @@ class CustomerController extends Controller
         }
         $address=CustomerAddress::create([
             'gmpid' => $user->gmpid,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phonenumber' => $request->phonenumber,
             'location' => $request->location,
             'address' => $request->address,
             'city' => $request->city,
@@ -210,6 +213,9 @@ class CustomerController extends Controller
         }
         $address=CustomerAddress::where('id', $request->addressid)->update([
             'gmpid' => $user->gmpid,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phonenumber' => $request->phonenumber,
             'location' => $request->location,
             'address' => $request->address,
             'city' => $request->city,

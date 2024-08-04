@@ -11,6 +11,9 @@ class CustomerAddress extends Model
     protected $table="addressbook";
     protected $fillable = [
         'gmpid',
+        'firstname',
+        'lastname',
+        'phonenumber',
         'address',
         'location',
         'city',

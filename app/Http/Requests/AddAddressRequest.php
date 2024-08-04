@@ -28,6 +28,9 @@ class AddAddressRequest extends FormRequest
     public function rules()
     {
         return [
+            'firstname' => ['required', 'string', 'max:300'],
+            'lastname' => ['required', 'string', 'max:300'],
+            'phonenumber' => ['required'],
             'address' => ['required', 'string',],
             'location' => ['required', 'string',],
             //'city' => 'required',
