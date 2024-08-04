@@ -35,6 +35,7 @@ class GetInterStateQuoteRequest extends FormRequest
             "destinationregion"=>['required', 'numeric'],
             "itemtype"=>['required'],
             "itemweight"=>['required'],
+            "itemquantity"=>['required'],
             "itemvalue"=>['required'],
         ];
     }

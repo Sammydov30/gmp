@@ -46,6 +46,7 @@ class CreateInterStateShipmentRequest extends FormRequest
             "totalamount"=>['required', 'numeric'],
             "itemtype"=>['required'],
             "itemweight"=>['required'],
+            "itemquantity"=>['required'],
             "itemvalue"=>['required'],
             "payfrom"=>['required']
             //"name"=>['required'],
