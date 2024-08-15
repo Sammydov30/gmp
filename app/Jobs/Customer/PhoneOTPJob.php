@@ -40,7 +40,7 @@ class PhoneOTPJob implements ShouldQueue
         $client = new \GuzzleHttp\Client();
 
         $response = $client->request('POST', 'https://api.sendchamp.com/api/v1/sms/send', [
-            'body' => '{"to":["'.$phone.'"],"sender_name":"SAlert","message":"Please enter the code '.$otp.' to continue your registration on Gavice Logistics","route":"dnd"}',
+            'body' => '{"to":["'.$phone.'"],"sender_name":"SAlert","message":"Please enter the code '.$otp.' to continue your registration on Gavice MP. Powered by Gavice.","route":"dnd"}',
             'headers' => [
                 'Accept' => 'application/json',
                 'Authorization' => 'Bearer '.env('SENDCHAMP'),

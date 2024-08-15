@@ -159,7 +159,7 @@ class HaulageController extends Controller
     {
         $details = [
             'phone'=>$phone,
-            'message'=>"A Haulage Request has been made."
+            'message'=>"A Haulage Request has been made. Powered by Gavice"
         ];
         try {
             dispatch(new ConfirmAvailabilityJob($details))->delay(now()->addSeconds(1));
@@ -175,7 +175,7 @@ class HaulageController extends Controller
     {
         $details = [
             'phone'=>$phone,
-            'message'=>"A Haulage Request has been made."
+            'message'=>"A Haulage Request has been made. Powered by Gavice"
         ];
         try {
             dispatch(new SendWhatsappMessageJob($details))->delay(now()->addSeconds(1));

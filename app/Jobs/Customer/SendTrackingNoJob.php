@@ -32,7 +32,7 @@ class SendTrackingNoJob implements ShouldQueue
      */
     public function handle()
     {
-        $msg="Parcel has been registered. The tracking No is ".$this->details['trackingid'].". The Delivery ID is ".$this->details['orderid'].". Use the Gavice Service App to track. Thank you.";
+        $msg="Parcel has been registered. The tracking No is ".$this->details['trackingid'].". The Delivery ID is ".$this->details['orderid'].". Thank you. Powered by Gavice.";
         $this->notify($this->details['cphone'], $msg);
         $this->notify($this->details['rphone'], $msg);
     }
