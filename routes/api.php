@@ -75,10 +75,6 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/pin/setpin', [CustomerController::class, 'setpin']);
         Route::post('/customer/pin/changepin', [CustomerController::class, 'updatepin']);
 
-        //Complaint
-        Route::get('/customer/complaint/fetchall', [ComplaintController::class, 'index']);
-        Route::post('/customer/complaint/makeacomplain', [ComplaintController::class, 'addcomplaint']);
-
         //Feedback Rating
         Route::get('/customer/order/feedback/fetchall', [FeedBackRatingController::class, 'index']);
         Route::post('/customer/order/feedback/addfeedback', [FeedBackRatingController::class, 'store']);
