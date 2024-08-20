@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Models\Subscription;
 
-trait GMPCustomerBalanceTrait {
+trait ActiveSubscriptionTrait {
 
     public function activeSubscription() {
         $user=auth()->user();
