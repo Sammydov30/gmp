@@ -79,10 +79,10 @@ class ProductResource extends JsonResource
         //         'percentage' => round(($rating->count / $totalReviews) * 100, 2)
         //     ];
         // }
-        for ($i=5; $i > 0; $i--) {
+        for ($i=0; $i < 5; $i++) {
             $groupedRatings[$i] = [
                 'count' => (isset($ratings[$i]))? $ratings[$i]->count : '0',
-                'percentage' => (isset($ratings[$i]))? round(($ratings[$i]->count / $totalReviews) * 100, 2) : '0',
+                'percentage' => (isset($ratings[$i]))? round(($ratings[$i]->count / $totalReviews) * 100) : '0',
             ];
         }
 
