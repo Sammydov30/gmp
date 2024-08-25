@@ -76,7 +76,7 @@ class ProductResource extends JsonResource
         for ($i=5; $i > 0; $i--) {
             $found=false;
             foreach ($ratings as $rating) {
-                if ($i===$rating->rate) {
+                if ($i==$rating->rate) {
                     $groupedRatings[$rating->rate] = [
                         'rate' => str($i),
                         'count' => $rating->count,
