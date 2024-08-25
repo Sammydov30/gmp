@@ -15,7 +15,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $result = Product::with('categori', 'productimages', 'market', 'store')->where('deleted', '0');
+        $result = Product::with('categori', 'productimages', 'market', 'store', 'productreviews')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
@@ -115,7 +115,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product=Product::with('market', 'store', 'productimages')->find($id);
+        $product=Product::with('market', 'store', 'productimages', 'productreviews')->find($id);
         if (!$product) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }

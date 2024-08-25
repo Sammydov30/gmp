@@ -30,6 +30,34 @@ class ProductResource extends JsonResource
             'market'   => $this->market,
             'store' => $this->store,
             'images' => ProductImagesResource::collection($this->getMedia('images')),
+            'productreviews' => $this->productreviews,
         ];
     }
+
+    //GET ORDER REVIEW
+    // private function GetOrders($product){
+    //     //Get order with product
+    //     $orderlist=array();
+    //     $items=explode(",", $products);
+    //     foreach ($items as $item => $value) {
+    //         $pp=explode("|", $value);
+    //         $pt=[
+    //             "quantity"=>$pp[1],
+    //             "productlist" => $this->GetProductDetails($pp[0]),
+    //         ];
+    //         array_push($productdetails, $pt);
+    //     }
+    //     return $productdetails;
+    // }
+    // private function GetProductDetails($item){
+    //     $product=Product::with('market', 'store', 'productimages')->find($item);
+    //     if (!$product) {
+    //         return null;
+    //     }
+    //     $product = new ProductResource($product);
+    //     //Convert to json then to array (To get Pure array)
+    //     //$item=json_decode(json_encode($productt), true);
+    //     //print_r($item); exit();
+    //     return $product;
+    // }
 }

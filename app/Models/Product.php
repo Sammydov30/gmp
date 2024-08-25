@@ -41,11 +41,8 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(ProductImage::class, 'productid', 'productid');
     }
-
-    public function toArray()
+    public function productreviews()
     {
-        $array = parent::toArray();
-        $array['posted'] = Carbon::parse('2024-08-13 09:00:00')->diffForHumans();
-        return $array;
+        return $this->hasMany(FeedBackRating::class, 'itemid', 'id');
     }
 }
