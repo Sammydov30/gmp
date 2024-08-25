@@ -53,8 +53,8 @@ class ProductController extends Controller
         }
 
         $products=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        return ProductResource::collection($products);
-        //return response()->json($products, 200);
+        //return ProductResource::collection($products);
+        return response()->json($products, 200);
     }
 
     public function getproductgroup(Request $request)
