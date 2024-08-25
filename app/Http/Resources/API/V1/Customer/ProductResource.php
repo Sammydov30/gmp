@@ -2,9 +2,11 @@
 
 namespace App\Http\Resources\API\V1\Customer;
 
+use App\Models\FeedBackRating;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class ProductResource extends JsonResource
 {
@@ -31,6 +33,7 @@ class ProductResource extends JsonResource
             'store' => $this->store,
             'images' => ProductImagesResource::collection($this->getMedia('images')),
             'productreviews' => $this->productreviews,
+            'groupedRatings' => $this->getGroupedreview($this->id)
         ];
     }
 
@@ -60,4 +63,25 @@ class ProductResource extends JsonResource
     //     //print_r($item); exit();
     //     return $product;
     // }
+    private function getGroupedreview($product){
+        $ratings = FeedBackRating::select('rate', DB::raw('COUNT(rate) as count'))->where('itemid', $product)
+        ->groupBy('rate')
+        ->get();
+
+        // Get the total number of reviews
+        $totalReviews = $ratings->sum('count');
+
+        // Calculate the percentage for each rating
+        $groupedRatings = [];
+        foreach ($ratings as $rating) {
+            $groupedRatings[$rating->rating] = [
+                'count' => $rating->count,
+                'percentage' => round(($rating->count / $totalReviews) * 100, 2)
+            ];
+        }
+
+        // Output the result
+        return $groupedRatings;
+
+    }
 }
