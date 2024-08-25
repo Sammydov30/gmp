@@ -93,7 +93,7 @@ class OrderController extends Controller
                 "itemname"=>@$this->GetItemName($pp[0]),
                 "vendorname"=>@$this->GetVendorName($pp[0]),
                 "quantity"=>$pp[1],
-                "imgg" => @$this->GetItemImg($pp[0]),
+                // "imgg" => @$this->GetItemImg($pp[0]),
             ];
             array_push($itemlist, $pt);
         }
