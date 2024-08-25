@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\API\V1\Customer;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class ProductResource extends JsonResource
             'categoryid' => $this->category,
             'description' => $this->description,
             'status' => $this->status,
-            'posted' => $this->posted,
+            'posted' => Carbon::parse('2024-08-13 09:00:00')->diffForHumans(),
             'category' => $this->categori,
             'market'   => $this->market,
             'store' => $this->store,
