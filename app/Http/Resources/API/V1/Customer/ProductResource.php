@@ -74,7 +74,7 @@ class ProductResource extends JsonResource
         // Calculate the percentage for each rating
         $groupedRatings = [];
         foreach ($ratings as $rating) {
-            $groupedRatings[$rating->rating] = [
+            $groupedRatings[$rating->rate] = [
                 'count' => $rating->count,
                 'percentage' => round(($rating->count / $totalReviews) * 100, 2)
             ];
