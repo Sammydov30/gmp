@@ -88,7 +88,7 @@ class OrderController extends Controller
         $items=explode(",", $order->products);
         foreach ($items as $item => $value) {
             $pp=explode("|", $value);
-            print_r($pp); exit();
+            //print_r($pp); exit();
             $pt=[
                 "itemname"=>@$this->GetItemName($pp[0]),
                 "vendorname"=>@$this->GetVendorName($pp[0]),
