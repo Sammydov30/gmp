@@ -73,18 +73,26 @@ class ProductResource extends JsonResource
 
         // Calculate the percentage for each rating
         $groupedRatings = [];
-        // foreach ($ratings as $rating) {
-        //     $groupedRatings[$rating->rate] = [
-        //         'count' => $rating->count,
-        //         'percentage' => round(($rating->count / $totalReviews) * 100, 2)
-        //     ];
-        // }
-        for ($i=0; $i < 5; $i++) {
-            $groupedRatings[] = [
-                'rate' => (isset($ratings[$i]))? $ratings[$i]->rate : '0',
-                'count' => (isset($ratings[$i]))? $ratings[$i]->count : '0',
-                'percentage' => (isset($ratings[$i]))? round(($ratings[$i]->count / $totalReviews) * 100) : '0',
-            ];
+        for ($i=5; $i > 0; $i--) {
+            $found=false;
+            foreach ($ratings as $rating) {
+                if ($i===$rating->rate) {
+                    $groupedRatings[$rating->rate] = [
+                        'rate' => str($i),
+                        'count' => $rating->count,
+                        'percentage' => round(($rating->count / $totalReviews) * 100, 2)
+                    ];
+                    $found=true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $groupedRatings[] = [
+                    'rate' => str($i),
+                    'count' => '0',
+                    'percentage' => '0',
+                ];
+            }
         }
 
         // Output the result
