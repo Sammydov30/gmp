@@ -47,7 +47,7 @@ class OrderController extends Controller
     }
     private function GetCustomerName($customer){
         $customer=Customer::where('gmpid', $customer)->first();
-        return @$customer->name;
+        return @$customer->firstname.' '.@$customer->lastname;
     }
     private function GetRegionName($region){
         $region=Region::where('id', $region)->first();
@@ -65,7 +65,7 @@ class OrderController extends Controller
 
     private function GetItemImg($item){
         $product=Product::with('market', 'store', 'productimages')->find($item);
-        $product = new ProductResource($product);
+        $product = @new ProductResource($product);
         //Convert to json then to array (To get Pure array)
         $item=json_decode(json_encode($product), true);
         //print_r($item); exit();
