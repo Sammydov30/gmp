@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'categoryid' => $this->category,
             'description' => $this->description,
             'status' => $this->status,
-            'posted' => Carbon::parse('2024-08-13 09:00:00')->diffForHumans(),
+            'posted' => Carbon::parse($this->created_at)->diffForHumans(),
             'category' => $this->categori,
             'market'   => $this->market,
             'store' => $this->store,
