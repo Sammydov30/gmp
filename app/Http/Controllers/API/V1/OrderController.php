@@ -55,7 +55,7 @@ class OrderController extends Controller
     }
     private function GetItemName($item){
         $item=Product::where('id', $item)->first();
-        return $item->name;
+        return @$item->name;
     }
     private function GetItemVendor($item){
         $item=Product::where('id', $item)->first();
