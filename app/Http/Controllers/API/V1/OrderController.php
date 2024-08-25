@@ -89,10 +89,10 @@ class OrderController extends Controller
         foreach ($items as $item => $value) {
             $pp=explode("|", $value);
             $pt=[
-                "itemname"=>$this->GetItemName($pp[0]),
-                "vendorname"=>$this->GetVendorName($pp[0]),
+                "itemname"=>@$this->GetItemName($pp[0]),
+                "vendorname"=>@$this->GetVendorName($pp[0]),
                 "quantity"=>$pp[1],
-                "imgg" => $this->GetItemImg($pp[0]),
+                "imgg" => @$this->GetItemImg($pp[0]),
             ];
             array_push($fooditems, $pt);
         }
