@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
@@ -39,5 +40,12 @@ class Product extends Model implements HasMedia
     public function productimages()
     {
         return $this->hasMany(ProductImage::class, 'productid', 'productid');
+    }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['posted'] = Carbon::parse('2024-08-13 09:00:00')->diffForHumans();
+        return $array;
     }
 }
