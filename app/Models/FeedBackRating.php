@@ -35,4 +35,11 @@ class FeedBackRating extends Model
     {
         return $this->hasOne(Product::class, 'id', 'itemid');
     }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['reviewdate'] = gmdate('d-m-Y', $this->rdate);
+        return $array;
+    }
 }
