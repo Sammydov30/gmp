@@ -51,7 +51,7 @@ class OrderController extends Controller
     }
     private function GetRegionName($region){
         $region=Region::where('id', $region)->first();
-        return $region->name;
+        return @$region->name;
     }
     private function GetItemName($item){
         $item=Product::where('id', $item)->first();
