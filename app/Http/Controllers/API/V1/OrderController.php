@@ -84,7 +84,7 @@ class OrderController extends Controller
         }
         $order->customername=$this->GetCustomerName($order->customer);
         $order->regionname=$this->GetRegionName($order->region);
-        $fooditems=array();
+        $itemlist=array();
         $items=explode(",", $order->products);
         foreach ($items as $item => $value) {
             $pp=explode("|", $value);
@@ -95,9 +95,9 @@ class OrderController extends Controller
                 "quantity"=>$pp[1],
                 "imgg" => @$this->GetItemImg($pp[0]),
             ];
-            array_push($fooditems, $pt);
+            array_push($itemlist, $pt);
         }
-        $order->fooditems=$fooditems;
+        $order->itemlist=$itemlist;
 
         $response=[
             "message" => "Fetched Successfully",
