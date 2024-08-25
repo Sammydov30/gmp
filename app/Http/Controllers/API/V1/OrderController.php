@@ -46,8 +46,8 @@ class OrderController extends Controller
         return response()->json($order, 200);
     }
     private function GetCustomerName($customer){
-        $customer=Customer::where('id', $customer)->first();
-        return $customer->name;
+        $customer=Customer::where('gmpid', $customer)->first();
+        return @$customer->name;
     }
     private function GetRegionName($region){
         $region=Region::where('id', $region)->first();
