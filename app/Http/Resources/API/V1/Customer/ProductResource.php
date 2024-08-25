@@ -31,7 +31,7 @@ class ProductResource extends JsonResource
             'category' => $this->categori,
             'market'   => $this->market,
             'store' => $this->store,
-            'images' => ProductImagesResource::collection($this->getMedia('images')),
+            'images' => @ProductImagesResource::collection($this->getMedia('images')),
             'productreviews' => $this->productreviews,
             'groupedRatings' => $this->getGroupedreview($this->id)
         ];
