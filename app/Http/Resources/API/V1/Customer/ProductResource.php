@@ -80,7 +80,7 @@ class ProductResource extends JsonResource
                     $groupedRatings[$rating->rate] = [
                         'rate' => str($i),
                         'count' => $rating->count,
-                        'percentage' => round(($rating->count / $totalReviews) * 100, 2)
+                        'percentage' => round(($rating->count / $totalReviews) * 100)
                     ];
                     $found=true;
                     break;
