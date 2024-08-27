@@ -79,15 +79,16 @@ class SubscriptionController extends Controller
         $user=auth()->user();
         $check=Subscription::where("gmpid", $user->gmpid)->latest()->first();
         $currtime=time();
+        $storecount=Store::where('gmpid', $user->gmpid)->where('deleted', '0')->count();
         if ($check) {
             if ($currtime<$check->expiredtime) {
-                return response()->json(["message" => "You have a active subscription", "status" => "error"], 400);
+                return response()->json(["message" => "You have a active subscription", "storecount" => $storecount, "status" => "error"], 400);
             }
         }
         $activationvalue=ActivationValue::where('id', '1')->first();
         $supamount=$activationvalue->subscriptionamount;
         if(!$this->checkWallet($supamount)){
-            return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
+            return response()->json(["message" => "Insuficient Funds", "storecount" => $storecount, "status" => "error"], 400);
         }
         $sellerid='GMPS'.time();
         Customer::where('gmpid', $user->gmpid)->update(["seller"=>"1", "sellerid"=>$sellerid]);
@@ -113,6 +114,7 @@ class SubscriptionController extends Controller
         return response()->json([
             "message"=>"Subscription made Successfully",
             "state"=>"1",
+            "storecount" => $storecount,
             "status" => "success",
             'subscription' => $subscription,
         ], 200);
@@ -122,16 +124,17 @@ class SubscriptionController extends Controller
     {
         $user=auth()->user();
         $check=Subscription::where("gmpid", $user->gmpid)->latest()->first();
+        $storecount=Store::where('gmpid', $user->gmpid)->where('deleted', '0')->count();
         $currtime=time();
         if ($check) {
             if ($currtime<$check->expiredtime) {
-                return response()->json(["message" => "You have a active subscription", "status" => "error"], 400);
+                return response()->json(["message" => "You have a active subscription", "storecount" => $storecount, "status" => "error"], 400);
             }
         }
         $activationvalue=ActivationValue::where('id', '1')->first();
         $supamount=$activationvalue->subscriptionamount;
         if(!$this->checkWallet($supamount)){
-            return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
+            return response()->json(["message" => "Insuficient Funds", "storecount" => $storecount, "status" => "error"], 400);
         }
         Customer::where('gmpid', $user->gmpid)->update(["seller"=>"1"]);
         $time=time();
@@ -156,6 +159,7 @@ class SubscriptionController extends Controller
         return response()->json([
             "message"=>"Subscription made Successfully",
             "state"=>"1",
+            "storecount" => $storecount,
             "status" => "success",
             'subscription' => $subscription,
         ], 200);
