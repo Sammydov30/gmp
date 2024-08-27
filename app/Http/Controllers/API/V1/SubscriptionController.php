@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\CustomerTransaction;
 use App\Models\FundingHistory;
 use App\Models\Plan;
+use App\Models\Store;
 use App\Models\Subscription;
 use App\Traits\GMPCustomerBalanceTrait;
 use Illuminate\Http\Request;
@@ -65,9 +66,10 @@ class SubscriptionController extends Controller
         }else{
             return response()->json(["message" => "No Active Subscription.", "type" => "1",   "amount"=> $supamount,"status" => "error"], 400);
         }
-
+        $storecount=Store::where('gmpid', $user->gmpid)->where('deleted', '0')->count();
         return response()->json([
             "message"=>"Subscription Active",
+            "storecount" => $storecount,
             "status" => "success"
         ], 200);
     }
