@@ -51,7 +51,7 @@ class SubscriptionController extends Controller
         $user=auth()->user();
         $seller=Customer::where("gmpid", $user->gmpid)->first();
         if ($seller->seller=='0') {
-            return response()->json(["message" => "No Subscription", "type" => "1", "status" => "error"], 400);
+            return response()->json(["message" => "No Active Subscription", "type" => "1", "status" => "error"], 400);
         }
         $sup=Subscription::where("gmpid", $user->gmpid)->latest()->first();
         $currtime=time();
