@@ -50,18 +50,20 @@ class SubscriptionController extends Controller
     {
         $user=auth()->user();
         $seller=Customer::where("gmpid", $user->gmpid)->first();
+        $activationvalue=ActivationValue::where('id', '1')->first();
+        $supamount=$activationvalue->subscriptionamount;
         if ($seller->seller=='0') {
-            return response()->json(["message" => "No Active Subscription", "type" => "1", "status" => "error"], 400);
+            return response()->json(["message" => "No Active Subscription", "type" => "1", "amount"=> $supamount, "status" => "error"], 400);
         }
         $sup=Subscription::where("gmpid", $user->gmpid)->latest()->first();
         $currtime=time();
         if ($sup) {
             if ($currtime>$sup->expiredtime) {
                 Subscription::where('id', $sup->id)->update(["used"=>"1"]);
-                return response()->json(["message" => "No Active Subscription. Subscription Expired", "type" => "2", "status" => "error"], 400);
+                return response()->json(["message" => "No Active Subscription. Subscription Expired", "type" => "2", "amount"=> $supamount, "status" => "error"], 400);
             }
         }else{
-            return response()->json(["message" => "No Active Subscription.", "type" => "1", "status" => "error"], 400);
+            return response()->json(["message" => "No Active Subscription.", "type" => "1",   "amount"=> $supamount,"status" => "error"], 400);
         }
 
         return response()->json([
