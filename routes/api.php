@@ -238,6 +238,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('/categories', CategoryController::class);
     //Products
     Route::get('/general/products', [ProductController::class, 'index']);
+    Route::get('/general/product/{id}', [ProductController::class, 'show']);
     Route::post('/general/productarray', [ProductController::class, 'getproductgroup']);
     //Stores
     Route::apiResource('/general/stores', StoreController::class);
