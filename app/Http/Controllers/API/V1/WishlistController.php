@@ -12,29 +12,29 @@ use App\Models\FundingHistory;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Store;
+use App\Models\Wishlist;
 use App\Traits\GMPCustomerBalanceTrait;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class CartController extends Controller
+class WishlistController extends Controller
 {
     use GMPCustomerBalanceTrait, NotificationTrait;
 
     public function index()
     {
         $user=auth()->user();
-        $result = Cart::where('customer', $user->id);
+        $result = Wishlist::where('customer', $user->id);
 
         if (request()->input("item") != null) {
             $item=request()->input("item");
             $result->where('product', $item);
         }
-        if (request()->input("availability") != null) {
-            $availability=request()->input("availability");
-            $result->where('availability', $availability);
+        if (request()->input("priority") != null) {
+            $priority=request()->input("priority");
+            $result->where('priority', $priority);
         }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortby");
@@ -46,168 +46,60 @@ class CartController extends Controller
         }else{
             $sortOrder='desc';
         }
-        $cart=$result->orderBY($sortBy, $sortOrder)->get();
-
-        $cstatus=$astatus=$totalitems=$totalamount=0;
-        foreach ($cart as $c) {
-            if($c['confirmed']!='1'){
-                $cstatus='0';
-                break;
-            }
-            $cstatus='1';
-
-        }
-        foreach ($cart as $c) {
-            if($c['availability']!='1'){
-                $astatus='0';
-                break;
-            }
-            $astatus='1';
-
-        }
-        //Convert to json then to array (To get Pure array)
-        $cart=json_decode(json_encode($cart), true);
-        foreach ($cart as $c => $v) {
-            $cart[$c]['item']['storename']=$this->getstorename($v['item']['storeid']);
-            $totalitems=$totalitems+$v['quantity'];
-            $totalamount=$totalamount+($v['item']['amount']*$v['quantity']);
-        }
-
-        return response()->json(["cartitems"=>$cart, "cstatus"=>$cstatus, "astatus"=>$astatus, "totalitems"=>$totalitems, "totalamount"=>$totalamount], 200);
-    }
-    public function cartsForVendorsGroup()
-    {
-        $user=auth()->user();
-
-        $cart=DB::table('carts')
-        ->leftjoin('customers','customers.id','=','carts.customer')
-        ->leftjoin('products','products.id','=','carts.product')
-        ->leftjoin('stores','stores.id','=','products.storeid')
-        ->selectRaw('customers.id AS customerid, carts.id AS cartid,
-        carts.confirmed, carts.availability,
-        customers.firstname AS customername,
-        customers.phone AS customerphone,
-        stores.id AS storeid')
-        ->where('customer.sellerid', $user->sellerid)
-        ->groupByRaw('carts.id, carts.confirmed, carts.availability, customerid,
-        customername, customerphone, storeid')
-        ->get()->unique('customerid')->values()->all();
-
-        $cstatus=$astatus=$totalitems=$totalamount=0;
+        $wishlist=$result->orderBY($sortBy, $sortOrder)->get();
 
         //Convert to json then to array (To get Pure array)
-        $cart=json_decode(json_encode($cart), true);
-        foreach ($cart as $c => $v) {
-            $cart[$c]['confirmed']=($this->checkConfirmed($v['customerid'])) ? "1" : "0";;
-        }
+        //$wishlist=json_decode(json_encode($wishlist), true);
 
-        return response()->json(["cartitems"=>$cart], 200);
+        return response()->json(["wishlists"=>$wishlist], 200);
     }
-    private function checkConfirmed($customer) {
-        $cart = Cart::where('customer', $customer)->get();
-        foreach ($cart as $c) {
-            if($c['confirmed']=='0'){
-                return false;
-            }
-        }
-        return true;
-    }
+
 
     private function getstorename($store)
     {
         return Store::where('id', $store)->first()->name;
     }
-    public function addtocart(Request $request)
+    public function addtowishlist(Request $request)
     {
         $user=auth()->user();
         $checkitem=Product::find($request->item);
         if (!$checkitem) {
             return response()->json(["message" => "Item not available.", "status" => "error"], 400);
         }
-        $query=Cart::where('product', $request->item)->where('customer', $user->id)->first();
+        $query=Wishlist::where('product', $request->item)->where('customer', $user->id)->first();
         if ($query) {
-            $cart = Cart::where('product', $request->item)->where('customer', $user->id)->update([
-                'quantity' => $query->quantity+1,
-            ]);
-        }else{
-            $cart = Cart::create([
-                'product' => $request->item,
-                'customer' => $user->id,
-                'quantity' => '1',
-                'availability' => '1',
-                'confirmed' => '1',
-                // 'description'=> $request->description,
-            ]);
+            return response()->json(["message" => "Item Already Exists in Wishlist", "status" => "error"], 400);
         }
-        $cartnum=Cart::where('customer', $user->id)->get();
-        $tcartnum=0;
-        foreach ($cartnum as $c) {
-            $tcartnum=$tcartnum+$c['quantity'];
-        }
+        $wishlist = Wishlist::create([
+            'product' => $request->item,
+            'customer' => $user->id,
+            'priority' => '1',
+            'confirmed' => '1',
+            // 'description'=> $request->description,
+        ]);
+        $wishlistnum=Wishlist::where('customer', $user->id)->get();
+        $twishlistnum=count($wishlistnum);
         $response=[
-            "totalcartnum" => $tcartnum,
-            "message" => "Item Added to Cart",
-            'cart' => $cart,
-            "status" => "success"
-        ];
-
-        return response()->json($response, 201);
-    }
-    public function addtocartgroup(Request $request)
-    {
-        $user=auth()->user();
-        $cartnum=Cart::where('customer', $user->id)->delete();
-        foreach ($request->itemlist as $item) {
-            $checkitem=Product::find($item);
-            if (!$checkitem) {
-                return response()->json(["message" => "An Item not available.", "status" => "error"], 400);
-            }
-            $query=Cart::where('product', $item)->where('customer', $user->id)->first();
-            if ($query) {
-                $cart = Cart::where('product', $item)->where('customer', $user->id)->update([
-                    'quantity' => $query->quantity+1,
-                ]);
-            }else{
-                Cart::create([
-                    'product' => $item,
-                    'customer' => $user->id,
-                    'quantity' => '1',
-                    'availability' => '1',
-                    'confirmed' => '1',
-                    // 'description'=> $request->description,
-                ]);
-            }
-        }
-
-        $cartnum=Cart::where('customer', $user->id)->get();
-        $tcartnum=0;
-        foreach ($cartnum as $c) {
-            $tcartnum=$tcartnum+$c['quantity'];
-        }
-        $response=[
-            "totalcartnum" => $tcartnum,
-            "message" => "Item Added to Cart",
-            'cart' => $cartnum,
+            "totalwishlistnum" => $twishlistnum,
+            "message" => "Item Added to wishlist",
+            'wishlist' => $wishlist,
             "status" => "success"
         ];
 
         return response()->json($response, 201);
     }
 
-    public function removefromcart(Request $request)
+    public function removefromwishlist(Request $request)
     {
         $user=auth()->user();
-        $cart=Cart::where('id', $request->id);
-        if ($cart->first()) {
-            $cart->delete();
-            $cartnum=Cart::where('customer', $user->id)->get();
-            $tcartnum=0;
-            foreach ($cartnum as $c) {
-                $tcartnum=$tcartnum+$c['quantity'];
-            }
+        $wishlist=Wishlist::where('id', $request->id);
+        if ($wishlist->first()) {
+            $wishlist->delete();
+            $wishlistnum=Wishlist::where('customer', $user->id)->get();
+            $twishlistnum=count($wishlistnum);
             $response=[
-                "totalcartnum" => $tcartnum,
-                "message" => "Item removed from Cart",
+                "totalwishlistnum" => $twishlistnum,
+                "message" => "Item removed from wishlist",
                 "status" => "success"
             ];
             return response()->json($response, 201);
@@ -220,131 +112,37 @@ class CartController extends Controller
         }
     }
 
-    public function increaseQuantity(Request $request)
-    {
-        $user=auth()->user();
-        $query=Cart::where('id', $request->id)->first();
-        if ($query) {
-            $cart = Cart::where('id', $request->id)->update([
-                'quantity' => $query->quantity+1,
-                // 'confirmed' => '0',
-                //'quantity' => $request->quantity,
-            ]);
-            $cartnum=Cart::where('customer', $user->id)->get();
-            $tcartnum=0;
-            foreach ($cartnum as $c) {
-                $tcartnum=$tcartnum+$c['quantity'];
-            }
-            $response=[
-                "totalcartnum" => $tcartnum,
-                "message" => "Item Added to Cart",
-                'cart' => $cart,
-                "status" => "success"
-            ];
-            return response()->json($response, 201);
-        }else{
-            $response=[
-                "message" => "Item not found",
-                "status" => "error"
-            ];
-            return response()->json($response, 400);
-        }
-    }
-    public function decreaseQuantity(Request $request)
-    {
-        $user=auth()->user();
-        $query=Cart::where('id', $request->id)->first();
-        if ($query) {
-            if($query->quantity > 1){
-                $cart = Cart::where('id', $request->id)->update([
-                    'quantity' => $query->quantity-1,
-                    // 'confirmed' => '0',
-                    //'quantity' => $request->quantity,
-                ]);
-                $cartnum=Cart::where('customer', $user->id)->get();
-                $tcartnum=0;
-                foreach ($cartnum as $c) {
-                    $tcartnum=$tcartnum+$c['quantity'];
-                }
-                $response=[
-                    "totalcartnum" => $tcartnum,
-                    "message" => "Item removed from Cart",
-                    'cart' => $cart,
-                    "status" => "success"
-                ];
-                return response()->json($response, 201);
-            }
-            return response()->json(["message" => "Error adding to cart", "status" => "error"], 400);
-        }else{
-            $response=[
-                "message" => "Item not found",
-                "status" => "error"
-            ];
-            return response()->json($response, 400);
-        }
-    }
 
-    public function getcartItems($user){
-        $carts=Cart::where('customer', $user)->get();
+    public function getwishlistItems($user){
+        $wishlists=Wishlist::where('customer', $user)->get();
         $items=array();
         $amount=0;
-        foreach ($carts as $cart) {
+        foreach ($wishlists as $wishlist) {
           //$amount=$amount+$row['amount'];
-          $item=$cart['product'].'|'.$cart['quantity'];
+          $item=$wishlist['product'].'|1';
           array_push($items, $item);
         }
         $items=implode(",", $items);
         $data=['items'=>$items, 'amount'=>$amount];
         return $data;
     }
-    public function checkcartItemsA($user){
-        $carts=Cart::where('customer', $user)->get();
-        $items=array();
-        $amount=0;
-        foreach ($carts as $c) {
-            if($c['confirmed']!='1'){
-                return false;
-            }
-            if($c['availability']!='1'){
-                return false;
-            }
-        }
-        return true;
-    }
-    public function checkcartItemsB($user){
-        $cart=Cart::where('customer', $user)->latest('updated_at')->first();
-        $regdate=strtotime($cart->updated_at);
-        $currtime=time();
-        $delay=$currtime - $regdate;
-        if ($delay>900) {
-            $this->unconfirmCart($user);
-            return false;
-        }
-        return true;
-    }
-    function clearCart($user){
-        $cart=Cart::where('customer', $user);
-        if ($cart) {
-            $cart->delete();
+
+    function clearwishlist($user){
+        $wishlist=Wishlist::where('customer', $user);
+        if ($wishlist) {
+            $wishlist->delete();
             return true;
         }
         return false;
     }
-    function unconfirmCart($user){
-        $cart=Cart::where('customer', $user);
-        if ($cart) {
-            $cart->update(['confirmed'=>'0', 'availability'=>'0']);
-            return true;
-        }
-        return false;
-    }
+
     public function checkout(Request $request)
     {
         $user=auth()->user();
-        if(!$this->checkcartItemsA($user->id)){
+        if(!$this->checkwishlistItemsA($user->id)){
             return response()->json(["message" => "Some items may not be available. Remove item(s) and try again", "status" => "error"], 400);
         }
-        // if(!$this->checkcartItemsB($user->id)){
+        // if(!$this->checkwishlistItemsB($user->id)){
         //     return response()->json(["message" => "Please recheck the availability of the items", "status" => "error"], 400);
         // }
         return response()->json(["message" => "Operation Successful", "status" => "success"], 200);
@@ -370,12 +168,49 @@ class CartController extends Controller
         return response()->json($response, 200);
     }
 
+    public function addtocartfromwishlist(Request $request)
+    {
+        $request->validate([
+            'wishlistid' => 'required|numeric',
+        ]);
+        $wishlist=Wishlist::where('id', $request->wishlistid)->first();
+        $checkitem=Product::find($wishlist->product);
+        if (!$checkitem) {
+            return response()->json(["message" => "Item not available.", "status" => "error"], 400);
+        }
+        $query=Cart::where('product', $wishlist->product)->where('customer', $wishlist->customer)->first();
+        if ($query) {
+            $cart = Cart::where('product', $wishlist->product)->where('customer', $wishlist->product)->update([
+                'quantity' => $query->quantity+1,
+            ]);
+        }else{
+            $cart = Cart::create([
+                'product' => $wishlist->product,
+                'customer' => $wishlist->customer,
+                'quantity' => '1',
+                'availability' => '1',
+                'confirmed' => '1',
+                // 'description'=> $request->description,
+            ]);
+        }
+        $cartnum=Cart::where('customer', $wishlist->customer)->get();
+        $tcartnum=0;
+        foreach ($cartnum as $c) {
+            $tcartnum=$tcartnum+$c['quantity'];
+        }
+        $response=[
+            "totalcartnum" => $tcartnum,
+            "message" => "Item Added to Cart",
+            'cart' => $cart,
+            "status" => "success"
+        ];
+
+        return response()->json($response, 201);
+    }
+
     public function addToOrder(MakeOrderRequest $request)
     {
         $user=auth()->user();
-        if(!$this->checkcartItemsA($user->id)){
-            return response()->json(["message" => "Some Items may not be Available.", "status" => "error"], 400);
-        }
         if ($request->paymentmethod=='1') {
             if(!$this->checkWallet($request->totalamount)){
                 return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
@@ -387,7 +222,7 @@ class CartController extends Controller
         $phone = $user->phone;
         $address = $request->address;
         $region = $request->region;
-        $items = $this->getcartItems($user->id)['items'];
+        $items = $this->getwishlistItems($user->id)['items'];
         $orderamount = str_replace(',', '', $request->orderamount);
         $servicefee = str_replace(',', '', $request->servicefee);
         $totalamount = $orderamount+$servicefee;
@@ -400,7 +235,7 @@ class CartController extends Controller
         if(empty($items)){
           unset($request->totalamount);
           unset($request->orderamount);
-          array_push($error, 'Cart is Empty');
+          array_push($error, 'wishlist is Empty');
         }
         if(empty($phone) || empty($address) || empty($region)){
             array_push($error, 'All fields are required');
@@ -422,7 +257,7 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
-            $this->clearCart($user->id);
+            $this->clearwishlist($user->id);
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
@@ -503,7 +338,7 @@ class CartController extends Controller
         $phone = $user->phone;
         $address = $request->address;
         $region = $request->region;
-        //getcartitems= ['items'=>'product|quantity', 'amount'=>'0'];
+        //getwishlistitems= ['items'=>'product|quantity', 'amount'=>'0'];
         $items = $request->productid.'|'.$request->quantity;
         $orderamount = str_replace(',', '', $request->orderamount);
         $servicefee = str_replace(',', '', $request->servicefee);
@@ -517,7 +352,7 @@ class CartController extends Controller
         // if(empty($items)){
         //   unset($request->totalamount);
         //   unset($request->orderamount);
-        //   array_push($error, 'Cart is Empty');
+        //   array_push($error, 'wishlist is Empty');
         // }
         if(empty($phone) || empty($address) || empty($region)){
             array_push($error, 'All fields are required');
@@ -539,7 +374,7 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
-            $this->clearCart($user->id);
+            $this->clearwishlist($user->id);
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);

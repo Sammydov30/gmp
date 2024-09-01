@@ -11,7 +11,10 @@ class StoreController extends Controller
 
     public function index()
     {
-        $result = Store::with('market')->withCount('products')->where('deleted', '0');
+        $result = Store::with('market')->withCount(['products' => function($query) {
+            $query->where('deleted', '0');
+        }])->where('deleted', '0');
+
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");

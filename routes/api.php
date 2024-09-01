@@ -30,6 +30,7 @@ use App\Http\Controllers\API\V1\SpecialItemController;
 use App\Http\Controllers\API\V1\StoreController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
+use App\Http\Controllers\API\V1\WishlistController;
 use App\Http\Controllers\API\V1\WithdrawalController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -139,6 +140,17 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/cart/addtoorder', [CartController::class, 'addToOrder']);
         Route::post('/customer/cart/buynow', [CartController::class, 'BuyNow']);
         Route::post('/customer/cart/verifypayment', [CartController::class, 'verifypayment']);
+
+        //wishlist
+        Route::get('/customer/wishlist/getwishlistitems', [WishlistController::class, 'index']);
+        Route::post('/customer/wishlist/addtowishlist', [WishlistController::class, 'addtowishlist']);
+        Route::post('/customer/wishlist/removefromwishlist', [WishlistController::class, 'removefromwishlist']);
+        Route::post('/customer/wishlist/addtocartfromwishlist', [WishlistController::class, 'addtocartfromwishlist']);
+        //Route::get('/customer/wishlist/confirmavailability', [WishlistController::class, 'confirmavailability']);
+        // Route::get('/customer/wishlist/checkout', [WishlistController::class, 'checkout']);
+        // Route::post('/customer/wishlist/addtoorder', [WishlistController::class, 'addToOrder']);
+        // Route::post('/customer/wishlist/buynow', [WishlistController::class, 'BuyNow']);
+        // Route::post('/customer/wishlist/verifypayment', [WishlistController::class, 'verifypayment']);
 
         //orders
         Route::get('/customer/order/getorders', [OrderController::class, 'index']);
