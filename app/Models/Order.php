@@ -37,8 +37,8 @@ class Order extends Model
     {
         $array = parent::toArray();
         $array['ordertime'] = gmdate('d-m, y h:ia', $this->odate);
-        $array['placedtime'] = @gmdate('d-m, y h:ia', $this->placedtime);
-        $array['deliverytime'] = @gmdate('d-m, y h:ia', $this->deliverytime);
+        $array['placedtime'] = @gmdate('d-m, y h:ia', strtotime($this->placedtime));
+        $array['deliverytime'] = @gmdate('d-m, y h:ia', strtotime($this->deliverytime));
         $array['productdetails'] = $this->GetOrderDetails($this->products);
         $array['ongoing'] = ($this->status=='4') ? '2' : '1';
         return $array;
