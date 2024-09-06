@@ -33,7 +33,7 @@ class Order extends Model
         $array = parent::toArray();
         $array['ordertime'] = gmdate('d-m, y h:ia', $this->odate);
         $array['productdetails'] = $this->GetOrderDetails($this->products);
-
+        $array['ongoing'] = ($this->status=='4') ? '2' : '1';
         return $array;
     }
     public function customer()

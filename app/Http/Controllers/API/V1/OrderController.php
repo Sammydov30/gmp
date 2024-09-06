@@ -26,6 +26,14 @@ class OrderController extends Controller
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
         }
+        if (request()->input("ongoing") != null) {
+            if (request()->input("ongoing")=='1') {
+                $result->whereIn('status', ['0', '1', '2', '3']);
+            }else{
+                $result->whereIn('status', ['4']);
+            }
+
+        }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
             $sortBy=request()->input("sortby");
         }else{
