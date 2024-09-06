@@ -28,7 +28,7 @@ class Order extends Model
         'deliverymode',
         'placedtime',
         'deliverytime',
-        'pickeduptime',
+        'pickuptime',
         'acceptedtime',
         'readytime',
         'status'
