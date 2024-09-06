@@ -38,8 +38,8 @@ class Order extends Model
     {
         $array = parent::toArray();
         $array['ordertime'] = gmdate('d-m, y h:ia', $this->odate); //($this->odate==null) ? $this->odate : @Carbon::parse($this->odate)->format('jS F Y h:ia');
-        $array['placedtime'] =($this->placedtime==null) ? $this->placedtime : @Carbon::parse($this->placedtime)->format('jS F Y h:ia');
-        $array['deliverytime'] = ($this->deliverytime==null) ? $this->deliverytime: @Carbon::parse($this->deliverytime)->format('jS F Y h:ia');
+        $array['placedtime'] =($this->placedtime==null) ? $this->placedtime : @Carbon::parse($this->placedtime)->format('jS F Y,h:ia');
+        $array['deliverytime'] = ($this->deliverytime==null) ? $this->deliverytime: @Carbon::parse($this->deliverytime)->format('jS F Y,h:ia');
         $array['productdetails'] = $this->GetOrderDetails($this->products);
         $array['ongoing'] = ($this->status=='4') ? '2' : '1';
         return $array;
