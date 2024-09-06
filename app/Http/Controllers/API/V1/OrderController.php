@@ -185,7 +185,7 @@ class OrderController extends Controller
     public function UpdateDStatus($orderId, $status){
         // Order::where('orderid', $orderId)->update(['status'=>$status]);
         date_default_timezone_set("Africa/Lagos");
-        $time=date('h:i:s a');
+        $time=date('d-m-Y h:ia');
         if ($status=="1") {
             Order::where('orderid', $orderId)->update(['status'=>$status, 'readytime'=>$time]);
         } else if ($status=="2") {

@@ -26,12 +26,19 @@ class Order extends Model
         'p_status',
         'paymentmethod',
         'deliverymode',
+        'placedtime',
+        'deliverytime',
+        'pickeduptime',
+        'acceptedtime',
+        'readytime',
         'status'
     ];
     public function toArray()
     {
         $array = parent::toArray();
         $array['ordertime'] = gmdate('d-m, y h:ia', $this->odate);
+        $array['placedtime'] = @gmdate('d-m, y h:ia', $this->placedtime);
+        $array['deliverytime'] = @gmdate('d-m, y h:ia', $this->deliverytime);
         $array['productdetails'] = $this->GetOrderDetails($this->products);
         $array['ongoing'] = ($this->status=='4') ? '2' : '1';
         return $array;

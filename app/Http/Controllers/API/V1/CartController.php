@@ -426,7 +426,9 @@ class CartController extends Controller
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
-                Order::where('id', $order->id)->update(['p_status' => '1']);
+                date_default_timezone_set("Africa/Lagos");
+                $time=date('d-m-Y h:ia');
+                Order::where('id', $order->id)->update(['p_status' => '1', 'placedtime' => $time]);
                 FundingHistory::create([
                     'fundingid' => $order->id,
                     'gmpid' => $order->customer,
@@ -656,7 +658,7 @@ class CartController extends Controller
             if( ($transaction->status=="success") && ($transaction->data->status=="successful")
             && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
                 date_default_timezone_set("Africa/Lagos");
-                $time=date('h:i:s a');
+                $time=date('d-m-Y h:ia');
                 $sup=Order::where('id', $purchaseid)->update(['p_status' => '1', 'placedtime' => $time]);
                 $sup=Order::where('id', $purchaseid)->first();
                 $customer=Customer::where('gmpid', $sup->customer)->first();
