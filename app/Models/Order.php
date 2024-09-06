@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Http\Resources\API\V1\Customer\ProductResource;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,7 +38,7 @@ class Order extends Model
     {
         $array = parent::toArray();
         $array['ordertime'] = gmdate('d-m, y h:ia', $this->odate);
-        $array['placedtime'] = @gmdate('d-m, y h:ia', strtotime($this->placedtime));
+        $array['placedtime'] =@Carbon::parse($this->placedtime)->format('jS F Y h:ia');
         $array['deliverytime'] = @gmdate('d-m, y h:ia', strtotime($this->deliverytime));
         $array['productdetails'] = $this->GetOrderDetails($this->products);
         $array['ongoing'] = ($this->status=='4') ? '2' : '1';
