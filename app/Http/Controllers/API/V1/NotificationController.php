@@ -25,7 +25,7 @@ class NotificationController extends Controller
     public function readallnotification(Request $request)
     {
         $customer=auth()->user();
-        Notification::where('investorid', $customer->codenumber)->where('status', '0')->update(['status'=>'1']);
+        Notification::where('gmpid', $customer->gmpid)->where('status', '0')->update(['status'=>'1']);
         return response()->json([
             "status" => "success",
         ], 200);
@@ -34,7 +34,7 @@ class NotificationController extends Controller
     public function getnotificationcount(Request $request)
     {
         $customer=auth()->user();
-        $count=Notification::where('investorid', $customer->codenumber)->where('status', '0')->count();
+        $count=Notification::where('gmpid', $customer->gmpid)->where('status', '0')->count();
         return response()->json([
             "count" => $count,
             "status" => "success",
