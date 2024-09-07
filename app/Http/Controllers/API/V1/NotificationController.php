@@ -31,6 +31,16 @@ class NotificationController extends Controller
         ], 200);
     }
 
+    public function getnotificationcount(Request $request)
+    {
+        $customer=auth()->user();
+        $count=Notification::where('investorid', $customer->codenumber)->where('status', '0')->count();
+        return response()->json([
+            "count" => $count,
+            "status" => "success",
+        ], 200);
+    }
+
     public function fetchnotificationforuser(Request $request)
     {
         $customer=auth()->user();

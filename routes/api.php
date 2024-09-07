@@ -160,6 +160,7 @@ Route::prefix('v1')->group(function () {
 
         //Notification
         Route::get('/customer/notification/fetchnotifications', [NotificationController::class, 'fetchnotificationforuser']);
+        Route::get('/customer/notification/getnotificationcount', [NotificationController::class, 'getnotificationcount']);
         Route::post('/customer/notification/markread', [NotificationController::class, 'readnotification']);
         Route::post('/customer/notification/markallread', [NotificationController::class, 'readallnotification']);
     });
