@@ -161,6 +161,7 @@ Route::prefix('v1')->group(function () {
         //Notification
         Route::get('/customer/notification/fetchnotifications', [NotificationController::class, 'fetchnotificationforuser']);
         Route::post('/customer/notification/markread', [NotificationController::class, 'readnotification']);
+        Route::post('/customer/notification/markallread', [NotificationController::class, 'readallnotification']);
     });
     //Un auth routes
     Route::post('/customer/auth/getstarted', [CustomerAuthController::class, 'getstarted']);

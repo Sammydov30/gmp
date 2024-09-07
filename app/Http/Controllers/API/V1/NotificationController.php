@@ -22,11 +22,20 @@ class NotificationController extends Controller
         ], 200);
     }
 
+    public function readallnotification(Request $request)
+    {
+        $customer=auth()->user();
+        Notification::where('investorid', $customer->codenumber)->where('status', '0')->update(['status'=>'1']);
+        return response()->json([
+            "status" => "success",
+        ], 200);
+    }
+
     public function fetchnotificationforuser(Request $request)
     {
         $customer=auth()->user();
         $result = Notification::where('gmpid', $customer->gmpid);
-        if (!empty($request->read)) {
+        if (!empty($request->read) || $request->read=="0") {
             $result->where('status', $request->read);
         }
         if (!empty($request->type)) {
