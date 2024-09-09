@@ -127,91 +127,91 @@ class DepositHistoryController extends Controller
         } else {
 
 
-                $tx=DepositHistory::where('depositid', $tx_ref)->lockForUpdate()->first();
-                if (!$tx) {
-                    return response()->json(["message"=>"Deposit doesn't exist", "status"=>"error"], 400);
-                }
-                if ($tx->status=="1" || $tx->status=="2") {
-                    return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
-                }
-                if ($tx->inprogress=="1") {
-                    return response()->json(["message"=>"Transaction verification in progress", "status"=>"error"], 400);
-                }
-                $amount = $tx->amount;
-                $userid=$tx->gmpid;
-                $currency = 'NGN';
-                DepositHistory::where('depositid', $tx_ref)->update([
-                    'inprogress' => '1'
+            $tx=DepositHistory::where('depositid', $tx_ref)->lockForUpdate()->first();
+            if (!$tx) {
+                return response()->json(["message"=>"Deposit doesn't exist", "status"=>"error"], 400);
+            }
+            if ($tx->status=="1" || $tx->status=="2") {
+                return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
+            }
+            if ($tx->inprogress=="1") {
+                return response()->json(["message"=>"Transaction verification in progress", "status"=>"error"], 400);
+            }
+            $amount = $tx->amount;
+            $userid=$tx->gmpid;
+            $currency = 'NGN';
+            DepositHistory::where('depositid', $tx_ref)->update([
+                'inprogress' => '1'
+            ]);
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=$tx_ref",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                "Authorization: Bearer ".env('FW_KEY'),
+                "Cache-Control: no-cache",
+                ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            if ($err) {
+                $deposit=DepositHistory::where('depositid', $tx_ref)->update([
+                    'status' => '2',
+                    'inprogress' => '0'
                 ]);
-
-                $curl = curl_init();
-
-                curl_setopt_array($curl, array(
-                    CURLOPT_URL => "https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=$tx_ref",
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_ENCODING => "",
-                    CURLOPT_MAXREDIRS => 10,
-                    CURLOPT_TIMEOUT => 30,
-                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                    CURLOPT_CUSTOMREQUEST => "GET",
-                    CURLOPT_HTTPHEADER => array(
-                    "Authorization: Bearer ".env('FW_KEY'),
-                    "Cache-Control: no-cache",
-                    ),
-                ));
-                $response = curl_exec($curl);
-                $err = curl_error($curl);
-                curl_close($curl);
-                if ($err) {
-                    $deposit=DepositHistory::where('depositid', $tx_ref)->update([
-                        'status' => '2',
+                return response()->json([
+                    'message' => "cURL Error #:" . $err,
+                    'status' => "error"
+                ], 400);
+            } else {
+                $transaction = json_decode($response, FALSE);
+                //print_r($transaction); exit();
+                if( ($transaction->status=="success") && ($transaction->data->status=="successful")
+                && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
+                    $ngnbalance=Customer::where('gmpid', $userid)->first()->ngnbalance;
+                    Customer::where('gmpid', $userid)->update([
+                        'ngnbalance' => $ngnbalance+$transaction->data->amount
+                    ]);
+                    FundingHistory::create([
+                        'fundingid' => $tx->id,
+                        'gmpid' => $tx->gmpid,
+                        'amount'=>$amount,
+                        'ftime'=>$tx->wtime,
+                        'currency'=>$currency,
+                        'status'=>'1',
+                        'type'=>'1',
+                        'which'=> '1'
+                    ]);
+                    DepositHistory::where('depositid', $tx_ref)->update([
+                        'status' => '1',
                         'inprogress' => '0'
                     ]);
+                    $deposit=DepositHistory::where('depositid', $tx_ref)->first();
+                    $this->NotifyMe("Wallet Funded Successfully", $deposit->depositid, "1", "1");
                     return response()->json([
-                        'message' => "cURL Error #:" . $err,
+                        'message' => 'Wallet Funded Successfully',
+                        'details' => $deposit,
+                        'status' => 'success'
+                    ], 200);
+                }else{
+                    $deposit=DepositHistory::where('depositid', $tx_ref)->update([
+                        'status' => '2',
+                        'inprogress'=>'0'
+                    ]);
+                    return response()->json([
+                        'message' => "Payment returned error: " . $transaction->message,
                         'status' => "error"
                     ], 400);
-                } else {
-                    $transaction = json_decode($response, FALSE);
-                    //print_r($transaction); exit();
-                    if( ($transaction->status=="success") && ($transaction->data->status=="successful")
-                    && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
-                        $ngnbalance=Customer::where('gmpid', $userid)->first()->ngnbalance;
-                        Customer::where('gmpid', $userid)->update([
-                            'ngnbalance' => $ngnbalance+$transaction->data->amount
-                        ]);
-                        FundingHistory::create([
-                            'fundingid' => $tx->id,
-                            'gmpid' => $tx->gmpid,
-                            'amount'=>$amount,
-                            'ftime'=>$tx->wtime,
-                            'currency'=>$currency,
-                            'status'=>'1',
-                            'type'=>'1',
-                            'which'=> '1'
-                        ]);
-                        DepositHistory::where('depositid', $tx_ref)->update([
-                            'status' => '1',
-                            'inprogress' => '0'
-                        ]);
-                        $deposit=DepositHistory::where('depositid', $tx_ref)->first();
-                        $this->NotifyMe("Wallet Funded Successfully", $deposit->depositid, "1", "1");
-                        return response()->json([
-                            'message' => 'Wallet Funded Successfully',
-                            'details' => $deposit,
-                            'status' => 'success'
-                        ], 200);
-                    }else{
-                        $deposit=DepositHistory::where('depositid', $tx_ref)->update([
-                            'status' => '2',
-                            'inprogress'=>'0'
-                        ]);
-                        return response()->json([
-                            'message' => "Payment returned error: " . $transaction->message,
-                            'status' => "error"
-                        ], 400);
-                    }
                 }
+            }
 
 
         }
