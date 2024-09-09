@@ -14,6 +14,7 @@ class DepositHistory extends Model
         'amount',
         'wtime',
         'currency',
+        'inprogress',
         'status'
     ];
     public function customer()

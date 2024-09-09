@@ -128,13 +128,18 @@ class DepositHistoryController extends Controller
             if (!$tx) {
                 return response()->json(["message"=>"Deposit doesn't exist", "status"=>"error"], 400);
             }
-            if ($tx->status=="1") {
+            if ($tx->status=="1" || $tx->status=="2") {
                 return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
+            }
+            if ($tx->progress=="1") {
+                return response()->json(["message"=>"Transaction verification in progress", "status"=>"error"], 400);
             }
             $amount = $tx->amount;
             $userid=$tx->gmpid;
             $currency = 'NGN';
-
+            DepositHistory::where('depositid', $tx_ref)->update([
+                'inprogress' => '1'
+            ]);
             $curl = curl_init();
 
             curl_setopt_array($curl, array(
@@ -155,7 +160,8 @@ class DepositHistoryController extends Controller
             curl_close($curl);
             if ($err) {
                 $deposit=DepositHistory::where('depositid', $tx_ref)->update([
-                    'status' => '2'
+                    'status' => '2',
+                    'inprogress' => '0'
                 ]);
                 return response()->json([
                     'message' => "cURL Error #:" . $err,
@@ -181,7 +187,8 @@ class DepositHistoryController extends Controller
                         'which'=> '1'
                     ]);
                     DepositHistory::where('depositid', $tx_ref)->update([
-                        'status' => '1'
+                        'status' => '1',
+                        'inprogress' => '0'
                     ]);
                     $deposit=DepositHistory::where('depositid', $tx_ref)->first();
                     $this->NotifyMe("Wallet Funded Successfully", $deposit->depositid, "1", "1");
@@ -192,7 +199,8 @@ class DepositHistoryController extends Controller
                     ], 200);
                 }else{
                     $deposit=DepositHistory::where('depositid', $tx_ref)->update([
-                        'status' => '2'
+                        'status' => '2',
+                        'inprogress'=>'0'
                     ]);
                     return response()->json([
                         'message' => "Payment returned error: " . $transaction->message,
