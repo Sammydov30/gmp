@@ -161,7 +161,7 @@ class DepositHistoryController extends Controller
             if ($err) {
                 $deposit=DepositHistory::where('depositid', $tx_ref)->update([
                     'status' => '2',
-                    //'inprogress' => '0'
+                    'inprogress' => '0'
                 ]);
                 return response()->json([
                     'message' => "cURL Error #:" . $err,
@@ -188,7 +188,7 @@ class DepositHistoryController extends Controller
                     ]);
                     DepositHistory::where('depositid', $tx_ref)->update([
                         'status' => '1',
-                        //'inprogress' => '0'
+                        'inprogress' => '0'
                     ]);
                     $deposit=DepositHistory::where('depositid', $tx_ref)->first();
                     $this->NotifyMe("Wallet Funded Successfully", $deposit->depositid, "1", "1");
@@ -200,7 +200,7 @@ class DepositHistoryController extends Controller
                 }else{
                     $deposit=DepositHistory::where('depositid', $tx_ref)->update([
                         'status' => '2',
-                        //'inprogress'=>'0'
+                        'inprogress'=>'0'
                     ]);
                     return response()->json([
                         'message' => "Payment returned error: " . $transaction->message,
