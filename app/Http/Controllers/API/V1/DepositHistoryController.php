@@ -125,7 +125,7 @@ class DepositHistoryController extends Controller
         if (empty($tx_ref)) {
             return response()->json(["message"=>"Verification error. No Transaction Id given.", "status"=>"error"], 400);
         } else {
-            DB::transaction(function () use($tx_ref) {
+
 
                 $tx=DepositHistory::where('depositid', $tx_ref)->lockForUpdate()->first();
                 if (!$tx) {
@@ -212,7 +212,7 @@ class DepositHistoryController extends Controller
                         ], 400);
                     }
                 }
-            });
+
 
         }
     }
