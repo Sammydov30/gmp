@@ -173,7 +173,7 @@ class DepositHistoryController extends Controller
                     FundingHistory::create([
                         'fundingid' => $tx->id,
                         'gmpid' => $tx->gmpid,
-                        'amount'=>$transaction->data->amount,
+                        'amount'=>$amount,
                         'ftime'=>$tx->wtime,
                         'currency'=>$currency,
                         'status'=>'1',
