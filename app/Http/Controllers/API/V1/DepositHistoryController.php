@@ -131,7 +131,7 @@ class DepositHistoryController extends Controller
             if ($tx->status=="1" || $tx->status=="2") {
                 return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
             }
-            if ($tx->progress=="1") {
+            if ($tx->inprogress=="1") {
                 return response()->json(["message"=>"Transaction verification in progress", "status"=>"error"], 400);
             }
             $amount = $tx->amount;
