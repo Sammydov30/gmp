@@ -238,6 +238,7 @@ class LogisticsController extends Controller
 
     public function store(CreateInterStateShipmentRequest $request)
     {
+        $user=auth()->user();
         $quantity=[];
         for ($i=0; $i < count($request->itemtype); $i++) {
             if (!is_numeric($request->itemvalue[$i])) {
@@ -288,7 +289,7 @@ class LogisticsController extends Controller
         $logistics = Logistic::create([
             "logisticid"=>$logisticid,
             "pickupvehicle"=>$request->pickupvehicle,
-            "gmpid"=>$request->gmpid,
+            "gmpid"=>$user->gmpid,
             "pickupdate"=>$request->pickupdate,
             "gmppayment"=>$request->gmppayment,
             "p_status"=>$p_status,
