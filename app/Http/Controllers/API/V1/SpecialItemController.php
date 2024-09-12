@@ -36,6 +36,7 @@ class SpecialItemController extends Controller
             "content-type" => "application/json",
         ])->get(env('SOLVENT_BASE_URL').'/api/lists/specialitems', [
             "type"=>"5",
+            'id'=> $request->id
         ]);
         $res=$getrequest->json();
         $response=[

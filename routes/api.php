@@ -27,6 +27,7 @@ use App\Http\Controllers\API\V1\ProductReportingController;
 use App\Http\Controllers\API\V1\RegionController;
 use App\Http\Controllers\API\V1\RegionsController;
 use App\Http\Controllers\API\V1\SpecialItemController;
+use App\Http\Controllers\API\V1\SpecialItemsController;
 use App\Http\Controllers\API\V1\StoreController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
@@ -245,8 +246,10 @@ Route::prefix('v1')->group(function () {
     //Stores
     Route::apiResource('/general/stores', StoreController::class);
     //specialitems
-    Route::get('/specialitems', [SpecialItemController::class, 'index']);
-    Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
+    // Route::get('/specialitems', [SpecialItemController::class, 'index']);
+    // Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
+    Route::get('/specialitems', [SpecialItemsController::class, 'index']);
+    Route::get('/specialitem', [SpecialItemsController::class, 'show']);
 
     Route::get('/getestimate', [GeneralController::class, 'getquote']);
     Route::get('/getpickupvehicle', [GeneralController::class, 'fetchvehicles']);

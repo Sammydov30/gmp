@@ -25,7 +25,7 @@ class LogisticsController extends Controller
     {
         $user=auth()->user();
         $pageno=(isset($request->page)) ? $request->page : 1;
-        $perpage=(isset($request->per_page)) ? $request->per_page : 20; $perpage=intval($perpage);
+        $perpage=(isset($request->perpage)) ? $request->perpage : 20; $perpage=intval($perpage);
         $gmpid=$user->gmpid;
         $parcelid=(!empty($request->parcelid)) ? $request->parcelid : '';
         $trackingid=(!empty($request->trackingid)) ? $request->trackingid : '';
