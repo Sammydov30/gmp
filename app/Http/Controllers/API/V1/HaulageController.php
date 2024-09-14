@@ -9,6 +9,7 @@ use App\Jobs\SendWhatsappMessageJob;
 use App\Models\Haulage;
 use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class HaulageController extends Controller
@@ -19,8 +20,10 @@ class HaulageController extends Controller
         $i=0;
         while ( $i==0) {
           $trackingid=rand(10000000, 99999999);
-          $counthaulage=Haulage::where('trackingid', $trackingid)->count();
-          if ($counthaulage<1) {
+          $query1 = DB::table('shipment')->select('trackingid')->where('trackingid', $trackingid);
+          $query2 = DB::table('haulages')->select('trackingid')->where('trackingid', $trackingid);
+          $countshipment = $query1->union($query2)->count();
+          if ($countshipment<1) {
             $i=1;
           }
         }
@@ -30,12 +33,13 @@ class HaulageController extends Controller
         $i=0;
         while ( $i==0) {
           $orderid=$this->generateRandomString(8);
-          $counthaulage=Haulage::where('orderid', $orderid)->count();
-          if ($counthaulage<1) {
+          $query1 = DB::table('shipment')->select('orderid')->where('orderid', $orderid);
+          $query2 = DB::table('haulages')->select('orderid')->where('orderid', $orderid);
+          $countshipment = $query1->union($query2)->count();
+          if ($countshipment<1) {
             $i=1;
           }
         }
-        return $orderid;
     }
 
     public function generateRandomString($length = 25) {

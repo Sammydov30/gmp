@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LogisticInfo extends Model
+class ShipmentInfo extends Model
 {
     use HasFactory;
-    protected $table='temp_shipment_info';
+    protected $table='shipment_info';
     protected $fillable = [
         "shipment_id",
         "type",
