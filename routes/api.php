@@ -88,11 +88,11 @@ Route::prefix('v1')->group(function () {
 
         //Logistics
         Route::get('/customer/logistics/fetchall', [ShipmentController::class, 'index']);
-        Route::get('/customer/logistics/fetchrecent', [LogisticsController::class, 'fetchrecent']);
-        Route::get('/customer/logistics/fetch', [LogisticsController::class, 'getshipment']);
+        Route::get('/customer/logistics/fetchrecent', [ShipmentController::class, 'fetchrecent']);
+        Route::get('/customer/logistics/fetch', [ShipmentController::class, 'getshipment']);
         Route::get('/customer/logistics/track', [ShipmentController::class, 'track']);
         Route::post('/customer/logistics/makelogistics', [ShipmentController::class, 'store']);
-        Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
+        Route::post('/customer/logistics/getquote', [ShipmentController::class, 'getquote']);
         Route::post('/customer/logistics/verifypayment', [ShipmentController::class, 'verifypayment']);
 
         //Haulages

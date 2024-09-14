@@ -116,49 +116,47 @@ class ShipmentController extends Controller
     public function fetchrecent(Request $request)
     {
         $user=auth()->user();
-        $gmpid=$user->gmpid;
-        $getrequest = Http::withHeaders([
-            "content-type" => "application/json",
-            // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/recentshipmentlist', [
-            "gmpid"=>$gmpid,
-        ]);
-        $res=$getrequest->json();
-        //print_r($res); exit();
-        if (!$res['status']) {
-            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
-        }else{
-            if ($res['status']=="error") {
-                return response()->json(["message" => $res['message'], "status" => "error"], 400);
-            }else{
-                $res_arr=$res['data'];
-                $output['data']=$res_arr;
-                $output['message']="Fetched Successfully";
+        $result = Shipment::with('shipmentinfo')
+        ->leftJoin('payment_type', 'shipment.paymenttype', '=', 'payment_type.id')
+        ->leftJoin('payment_method', 'shipment.paymentmethod', '=', 'payment_method.id')
+        ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
+        ->leftJoin('branches', 'shipment.branch', '=', 'branches.id')
+        ->leftJoin('trip', 'shipment.tripno', '=', 'trip.tripno')
+        ->select('shipment.*', 'payment_type.name as paymenttypename', 'payment_method.name as paymentmethodname',
+        'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'trip.status as sstatus',)
+        ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1');
 
-                return response()->json($output, 201);
-            }
-        }
+        $shipments=$result->orderBY('id', 'desc')->get();
+        $response=[
+            "message"=>"Fetched Successfully",
+            "data"=>$shipments,
+        ];
+        return response()->json($response, 200);
     }
 
     public function getshipment(Request $request)
     {
-        $getrequest = Http::withHeaders([
-            "content-type" => "application/json",
-            // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getshipmentdetails', [
-            "id"=>$request->shipmentid,
-        ]);
-        $res=$getrequest->json();
-        //print_r($res); exit();
-        if (!$res['status']) {
-            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
-        }else{
-            if ($res['status']=="error") {
-                return response()->json(["message" => $res['message'], "status" => "error"], 400);
-            }else{
-                return response()->json($res, 200);
-            }
+        $user=auth()->user();
+        $result = Shipment::with('shipmentinfo')
+        ->leftJoin('payment_type', 'shipment.paymenttype', '=', 'payment_type.id')
+        ->leftJoin('payment_method', 'shipment.paymentmethod', '=', 'payment_method.id')
+        ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
+        ->leftJoin('branches', 'shipment.branch', '=', 'branches.id')
+        ->leftJoin('trip', 'shipment.tripno', '=', 'trip.tripno')
+        ->select('shipment.*', 'payment_type.name as paymenttypename', 'payment_method.name as paymentmethodname',
+        'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'trip.status as sstatus',)
+        ->where('gmpid', $user->gmpid);
+        $shipment=$result->where('id', $request->shipmentid)->first();
+        if (!$shipment) {
+            return response()->json(["message" => "Shipment doesn't exist", "status" => "error"], 400);
         }
+        $response=[
+            "message"=>"Fetched Successfully",
+            "data"=>$shipment,
+            "status"=>"success"
+        ];
+        return response()->json($response, 200);
+
     }
 
     public function track(Request $request)
@@ -173,7 +171,7 @@ class ShipmentController extends Controller
             'data' => $shipment,
             "status" => "success"
         ];
-        return response()->json($response, 201);
+        return response()->json($response, 200);
     }
 
     public function getquote(GetInterStateQuoteRequest $request)
@@ -190,7 +188,7 @@ class ShipmentController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
             "pickupvehicle"=>$request->pickupvehicle,
             "deliverymode"=>$request->deliverymode,
             "pickupcenter"=>$request->pickupcenter,
@@ -234,7 +232,7 @@ class ShipmentController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
             "pickupvehicle"=>$pickupvehicle,
             "deliverymode"=>$deliverymode,
             "pickupcenter"=>$pickupcenter,
@@ -332,6 +330,9 @@ class ShipmentController extends Controller
                 "client_type"=>"0",
                 "cod"=>"2",
                 "cod_amount"=>"0",
+                "solventapproved"=>'0',
+                "newest"=>'1',
+                "type"=>'1',
                 "trackingid"=>$this->getTrackingNO(),
                 "orderid"=>$this->getDeliveryNO(),
             ]);
@@ -539,6 +540,9 @@ class ShipmentController extends Controller
                         "client_type"=>"0",
                         "cod"=>"2",
                         "cod_amount"=>"0",
+                        "solventapproved"=>'0',
+                        "newest"=>'1',
+                        "type"=>'1',
                         "trackingid"=>$this->getTrackingNO(),
                         "orderid"=>$this->getDeliveryNO(),
                     ]);

@@ -38,7 +38,7 @@ class LogisticsController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/shipmentlist', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/shipmentlist', [
             "parcelid"=>$parcelid,
             "trackingid"=>$trackingid,
             "gmpid"=>$gmpid,
@@ -174,7 +174,7 @@ class LogisticsController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/recentshipmentlist', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/recentshipmentlist', [
             "gmpid"=>$gmpid,
         ]);
         $res=$getrequest->json();
@@ -199,7 +199,7 @@ class LogisticsController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getshipmentdetails', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getshipmentdetails', [
             "id"=>$request->shipmentid,
         ]);
         $res=$getrequest->json();
@@ -220,7 +220,7 @@ class LogisticsController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/track', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/track', [
             "trackingno"=>$request->trackingno,
         ]);
         $res=$getrequest->json();
@@ -326,7 +326,7 @@ class LogisticsController extends Controller
             $createrequest = Http::withHeaders([
                 "content-type" => "application/json",
                 // "Authorization" => "Bearer ",
-            ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipment', [
+            ])->post(env('SOLVENT_BASE_URL_TEST').'/api/shipment/createshipment', [
                 "pickupvehicle"=>$request->pickupvehicle,
                 "gmpid"=>$request->gmpid,
                 "pickupdate"=>$request->pickupdate,
@@ -445,7 +445,7 @@ class LogisticsController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
             "pickupvehicle"=>$request->pickupvehicle,
             "deliverymode"=>$request->deliverymode,
             "pickupcenter"=>$request->pickupcenter,
@@ -489,7 +489,7 @@ class LogisticsController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
             "pickupvehicle"=>$pickupvehicle,
             "deliverymode"=>$deliverymode,
             "pickupcenter"=>$pickupcenter,
@@ -572,7 +572,7 @@ class LogisticsController extends Controller
                     $createrequest = Http::withHeaders([
                         "content-type" => "application/json",
                         // "Authorization" => "Bearer ",
-                    ])->post(env('SOLVENT_BASE_URL').'/api/shipment/createshipment', [
+                    ])->post(env('SOLVENT_BASE_URL_TEST').'/api/shipment/createshipment', [
                         "pickupvehicle"=>$logistics->pickupvehicle,
                         "gmpid"=>$logistics->gmpid,
                         "pickupdate"=>$logistics->pickupdate,

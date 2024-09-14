@@ -5,17 +5,14 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CreateInterStateShipmentRequestTP;
 use App\Http\Requests\GetQuoteRequest;
-use App\Http\Resources\API\V1\Customer\TrackShipmentResource2;
 use App\Jobs\TPEmailJob;
 use App\Jobs\TPSMSJob;
 use App\Models\ActivationValue;
-use App\Models\Shipment;
-use App\Models\ShipmentInfo;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class GeneralController extends Controller
 {
@@ -37,7 +34,7 @@ class GeneralController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
+        ])->get(env('SOLVENT_BASE_URL2').'/api/shipment/getquote', [
             // "pickupvehicle"=>$request->pickupvehicle,
             // "deliverymode"=>$request->deliverymode,
             // "pickupcenter"=>$request->pickupcenter,
@@ -124,128 +121,112 @@ class GeneralController extends Controller
 
         $logisticid="GMPLOG".time();
 
-
-        $logistics = Shipment::create([
-            "entity_guid"=>Str::uuid(),
+        $createrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->post(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/createshipmentfortp', [
             "pickupvehicle"=>$request->pickupvehicle,
             "gmpid"=>$request->userid,
             "pickupdate"=>$request->pickupdate,
-            "gmppayment"=>"3",
-            "p_status"=>"1",
+            "gmppayment"=>$request->gmppayment,
+            "p_status"=>'1',
             "deliverymode"=>$request->deliverymode,
             "pickupcenter"=>$request->pickupcenter,
-            "cname"=>$request->cname,
-            "cphone"=>$request->cphone,
-            "caddress"=>$request->caddress,
-            "rname"=>$request->rname,
-            "rphone"=>$request->rphone,
-            "raddress"=>$request->raddress,
-            "fromregion"=>$request->sourceregion,
-            "toregion"=>$request->destinationregion,
+            "cname"=>$request->customername,
+            "cphone"=>$request->customerphone,
+            "caddress"=>$request->customeraddress,
+            "rname"=>$request->recipientname,
+            "rphone"=>$request->recipientphone,
+            "raddress"=>$request->recipientaddress,
+            "sourceregion"=>$request->sourceregion,
+            "destinationregion"=>$request->destinationregion,
             "totalweight"=>$request->totalweight,
-            "amount_collected"=>$request->totalamount,
-            "branch"=>$this->getFirstBranchByRegion($request->sourceregion),
-            "rbranch"=>($request->deliverymode=='2') ? $this->getFirstBranchByRegion($request->sourceregion) : $request->pickupcenter,
-            "collection_time"=>time(),
-            "fromgmp"=>'2',
-            "fromcountry"=>"1",
-            "paymenttype"=>"1",
-            "paymentmethod"=>"2",
-            "mot"=>"2",
-            "client_type"=>"0",
-            "cod"=>"2",
-            "cod_amount"=>"0",
-            "solventapproved"=>'0',
-            "newest"=>'1',
-            "type"=>'1',
-            "trackingid"=>$this->getTrackingNO(),
-            "orderid"=>$this->getDeliveryNO(),
+            "totalamount"=>$request->totalamount,
+            "stype"=>$request->itemtype,
+            "sitem"=>($request->item)?$request->item:'',
+            "sname"=>$request->itemname,
+            "sweight"=>$request->itemweight,
+            // "sweighttype"=>'1',
+            // "squantity"=>'1',
+            // "slength"=>'1',
+            // "swidth"=>'1',
+            // "sheight"=>'1',
+            "svalue_declaration"=>$request->itemvalue
         ]);
-        for ($i=0; $i < count($request->itemtype); $i++) {
-            ShipmentInfo::create([
-                "entity_guid"=>Str::uuid(),
-                "shipment_id"=>$logistics->id,
-                "type"=>$request->itemtype[$i],
-                "item"=>$request->item[$i],
-                "name"=>$request->itemname[$i],
-                "weight"=>$request->itemweight[$i],
-                "quantity"=>$request->itemquantity[$i],
-                "weighttype"=>'1',
-                "length"=>'1',
-                "width"=>'1',
-                "height"=>'1',
-                "value_declaration"=>$request->itemvalue[$i]
-            ]);
-        }
+        $res=$createrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating record", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                //$this->NotifyMe("Logistics Booked", $res['data']['trackingid'], "3", "2");
+                $details = [
+                    'trackingid'=>$res['data']['trackingid'],
+                    'orderid'=>$res['data']['orderid'],
+                    'email' => 'samydov@gmail.com',
+                    'phone'=>'2347065975827',
+                    'subject' => 'Gavice/Shipbubble',
+                ];
+                try {
+                    dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
+                try {
+                    dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
 
-        //$this->NotifyMe("Logistics Booked", $res['data']['trackingid'], "3", "2");
-        $details = [
-            'trackingid'=>$logistics->trackingid,
-            'orderid'=>$logistics->orderid,
-            'email' => 'samydov@gmail.com',
-            'phone'=>'2347065975827',
-            'subject' => 'Gavice/Shipbubble',
-        ];
-        try {
-            dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
-        } catch (\Throwable $e) {
-            report($e);
-            Log::error('Error in sending: '.$e->getMessage());
-        }
-        try {
-            dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
-        } catch (\Throwable $e) {
-            report($e);
-            Log::error('Error in sending: '.$e->getMessage());
-        }
 
-        $details = [
-            'trackingid'=>$logistics->trackingid,
-            'orderid'=>$logistics->orderid,
-            'email' => 'akatobi.samuel@gmail.com',
-            'phone'=>'2348108655684',
-            'subject' => 'Gavice/Shipbubble',
-        ];
-        try {
-            dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
-        } catch (\Throwable $e) {
-            report($e);
-            Log::error('Error in sending: '.$e->getMessage());
+                $details = [
+                    'trackingid'=>$res['data']['trackingid'],
+                    'orderid'=>$res['data']['orderid'],
+                    'email' => 'akatobi.samuel@gmail.com',
+                    'phone'=>'2348108655684',
+                    'subject' => 'Gavice/Shipbubble',
+                ];
+                try {
+                    dispatch(new TPSMSJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
+                try {
+                    dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
+                } catch (\Throwable $e) {
+                    report($e);
+                    Log::error('Error in sending: '.$e->getMessage());
+                }
+                return response()->json($res, 201);
+            }
         }
-        try {
-            dispatch(new TPEmailJob($details))->delay(now()->addSeconds(1));
-        } catch (\Throwable $e) {
-            report($e);
-            Log::error('Error in sending: '.$e->getMessage());
-        }
-        $shipment=Shipment::where('id', $logistics->id)->first();
-        if (!$shipment) {
-            return response()->json(["message" => "Tracking No does not Exist", "status" => "error"], 400);
-        }
-        $shipment = @new TrackShipmentResource2($shipment);
-        $response=[
-            "message" => "Shipment Created Successfully",
-            'data' => $logistics,
-            "status" => "success"
-        ];
-        return response()->json($response, 201);
-
 
     }
 
     public function trackfor3p(Request $request)
     {
-        $shipment=Shipment::with('shipmentinfo')->where('trackingid', $request->trackingno)->where('deleted', '0')->where('status', '!=', '4')->where('type', '1')->first();
-        if (!$shipment) {
-            return response()->json(["message" => "Tracking No does not Exist", "status" => "error"], 400);
+        $getrequest = Http::withHeaders([
+            "content-type" => "application/json",
+            // "Authorization" => "Bearer ",
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/trackfor3p', [
+            "trackingno"=>$request->trackingno,
+        ]);
+        $res=$getrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while creating account", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                return response()->json($res, 200);
+            }
         }
-        $shipment = @new TrackShipmentResource2($shipment);
-        $response=[
-            "message" => "Fetched successfully",
-            'data' => $shipment,
-            "status" => "success"
-        ];
-        return response()->json($response, 200);
     }
 
 }

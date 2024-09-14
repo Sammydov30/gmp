@@ -18,7 +18,7 @@ class RegionController extends Controller
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/regions', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/regions', [
             "type"=>"4",
         ]);
         $res=$createrequest->json();
@@ -34,7 +34,7 @@ class RegionController extends Controller
     {
         $createrequest = Http::withHeaders([
             "content-type" => "application/json",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/regions', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/regions', [
             "type"=>"5",
         ]);
         $res=$createrequest->json();

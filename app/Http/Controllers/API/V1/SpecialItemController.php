@@ -18,7 +18,7 @@ class SpecialItemController extends Controller
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
             // "Authorization" => "Bearer ",
-        ])->get(env('SOLVENT_BASE_URL2').'/api/lists/specialitems', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE2').'/api/lists/specialitems', [
             "type"=>"4",
         ]);
         $res=$getrequest->json();
@@ -34,7 +34,7 @@ class SpecialItemController extends Controller
     {
         $getrequest = Http::withHeaders([
             "content-type" => "application/json",
-        ])->get(env('SOLVENT_BASE_URL').'/api/lists/specialitems', [
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/specialitems', [
             "type"=>"5",
             'id'=> $request->id
         ]);
