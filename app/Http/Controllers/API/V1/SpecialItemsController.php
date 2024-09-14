@@ -42,9 +42,7 @@ class SpecialItemsController extends Controller
             "totalrecords" => count($data),
             "totaldisplayrecords" => count($data),
             "data" => $data
-          );
-          echo json_encode($dataset);
-
+        );
         //$data=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
         return response()->json($dataset, 200);
     }
