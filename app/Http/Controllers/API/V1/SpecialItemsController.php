@@ -43,8 +43,9 @@ class SpecialItemsController extends Controller
             "totaldisplayrecords" => count($data),
             "data" => $data
         );
+        $response=["message"=>"Fetched Successfully", "specialitems"=>$dataset, "status"=>"success"];
         //$data=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        return response()->json($dataset, 200);
+        return response()->json($response, 200);
     }
 
     /**
