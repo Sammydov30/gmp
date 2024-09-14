@@ -35,7 +35,7 @@ class ShipmentController extends Controller
         ->leftJoin('payment_method', 'shipment.paymentmethod', '=', 'payment_method.id')
         ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
         ->leftJoin('branches', 'shipment.branch', '=', 'branches.id')
-        ->leftJoin('trip', 'shipment.tripno', '=', 'tripno.tripno')
+        ->leftJoin('trip', 'shipment.tripno', '=', 'trip.tripno')
         ->select('shipment.*', 'payment_type.name as paymenttypename', 'trip.status as sstatus',
         'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'payment_type.name as paymenttypename')
         ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1');
