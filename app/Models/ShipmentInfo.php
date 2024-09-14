@@ -10,6 +10,7 @@ class ShipmentInfo extends Model
     use HasFactory;
     protected $table='shipment_info';
     protected $fillable = [
+        "entity_guid",
         "shipment_id",
         "type",
         "item",
