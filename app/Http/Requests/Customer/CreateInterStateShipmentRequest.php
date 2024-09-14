@@ -29,7 +29,6 @@ class CreateInterStateShipmentRequest extends FormRequest
     {
         return [
             "pickupvehicle"=>['required', 'numeric'],
-            "gmpid"=>['required'],
             "pickupdate"=>['required'],
             "gmppayment"=>['required', 'numeric'],
             "deliverymode"=>['required', 'numeric'],
