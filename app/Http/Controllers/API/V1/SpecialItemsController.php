@@ -84,9 +84,9 @@ class SpecialItemsController extends Controller
         return response()->json($response, 201);
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
-        $region=SpecialItem::find($id);
+        $region=SpecialItem::find($request->id);
         if (!$region) {
             return response()->json(["message" => " Not Found.", "status" => "error"], 400);
         }
