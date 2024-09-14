@@ -150,7 +150,7 @@ class Shipment extends Model
         }
         array_merge($array, $row);
 
-        return $array;
+        return $row;
     }
     public function customer()
     {
