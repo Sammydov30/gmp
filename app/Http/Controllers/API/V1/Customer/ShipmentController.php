@@ -124,7 +124,8 @@ class ShipmentController extends Controller
         ->leftJoin('trip', 'shipment.tripno', '=', 'trip.tripno')
         ->select('shipment.*', 'payment_type.name as paymenttypename', 'payment_method.name as paymentmethodname',
         'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'trip.status as sstatus',)
-        ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1');
+        ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1')
+        ->limit(20);
 
         $shipments=$result->orderBY('id', 'desc')->get();
         $response=[
