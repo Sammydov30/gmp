@@ -163,7 +163,7 @@ class ShipmentController extends Controller
 
     public function track(Request $request)
     {
-        $shipment=Shipment::where('trackingid', $request->trackingno)->where('deleted', '1')->where('status', '4')->first();
+        $shipment=Shipment::where('trackingid', $request->trackingno)->where('deleted', '0')->where('status', '!=', '4')->first();
         if (!$shipment) {
             return response()->json(["message" => "Tracking No does not Exist", "status" => "error"], 400);
         }
