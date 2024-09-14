@@ -422,7 +422,7 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
-            $this->clearCart($user->id);
+            //$this->clearCart($user->id);
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
@@ -657,6 +657,7 @@ class CartController extends Controller
             $transaction = json_decode($response, FALSE);
             if( ($transaction->status=="success") && ($transaction->data->status=="successful")
             && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
+                $this->clearCart($customer->id);
                 date_default_timezone_set("Africa/Lagos");
                 $time=date('d-m-Y h:ia');
                 $sup=Order::where('id', $purchaseid)->update(['p_status' => '1', 'placedtime' => $time]);
