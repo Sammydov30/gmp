@@ -36,8 +36,8 @@ class ShipmentController extends Controller
         ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
         ->leftJoin('branches', 'shipment.branch', '=', 'branches.id')
         ->leftJoin('trip', 'shipment.tripno', '=', 'trip.tripno')
-        ->select('shipment.*', 'payment_type.name as paymenttypename', 'trip.status as sstatus',
-        'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'payment_type.name as paymenttypename')
+        ->select('shipment.*', 'payment_type.name as paymenttypename', 'payment_method.name as paymentmethodname',
+        'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'trip.status as sstatus',)
         ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1');
         if (request()->input("parcelid") != null) {
             $orderid=request()->input("parcelid");
