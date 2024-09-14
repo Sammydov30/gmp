@@ -146,7 +146,7 @@ class ShipmentController extends Controller
         ->select('shipment.*', 'payment_type.name as paymenttypename', 'payment_method.name as paymentmethodname',
         'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'trip.status as sstatus',)
         ->where('gmpid', $user->gmpid);
-        $shipment=$result->where('id', $request->shipmentid)->first();
+        $shipment=$result->where('shipment.id', $request->shipmentid)->first();
         if (!$shipment) {
             return response()->json(["message" => "Shipment doesn't exist", "status" => "error"], 400);
         }
