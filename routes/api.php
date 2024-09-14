@@ -14,6 +14,7 @@ use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
 use App\Http\Controllers\API\V1\CartController;
+use App\Http\Controllers\API\V1\Customer\ShipmentController;
 use App\Http\Controllers\API\V1\FeedBackRatingController;
 use App\Http\Controllers\API\V1\GeneralController;
 use App\Http\Controllers\API\V1\HaulageController;
@@ -86,13 +87,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/product/report/addreport', [ProductReportingController::class, 'store']);
 
         //Logistics
-        Route::get('/customer/logistics/fetchall', [LogisticsController::class, 'index']);
+        Route::get('/customer/logistics/fetchall', [ShipmentController::class, 'index']);
         Route::get('/customer/logistics/fetchrecent', [LogisticsController::class, 'fetchrecent']);
         Route::get('/customer/logistics/fetch', [LogisticsController::class, 'getshipment']);
-        Route::get('/customer/logistics/track', [LogisticsController::class, 'track']);
-        Route::post('/customer/logistics/makelogistics', [LogisticsController::class, 'store']);
+        Route::get('/customer/logistics/track', [ShipmentController::class, 'track']);
+        Route::post('/customer/logistics/makelogistics', [ShipmentController::class, 'store']);
         Route::post('/customer/logistics/getquote', [LogisticsController::class, 'getquote']);
-        Route::post('/customer/logistics/verifypayment', [LogisticsController::class, 'verifypayment']);
+        Route::post('/customer/logistics/verifypayment', [ShipmentController::class, 'verifypayment']);
 
         //Haulages
         Route::get('/customer/haulages/fetchall', [HaulageController::class, 'index']);
