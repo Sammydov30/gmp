@@ -30,7 +30,7 @@ class ShipmentController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Shipment::with('customer')
+        $result = Shipment::with('shipmentinfo')
         ->leftJoin('payment_type', 'shipment.paymenttype', '=', 'payment_type.id')
         ->leftJoin('payment_method', 'shipment.paymentmethod', '=', 'payment_method.id')
         ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
