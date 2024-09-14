@@ -30,7 +30,15 @@ class ShipmentController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Shipment::with('customer')->where('gmpid', $user->gmpid)->where('p_status', '1');
+        $result = Shipment::with('customer')
+        ->leftJoin('payment_type', 'shipment.paymenttype', '=', 'payment_type.id')
+        ->leftJoin('payment_method', 'shipment.paymentmethod', '=', 'payment_method.id')
+        ->leftJoin('deliverytimes', 'shipment.deliverytime', '=', 'deliverytimes.id')
+        ->leftJoin('branches', 'shipment.branch', '=', 'branches.id')
+        ->leftJoin('trip', 'shipment.tripno', '=', 'tripno.tripno')
+        ->select('shipment.*', 'payment_type.name as paymenttypename', 'trip.status as sstatus',
+        'deliverytimes.name as deliverytimename', 'branches.name as branchname', 'payment_type.name as paymenttypename')
+        ->where('gmpid', $user->gmpid)->where('fromgmp', '1')->where('p_status', '1')->where('shipment.deleted', '0')->where('shipment.type', '1');
         if (request()->input("parcelid") != null) {
             $orderid=request()->input("parcelid");
             $result->where('orderid', $orderid);
@@ -51,26 +59,26 @@ class ShipmentController extends Controller
             $status=request()->input("status");
             switch($status) {
               case '1':
-                $result->where('status', '0');
+                $result->where('shipment.status', '0');
                 break;
               case '2':
-                $result->where('status', '100');
+                $result->where('shipment.status', '100');
                 break;
               case '3':
                 $result->where(function($query) {
-                    $query->where('status', '200')->orWhere('status', '300');
+                    $query->where('shipment.status', '200')->orWhere('shipment.status', '300');
                 });
                 break;
               case '4':
                 $result->where(function($query) {
-                    $query->where('status', '400')->orWhere('status', '500');
+                    $query->where('shipment.status', '400')->orWhere('shipment.status', '500');
                 });
                 break;
               case '5':
-                $result->where('status', '1');
+                $result->where('shipment.status', '1');
                 break;
               case '6':
-                $result->where('status', '4');
+                $result->where('shipment.status', '4');
                 break;
             }
           }
@@ -80,14 +88,14 @@ class ShipmentController extends Controller
             }
             $startdate= date('Y-m-d',strtotime(request()->input("startdate")));
             $enddate=date('Y-m-d',strtotime(request()->input("stopdate")));
-            $result->whereBetween('created_at', [$startdate, $enddate]);
+            $result->whereBetween('shipment.created_at', [$startdate, $enddate]);
         }elseif(request()->input("startdate") != null){
             $startdate= date('Y-m-d',strtotime(request()->input("startdate")));
             $enddate=Carbon::tomorrow()->format('Y-m-d');
-            $result->whereBetween('created_at', [$startdate, $enddate]);
+            $result->whereBetween('shipment.created_at', [$startdate, $enddate]);
         }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
-            $sortBy=request()->input("sortby");
+            $sortBy='shipment.'.request()->input("sortby");
         }else{
             $sortBy='id';
         }

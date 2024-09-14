@@ -148,9 +148,9 @@ class Shipment extends Model
             $row['statustype']='Registered';
             $row['statuscode']='0';
         }
-        array_merge($array, $row);
+        $array += $row;
 
-        return $row;
+        return $array;
     }
     public function customer()
     {
