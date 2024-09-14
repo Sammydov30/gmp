@@ -17,9 +17,9 @@ class TrackShipmentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        $row=(array) $this;
+        $row = parent::toArray($request);
         $con=[];
         $con['whichtype']='1';
         $con['trackingid']=$row['trackingid'];
