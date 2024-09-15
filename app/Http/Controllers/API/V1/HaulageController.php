@@ -11,6 +11,7 @@ use App\Traits\NotificationTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class HaulageController extends Controller
 {
@@ -109,6 +110,7 @@ class HaulageController extends Controller
     {
         $user=auth()->user();
         $haulage = Haulage::create([
+            "entity_guid"=>Str::uuid(),
             'orderid'=> $this->getDeliveryNO(),
             'trackingid'=> $this->getTrackingNO(),
             'gmpid' => $user->gmpid,

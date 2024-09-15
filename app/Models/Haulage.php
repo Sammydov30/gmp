@@ -10,6 +10,7 @@ class Haulage extends Model
     use HasFactory;
 
     protected $fillable = [
+        'entity_guid',
         'gmpid',
         'orderid',
         'trackingid',
