@@ -140,13 +140,17 @@ class Shipment extends Model
             $row['statustype']='Delivered';
             $row['statuscode']='5';
             break;
-          case '4':
-            $row['statustype']='Cancelled';
-            $row['statuscode']='6';
+        //   case '4':
+        //     $row['statustype']='Cancelled';
+        //     $row['statuscode']='6';
             break;
           default:
             $row['statustype']='Registered';
             $row['statuscode']='0';
+        }
+        if ($this->cancel=='1') {
+            $row['statustype']='Cancelled';
+            $row['statuscode']='6';
         }
         $array += $row;
 

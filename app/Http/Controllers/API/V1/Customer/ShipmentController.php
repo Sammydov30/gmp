@@ -78,10 +78,10 @@ class ShipmentController extends Controller
                 $result->where('shipment.status', '1');
                 break;
               case '6':
-                $result->where('shipment.status', '4');
+                $result->where('shipment.cancel', '1');
                 break;
             }
-          }
+        }
         if (request()->input("stopdate") != null) {
             if (request()->input("startdate") == null) {
                 return response()->json(["message" => "start-date required if end-date given.", "status" => "error"], 400);

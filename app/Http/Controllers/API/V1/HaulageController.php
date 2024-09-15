@@ -65,8 +65,25 @@ class HaulageController extends Controller
         if (!empty($request->phone)) {
             $result->where('phone', "like", "%{$request->phone}%");
         }
-        if (!empty($request->status)) {
-            $result->where('status', $request->status);
+        // if (!empty($request->status)) {
+        //     $result->where('status', $request->status);
+        // }
+        if ($request->status != null) {
+            $status=request()->input("status");
+            switch($status) {
+              case '1':
+                $result->where('status', '1');
+                break;
+              case '2':
+                $result->where('status', '2');
+                break;
+              case '3':
+                $result->where('status', '3');
+                break;
+              case '4':
+                $result->where('cancel', '1');
+                break;
+            }
         }
         if (!empty($request->sortby) && in_array($request->sortby, ['id', 'created_at'])) {
             $sortBy=$request->sortby;
