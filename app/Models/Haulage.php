@@ -22,6 +22,10 @@ class Haulage extends Model
         'status',
         'rdate',
         'destination_region',
+        'fromgmp',
+        'solventapproved',
+        'paymenttype',
+        'paymentmethod',
         'user_guid',
         'who'
     ];

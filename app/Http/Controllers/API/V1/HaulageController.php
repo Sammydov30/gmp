@@ -54,10 +54,11 @@ class HaulageController extends Controller
 
     public function index(Request $request)
     {
-        $result = Haulage::where('id', '!=', '0');
-        if (!empty($request->gmpid)) {
-            $result->where('gmpid', $request->gmpid);
-        }
+        $user=auth()->user();
+        $result = Haulage::where('gmpid', $user->gmpid);
+        // if (!empty($request->gmpid)) {
+        //     $result->where('gmpid', $request->gmpid);
+        // }
         if (!empty($request->name)) {
             $result->where('name', "like", "%{$request->name}%");
         }
@@ -101,7 +102,9 @@ class HaulageController extends Controller
             'destination'=> $request->destination_region,
             'address'=> $request->address,
             'description'=> $request->description,
-            'user_guid'=>$request->name,
+            'solventapproved'=>'0',
+            'fromgmp'=>'1',
+            'user_guid'=>$request->gmpid,
             'who'=>'10',
             'rdate'=> time(),
         ]);
