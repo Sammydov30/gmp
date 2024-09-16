@@ -160,6 +160,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/order/getorder', [OrderController::class, 'getSingleOrder']);
         //Route::get('/customer/seller/order/getorder', [OrderController::class, 'getSingleOrder']);
 
+        //Seller Action
+        Route::get('/seller/order/getorders', [OrderController::class, 'sellerorderlist']);
+        Route::get('/seller/order/getorder', [OrderController::class, 'getSingleOrder']);
+        Route::post('/seller/order/markaccepted', [OrderController::class, 'markAccepted']);
+        Route::post('/seller/order/markready', [OrderController::class, 'markReady']);
+        Route::post('/seller/order/markcancelled', [OrderController::class, 'markCancelled']);
+
+
         //Notification
         Route::get('/customer/notification/fetchnotifications', [NotificationController::class, 'fetchnotificationforuser']);
         Route::get('/customer/notification/getnotificationcount', [NotificationController::class, 'getnotificationcount']);
@@ -241,7 +249,7 @@ Route::prefix('v1')->group(function () {
     //category
     Route::apiResource('/categories', CategoryController::class);
     //Products
-    Route::get('/general/products', [ProductController::class, 'index']);
+    Route::get('/general/products', [ProductController::class, 'index2']);
     Route::get('/general/product/{id}', [ProductController::class, 'show']);
     Route::post('/general/productarray', [ProductController::class, 'getproductgroup']);
     //Stores

@@ -459,6 +459,7 @@ class CartController extends Controller
                     'type'=>'2',
                     'which'=>'3'
                 ]);
+                $this->clearCart($user->id);
                 $this->NotifyMe("Order Booked Successfully", $order->orderid, "2", "3");
                 $this->NotifyMe("Account Debited", "Your wallet is Charged for ".$order->orderid, "2", "1");
                 $response=[

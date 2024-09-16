@@ -187,9 +187,9 @@ class OrderController extends Controller
         date_default_timezone_set("Africa/Lagos");
         $time=date('d-m-Y h:ia');
         if ($status=="1") {
-            Order::where('orderid', $orderId)->update(['status'=>$status, 'readytime'=>$time]);
-        } else if ($status=="2") {
             Order::where('orderid', $orderId)->update(['status'=>$status, 'acceptedtime'=>$time]);
+        } else if ($status=="2") {
+            Order::where('orderid', $orderId)->update(['status'=>$status, 'readytime'=>$time]);
         }else if ($status=="3") {
             Order::where('orderid', $orderId)->update(['status'=>$status, 'pickuptime'=>$time]);
         }else if ($status=="4") {
@@ -202,12 +202,12 @@ class OrderController extends Controller
         return $response;
     }
     public function markReady(Request $request){
-        $response=$this->UpdateDStatus($request->orderid, '1');
+        $response=$this->UpdateDStatus($request->orderid, '2');
         return response()->json($response, 200);
     }
     public function markAccepted(Request $request){
         $rider=auth()->user();
-        $response=$this->UpdateDStatus($request->orderid, '2');
+        $response=$this->UpdateDStatus($request->orderid, '1');
         return response()->json($response, 200);
     }
     public function markPickedUp(Request $request){
@@ -224,8 +224,48 @@ class OrderController extends Controller
         return response()->json($response, 200);
     }
     public function markCancelled(Request $request){
+        $order=Order::where('orderid', $request->orderid)->first();
+        if (@$order->status=="3" || @$order->status=="4") {
+            return response()->json(["message"=>"Order Cannot be cancelled at this time.", "status"=>"error"], 400);
+        }
         $response=$this->UpdateDStatus($request->orderid, '5');
         return response()->json($response, 200);
+    }
+
+    public function sellerorderlist()
+    {
+        $user=auth()->user();
+        $result = Order::with('customer')->where('sellerid', $user->gmpid)->where('p_status', '1');
+        if (request()->input("orderid") != null) {
+            $orderid=request()->input("orderid");
+            $result->where('orderid', $orderid);
+        }
+        if (request()->input("ongoing") != null) {
+            if (request()->input("ongoing")=='1') {
+                $result->whereIn('status', ['0', '1', '2', '3']);
+            }else{
+                $result->whereIn('status', ['4']);
+            }
+
+        }
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'created_at'])) {
+            $sortBy=request()->input("sortby");
+        }else{
+            $sortBy='id';
+        }
+        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
+            $sortOrder=request()->input("sortorder");
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty(request()->input("perpage"))) {
+            $perPage=request()->input("perpage");
+        } else {
+            $perPage=100;
+        }
+
+        $order=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return response()->json($order, 200);
     }
 
 }

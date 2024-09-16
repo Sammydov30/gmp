@@ -57,10 +57,54 @@ class ProductController extends Controller
         //return response()->json($products, 200);
     }
 
+    public function index2()
+    {
+        $result = Product::with('categori', 'productimages', 'market', 'store', 'productreviews')->where('approved', '1')->where('deleted', '0');
+        if (request()->input("search") != null) {
+            $search=request()->input("search");
+            $result->where('name', "like", "%{$search}%");
+        }
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
+        }
+        if (request()->input("categoryid") != null) {
+            $search=request()->input("categoryid");
+            $result->where('category', $search);
+        }
+        if (request()->input("marketid") != null) {
+            $search=request()->input("marketid");
+            $result->where('marketid', $search);
+        }
+        if (request()->input("storeid") != null) {
+            $search=request()->input("storeid");
+            $result->where('storeid', $search);
+        }
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
+            $sortBy=request()->input("sortby");
+        }else{
+            $sortBy='id';
+        }
+        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
+            $sortOrder=request()->input("sortorder");
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty(request()->input("perpage"))) {
+            $perPage=request()->input("perpage");
+        } else {
+            $perPage=10;
+        }
+
+        $products=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return ProductResource::collection($products);
+        //return response()->json($products, 200);
+    }
+
     public function getproductgroup(Request $request)
     {
         $result = Product::with('productimages', 'market', 'store');
-        $products=$result->whereIn('id', $request->productlist)->get();
+        $products=$result->whereIn('id', $request->productlist)->where('approved', '1')->get();
         return ProductResource::collection($products);
         //return response()->json($products, 200);
     }

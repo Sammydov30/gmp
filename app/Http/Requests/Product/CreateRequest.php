@@ -33,6 +33,12 @@ class CreateRequest extends FormRequest
             'category' => 'required',
             'price' => ['required', 'numeric'],
             'description' => 'required',
+            'price' => ['required', 'numeric'],
+            'quantity' => 'required|numeric',
+            'weight' => 'required|numeric',
+            'height' => 'required|numeric',
+            'length' => 'required|numeric',
+            'width' => 'required|numeric',
             'images.*' => 'nullable|image|mimes:jpg,png,jpeg,svg|max:2048',
         ];
     }
