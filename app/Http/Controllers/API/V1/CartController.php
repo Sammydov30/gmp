@@ -130,9 +130,16 @@ class CartController extends Controller
                 'quantity' => $query->quantity+1,
             ]);
         }else{
+            $query2=Cart::where('customer', $user->id)->first();
+            if ($query2) {
+                if ($query2->storeid!=$checkitem->storeid) {
+                    return response()->json(["message" => "Item must be from the same store", "status" => "error"], 400);
+                }
+            }
             $cart = Cart::create([
                 'product' => $request->item,
                 'customer' => $user->id,
+                'storeid'=> $checkitem->storeid,
                 'quantity' => '1',
                 'availability' => '1',
                 'confirmed' => '1',
@@ -168,9 +175,17 @@ class CartController extends Controller
                     'quantity' => $query->quantity+1,
                 ]);
             }else{
+                $query2=Cart::where('customer', $user->id)->first();
+                if ($query2) {
+                    if ($query2->storeid!=$checkitem->storeid) {
+                        Cart::where('customer', $user->id)->delete();
+                        return response()->json(["message" => "Items must be from the same store", "status" => "error"], 400);
+                    }
+                }
                 Cart::create([
                     'product' => $item,
                     'customer' => $user->id,
+                    'storeid'=> $checkitem->storeid,
                     'quantity' => '1',
                     'availability' => '1',
                     'confirmed' => '1',
@@ -289,12 +304,13 @@ class CartController extends Controller
         $items=array();
         $amount=0;
         foreach ($carts as $cart) {
+            $storeid=$cart['storeid'];
           //$amount=$amount+$row['amount'];
           $item=$cart['product'].'|'.$cart['quantity'];
           array_push($items, $item);
         }
         $items=implode(",", $items);
-        $data=['items'=>$items, 'amount'=>$amount];
+        $data=['items'=>$items, 'amount'=>$amount, 'storeid'=>$storeid];
         return $data;
     }
     public function checkcartItemsA($user){
@@ -388,6 +404,8 @@ class CartController extends Controller
         $address = $request->address;
         $region = $request->region;
         $items = $this->getcartItems($user->id)['items'];
+        $storeid = $this->getcartItems($user->id)['storeid'];
+        $sellerid =Store::where('id', $storeid)->first()->gmpid;
         $orderamount = str_replace(',', '', $request->orderamount);
         $servicefee = str_replace(',', '', $request->servicefee);
         $totalamount = $orderamount+$servicefee;
@@ -409,6 +427,8 @@ class CartController extends Controller
             $order = Order::create([
                 'orderid' => $orderid,
                 'customer' => $user->gmpid,
+                'storeid'=>$storeid,
+                'sellerid'=>$sellerid,
                 'products' => $items,
                 'address'=>$address,
                 'phone'=>$phone,
