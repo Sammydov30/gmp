@@ -643,7 +643,7 @@ class CartController extends Controller
             }
             $amount = $tx->totalamount;
             $userid=$tx->customer;
-            $customer = Customer::where('id', $userid)->first();
+            $customer = Customer::where('gmpid', $userid)->first();
             $purchaseid=$tx->id;
             $currency = 'NGN';
 
