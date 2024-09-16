@@ -202,21 +202,21 @@ class OrderController extends Controller
         return $response;
     }
     public function markReady(Request $request){
-        $response=$this->UpdateDStatus($request->orderId, '1');
+        $response=$this->UpdateDStatus($request->orderid, '1');
         return response()->json($response, 200);
     }
     public function markAccepted(Request $request){
         $rider=auth()->user();
-        $response=$this->UpdateDStatus($request->orderId, '2');
+        $response=$this->UpdateDStatus($request->orderid, '2');
         return response()->json($response, 200);
     }
     public function markPickedUp(Request $request){
-        $response=$this->UpdateDStatus($request->orderId, '3');
+        $response=$this->UpdateDStatus($request->orderid, '3');
         return response()->json($response, 200);
     }
     public function markDelivered(Request $request){
         $rider=auth()->user();
-        $response=$this->UpdateDStatus($request->orderId, '4');
+        $response=$this->UpdateDStatus($request->orderid, '4');
         $log=Order::where('orderid', $request->orderId)->first();
         $location=$log->region;
         $this->updateEarning($rider->riderid);
@@ -224,7 +224,7 @@ class OrderController extends Controller
         return response()->json($response, 200);
     }
     public function markCancelled(Request $request){
-        $response=$this->UpdateDStatus($request->orderId, '5');
+        $response=$this->UpdateDStatus($request->orderid, '5');
         return response()->json($response, 200);
     }
 
