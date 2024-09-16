@@ -677,7 +677,6 @@ class CartController extends Controller
             $transaction = json_decode($response, FALSE);
             if( ($transaction->status=="success") && ($transaction->data->status=="successful")
             && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
-                echo $customer->id; exit();
                 $this->clearCart($customer->id);
                 date_default_timezone_set("Africa/Lagos");
                 $time=date('d-m-Y h:ia');
