@@ -479,7 +479,7 @@ class CartController extends Controller
         }else{
             $p_status='0';
         }
-        $phone = $user->phone;
+        $phone = $user->phone; //CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->phone;
         $address = $request->address;
         $region = $request->region;
         $items = $this->getcartItems($user->id)['items'];
@@ -498,9 +498,6 @@ class CartController extends Controller
           unset($request->totalamount);
           unset($request->orderamount);
           array_push($error, 'Cart is Empty');
-        }
-        if(empty($phone) || empty($address) || empty($region)){
-            array_push($error, 'All fields are required');
         }
         if (empty($error)) {
             $order = Order::create([
