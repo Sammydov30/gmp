@@ -372,7 +372,8 @@ class CartController extends Controller
         $user=auth()->user();
         $request->validate([
             'region' => 'required|integer',
-            'logisticsprovider' => 'required|integer'
+            'logisticsprovider' => 'required|integer',
+            'deliverymode' => 'required|integer'
         ]);
         $error=$output=array();
         // if (empty($request->region)) {
