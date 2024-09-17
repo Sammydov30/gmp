@@ -212,6 +212,51 @@ class OrderController extends Controller
             $buyer=Customer::where('gmpid', $order->customer)->first();
             $seller=Customer::where('gmpid', $order->sellerid)->first();
 
+            $con=[
+                "entity_guid"=>Str::uuid(),
+                "pickupvehicle"=>"1",
+                "gmpid"=>$order->customer,
+                "pickupdate"=>date('d-m-Y'),
+                "gmppayment"=>$order->paymentmethod,
+                "p_status"=>"1",
+                "deliverymode"=>$order->deliverymode,
+                "cname"=>$seller->firstname. " ". $seller->lastname,
+                "cphone"=>$seller->phone,
+                "caddress"=>$seller->address." ".$seller->location,
+                "rname"=>$buyer->firstname. " ". $buyer->lastname,
+                "rphone"=>$buyer->phone,
+                "raddress"=>$buyer->address." ".$buyer->location,
+                "fromregion"=>$seller->region,
+                "toregion"=>$buyer->region,
+                "totalweight"=>$order->totalweight,
+                "amount_collected"=>$order->servicefee,
+                "branch"=>$this->getFirstBranchByRegion($seller->region),
+                "rbranch"=>($request->deliverymode=='2') ? $this->getFirstBranchByRegion($buyer->region) : "1",
+                "pickupcenter"=>($request->deliverymode=='2') ? $this->getFirstBranchByRegion($buyer->region) : "1",
+                "collection_time"=>time(),
+                "fromgmp"=>'1',
+                "fromorderlist"=>'1',
+                "gmporderid"=>$order->orderid,
+                "fromcountry"=>"1",
+                "paymenttype"=>"1",
+                "paymentmethod"=>"2",
+                "mot"=>"2",
+                "client_type"=>"0",
+                "cod"=>"2",
+                "cod_amount"=>"0",
+                "solventapproved"=>'0',
+                "newest"=>'1',
+                "type"=>'1',
+                "trackingid"=>$this->getTrackingNO(),
+                "orderid"=>$this->getDeliveryNO(),
+            ];
+            print_r($con); exit();
+
+
+
+
+
+
             $logistics = Shipment::create([
                 "entity_guid"=>Str::uuid(),
                 "pickupvehicle"=>"1",
