@@ -426,8 +426,8 @@ class CartController extends Controller
                 "destinationregion"=>$destinationregion,
                 "lat"=>$request->latitude,
                 "lng"=>$request->longitude,
-                "itemtype"=>serialize($itemtype),
-                "sitem"=>serialize($sitem),
+                "itemtype"=>$itemtype,
+                "sitem"=>$sitem,
                 "itemquantity"=>serialize($quantity),
                 "itemweight"=>serialize($itemweight),
                 "itemvalue"=>serialize($itemvalue)
