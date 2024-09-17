@@ -368,10 +368,17 @@ class CartController extends Controller
 
     public function getShippingRate (Request $request)
     {
+        $request->validate([
+            'region' => 'required|integer',
+            'logisticsprovider' => 'required|integer'
+        ]);
         $error=$output=array();
-        if (empty($request->region)) {
-            array_push($error,"Region is Required");
-          }
+        // if (empty($request->region)) {
+        //     array_push($error,"Region is Required");
+        // }
+        // if (empty($request->logisticsprovider)) {
+        //     array_push($error," is Required");
+        // }
         if(!empty($error)){
             return response()->json(["message" => $error, "status" => "error"], 400);
         }

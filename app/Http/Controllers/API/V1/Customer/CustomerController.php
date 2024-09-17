@@ -35,7 +35,7 @@ class CustomerController extends Controller
             $customer->locationname=@$this->getRegioname($customer->location);
             $customer->address=$checkcustomeraddress->address;
         }else{
-            $customer->location=$customer->state;
+            $customer->location=$customer->region;
             $customer->locationname=@$this->getRegioname($customer->location);
         }
         return response()->json([
@@ -141,7 +141,7 @@ class CustomerController extends Controller
         Customer::where('id', $user->id)->update([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
-            'email' => $request->email,
+            //'email' => $request->email,
             'phone' => $request->phone,
         ]);
         $customer=Customer::where('id', $user->id)->first();

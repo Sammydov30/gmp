@@ -31,7 +31,7 @@ class CustomerProfileRequest extends FormRequest
             'firstname' => ['required', 'string', 'max:300'],
             'lastname' => ['required', 'string', 'max:300'],
             'phone' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/',
-            'email' => 'required|email|max:255',
+            //'email' => 'required|email|max:255',
             //'country' => ['required'],
             // 'employmentstatus' => ['required'],
             // 'weight' => ['required'],

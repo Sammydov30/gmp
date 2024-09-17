@@ -42,6 +42,7 @@ class Customer extends Authenticatable
         'city',
         'country',
         'state',
+        'region',
         'dob',
         'gender',
         'active',

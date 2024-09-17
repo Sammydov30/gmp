@@ -33,6 +33,7 @@ class RegisterRequest extends FormRequest
             'firstname' => ['required', 'string', 'max:300'],
             'lastname' => ['required', 'string', 'max:300'],
             'location' => ['required'],
+            'address' => ['required'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             // 'cpassword' => ['required', 'same:password'],
         ];

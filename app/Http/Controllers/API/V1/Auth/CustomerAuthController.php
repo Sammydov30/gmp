@@ -14,6 +14,7 @@ use App\Jobs\Customer\GetStartedOtpJob;
 use App\Jobs\Customer\RegisterEmailJob;
 use App\Jobs\CustomerForgotPasswordEmailJob;
 use App\Models\Customer;
+use App\Models\CustomerAddress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -110,11 +111,21 @@ class CustomerAuthController extends Controller
             'email' => $request->email,
             'phone'=>$request->phone,
             'password' => Hash::make($request->password),
-            'state' => $request->location,
+            'region' => $request->location,
+            'address' => $request->address,
             'refcode' => $this->getReferralNO(),
             'status' => '1'
         ]);
         $customer = Customer::where('email', $request->email)->first();
+        CustomerAddress::create([
+            'gmpid' => $customer->gmpid,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'phonenumber' => $request->phone,
+            'location' => $request->location,
+            'address' => $request->address,
+            'status'=>'1'
+        ]);
         $message="Welcome ".$request->firstname;
         $subject = 'GMP Customer Registration';
         $details = [
