@@ -238,7 +238,7 @@ class CustomerController extends Controller
         }
         $address = CustomerAddress::find($request->id);
         if ($address->status=='1') {
-            $laddr=CustomerAddress::where('gmpid', $user->gmpid)->latest()->first();
+            $laddr=CustomerAddress::where('gmpid', $user->gmpid)->where('id', '!=', $address->id)->latest()->first();
             CustomerAddress::where('id', $laddr->id)->update(['status'=>'1']);
         }
         $address->delete();
