@@ -516,12 +516,12 @@ class CartController extends Controller
                 'totalamount'=>$totalamount,
                 'odate'=>$order_date,
                 "paymentmethod" => $paymentmethod,
+                "logisticsprovider" => $request->logisticsprovider,
                 "deliverymode" => $deliverymode,
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
             //$this->clearCart($user->id);
-
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
                 date_default_timezone_set("Africa/Lagos");
@@ -636,6 +636,7 @@ class CartController extends Controller
                 'totalamount'=>$totalamount,
                 'odate'=>$order_date,
                 "paymentmethod" => $paymentmethod,
+                "logisticsprovider" => $request->logisticsprovider,
                 "deliverymode" => $deliverymode,
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'

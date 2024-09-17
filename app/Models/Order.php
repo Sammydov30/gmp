@@ -29,6 +29,7 @@ class Order extends Model
         'currency',
         'p_status',
         'paymentmethod',
+        'logisticsprovider',
         'deliverymode',
         'placedtime',
         'deliverytime',

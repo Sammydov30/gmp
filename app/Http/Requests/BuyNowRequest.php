@@ -37,6 +37,7 @@ class BuyNowRequest extends FormRequest
             'servicefee' => ['required'],
             'totalamount' => ['required'],
             'paymentmethod' => ['required'],
+            'logisticsprovider' => ['required'],
             'deliverymode' => ['required'],
         ];
     }
