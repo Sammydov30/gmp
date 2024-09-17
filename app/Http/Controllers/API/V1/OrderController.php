@@ -207,6 +207,9 @@ class OrderController extends Controller
     }
     public function markReady(Request $request){
         $order = Order::where('orderid', $request->orderid)->first();
+        if (@$order->status!="1") {
+            return response()->json(["message"=>"Cannot perform action", "status"=>"error"], 400);
+        }
 
         if ($order->logisticsprovider=="1") {
             $buyer=Customer::where('gmpid', $order->customer)->first();
