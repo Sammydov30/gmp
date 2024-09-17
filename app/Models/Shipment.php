@@ -42,6 +42,8 @@ class Shipment extends Model
         "pickupcenter",
         "pickupdate",
         "fromgmp",
+        "fromorderlist",
+        "gmporderid",
         "gmppayment",
         "p_status",
         "solventapproved",

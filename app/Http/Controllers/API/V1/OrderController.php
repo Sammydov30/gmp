@@ -7,14 +7,18 @@ use App\Http\Resources\API\V1\Customer\ProductResource;
 use App\Models\Customer;
 use App\Models\Item;
 use App\Models\Order;
+use App\Models\PickupCenter;
 use App\Models\Product;
 use App\Models\Region;
 use App\Models\Rider;
+use App\Models\Shipment;
+use App\Models\ShipmentInfo;
 use App\Models\Staff;
 use App\Models\Store;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -202,7 +206,79 @@ class OrderController extends Controller
         return $response;
     }
     public function markReady(Request $request){
-        $response=$this->UpdateDStatus($request->orderid, '2');
+        $order = Order::where('orderid', $request->orderid)->first();
+
+        if ($order->logisticsprovider=="1") {
+            $buyer=Customer::where('gmpid', $order->customer)->first();
+            $seller=Customer::where('gmpid', $order->sellerid)->first();
+
+            $logistics = Shipment::create([
+                "entity_guid"=>Str::uuid(),
+                "pickupvehicle"=>"1",
+                "gmpid"=>$order->customer,
+                "pickupdate"=>date('d-m-Y'),
+                "gmppayment"=>$order->paymentmethod,
+                "p_status"=>"1",
+                "deliverymode"=>$order->deliverymode,
+                "cname"=>$seller->firstname. " ". $seller->lastname,
+                "cphone"=>$seller->phone,
+                "caddress"=>$seller->address." ".$seller->location,
+                "rname"=>$buyer->firstname. " ". $buyer->lastname,
+                "rphone"=>$buyer->phone,
+                "raddress"=>$buyer->address." ".$buyer->location,
+                "fromregion"=>$seller->region,
+                "toregion"=>$buyer->region,
+                "totalweight"=>$order->totalweight,
+                "amount_collected"=>$order->servicefee,
+                "branch"=>$this->getFirstBranchByRegion($seller->region),
+                "rbranch"=>($request->deliverymode=='2') ? $this->getFirstBranchByRegion($buyer->region) : "1",
+                "pickupcenter"=>($request->deliverymode=='2') ? $this->getFirstBranchByRegion($buyer->region) : "1",
+                "collection_time"=>time(),
+                "fromgmp"=>'1',
+                "fromorderlist"=>'1',
+                "gmporderid"=>$order->orderid,
+                "fromcountry"=>"1",
+                "paymenttype"=>"1",
+                "paymentmethod"=>"2",
+                "mot"=>"2",
+                "client_type"=>"0",
+                "cod"=>"2",
+                "cod_amount"=>"0",
+                "solventapproved"=>'0',
+                "newest"=>'1',
+                "type"=>'1',
+                "trackingid"=>$this->getTrackingNO(),
+                "orderid"=>$this->getDeliveryNO(),
+            ]);
+
+            $prod_quants=explode(",", $order->products);
+            foreach ($prod_quants as $one) {
+                $ex=explode("|", $one);
+                $product=$ex[0]; $quantity=$ex[1];
+                $productdetails=Product::where('id', $product)->first();
+                ShipmentInfo::create([
+                    "entity_guid"=>Str::uuid(),
+                    "shipment_id"=>$logistics->id,
+                    "type"=>$productdetails->itemcat,
+                    "item"=>$productdetails->packagetype,
+                    "name"=>$productdetails->name,
+                    "weight"=>$productdetails->weight,
+                    "quantity"=>$quantity,
+                    "weighttype"=>'1',
+                    "length"=>$productdetails->length,
+                    "width"=>$productdetails->width,
+                    "height"=>$productdetails->height,
+                    "value_declaration"=>$productdetails->amount
+                ]);
+            }
+
+            $response=$this->UpdateDStatus($request->orderid, '2');
+        } else {
+            $response=$this->UpdateDStatus($request->orderid, '2');
+            $response=$this->UpdateDStatus($request->orderid, '3');
+            $response=$this->UpdateDStatus($request->orderid, '4');
+        }
+
         return response()->json($response, 200);
     }
     public function markAccepted(Request $request){
@@ -266,6 +342,35 @@ class OrderController extends Controller
 
         $order=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
         return response()->json($order, 200);
+    }
+    public function getFirstBranchByRegion($region) {
+        return PickupCenter::where('state', $region)->first()->id;
+    }
+    public function getTrackingNO() {
+        $i=0;
+        while ( $i==0) {
+          $trackingid=rand(10000000, 99999999);
+          $query1 = DB::table('shipment')->select('trackingid')->where('trackingid', $trackingid);
+          $query2 = DB::table('haulages')->select('trackingid')->where('trackingid', $trackingid);
+          $countshipment = $query1->union($query2)->count();
+          if ($countshipment<1) {
+            $i=1;
+          }
+        }
+        return $trackingid;
+    }
+    public function getDeliveryNO() {
+        $i=0;
+        while ( $i==0) {
+          $orderid=$this->generateRandomString(8);
+          $query1 = DB::table('shipment')->select('orderid')->where('orderid', $orderid);
+          $query2 = DB::table('haulages')->select('orderid')->where('orderid', $orderid);
+          $countshipment = $query1->union($query2)->count();
+          if ($countshipment<1) {
+            $i=1;
+          }
+        }
+        return $orderid;
     }
 
 }

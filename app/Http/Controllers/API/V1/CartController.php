@@ -303,15 +303,27 @@ class CartController extends Controller
     public function getcartItems($user){
         $carts=Cart::where('customer', $user)->get();
         $items=array();
-        $amount=0;
+        $amount=$totalweight=0;
         foreach ($carts as $cart) {
             $storeid=$cart['storeid'];
-          //$amount=$amount+$row['amount'];
-          $item=$cart['product'].'|'.$cart['quantity'];
-          array_push($items, $item);
+            //$amount=$amount+$row['amount'];
+            $item=$cart['product'].'|'.$cart['quantity'];
+            array_push($items, $item);
+
+            try {
+                $product=Product::where('id', $cart['product'])->first();
+                $vol_wgt = ($product->height * $product->width * $product->length) / 5000;
+                if ($vol_wgt>$product->weight) {
+                    $totalweight+=$vol_wgt;
+                } else {
+                    $totalweight+=$product->weight;
+                }
+            } catch (\Throwable $th) {
+                continue;
+            }
         }
         $items=implode(",", $items);
-        $data=['items'=>$items, 'amount'=>$amount, 'storeid'=>$storeid];
+        $data=['items'=>$items, 'amount'=>$amount, 'storeid'=>$storeid, "totalweight"=>$totalweight];
         return $data;
     }
     public function checkcartItemsA($user){
@@ -492,6 +504,7 @@ class CartController extends Controller
         $deliverymode = $request->deliverymode;
         $orderid='GMPO'.time();
         $order_date=time();
+        $totalweight = $this->getcartItems($user->id)['totalweight'];
 
         $error = array();
         if(empty($items)){
@@ -512,6 +525,7 @@ class CartController extends Controller
                 'orderamount'=>$orderamount,
                 'servicefee'=>$servicefee,
                 'totalamount'=>$totalamount,
+                'totalweight'=>$totalweight,
                 'odate'=>$order_date,
                 "paymentmethod" => $paymentmethod,
                 "logisticsprovider" => $request->logisticsprovider,

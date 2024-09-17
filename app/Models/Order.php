@@ -25,6 +25,7 @@ class Order extends Model
         'orderamount',
         'servicefee',
         'totalamount',
+        'totalweight',
         'tx_ref',
         'currency',
         'p_status',
