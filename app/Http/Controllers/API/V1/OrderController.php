@@ -257,20 +257,6 @@ class OrderController extends Controller
                 $product=$ex[0]; $quantity=$ex[1];
                 $productdetails=Product::where('id', $product)->first();
 
-                print_r([
-                    "entity_guid"=>Str::uuid(),
-                    "shipment_id"=>$logistics->id,
-                    "type"=>$productdetails->itemcat,
-                    "item"=>$productdetails->packagetype,
-                    "name"=>$productdetails->name,
-                    "weight"=>$productdetails->weight,
-                    "quantity"=>$quantity,
-                    "weighttype"=>'1',
-                    "length"=>$productdetails->length,
-                    "width"=>$productdetails->width,
-                    "height"=>$productdetails->height,
-                    "value_declaration"=>$productdetails->amount
-                ]); exit();
                 ShipmentInfo::create([
                     "entity_guid"=>Str::uuid(),
                     "shipment_id"=>$logistics->id,
