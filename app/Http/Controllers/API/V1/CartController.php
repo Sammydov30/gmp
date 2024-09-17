@@ -418,6 +418,21 @@ class CartController extends Controller
                 }
 
             }
+            $con=[
+                "pickupvehicle"=>"1",
+                "deliverymode"=>"1",
+                "pickupcenter"=>"1",
+                "sourceregion"=>$sourceregion,
+                "destinationregion"=>$destinationregion,
+                "lat"=>$request->latitude,
+                "lng"=>$request->longitude,
+                "itemtype"=>serialize($itemtype),
+                "sitem"=>serialize($sitem),
+                "itemquantity"=>serialize($quantity),
+                "itemweight"=>serialize($itemweight),
+                "itemvalue"=>serialize($itemvalue)
+            ];
+            print_r($con); exit();
             $createrequest = Http::withHeaders([
                 "content-type" => "application/json",
                 // "Authorization" => "Bearer ",
