@@ -211,7 +211,6 @@ class OrderController extends Controller
         if ($order->logisticsprovider=="1") {
             $buyer=Customer::where('gmpid', $order->customer)->first();
             $seller=Customer::where('gmpid', $order->sellerid)->first();
-            echo($seller->region); exit();
 
             $con=[
                 "entity_guid"=>Str::uuid(),
