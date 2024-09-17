@@ -232,12 +232,16 @@ class CustomerController extends Controller
     public function deleteaddress(Request $request)
     {
         $user=auth()->user();
+        $countaddress=CustomerAddress::where('gmpid', $user->gmpid)->count();
+        if ($countaddress<2) {
+            return response()->json(["message"=>"User must have at least one address", "status"=>"error"], 400);
+        }
         $address = CustomerAddress::find($request->id);
+        if ($address->status=='1') {
+            $laddr=CustomerAddress::where('gmpid', $user->gmpid)->latest()->first();
+            CustomerAddress::where('id', $laddr->id)->update(['status'=>'1']);
+        }
         $address->delete();
-
-        $laddr=CustomerAddress::where('gmpid', $user->gmpid)->latest()->first();
-
-        CustomerAddress::where('id', $laddr->id)->update(['status'=>'1']);
 
         $response=[
             "message" => "Address Deleted Successfully",
