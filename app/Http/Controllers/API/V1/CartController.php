@@ -381,6 +381,10 @@ class CartController extends Controller
         // if (empty($request->logisticsprovider)) {
         //     array_push($error," is Required");
         // }
+        $cartnum=Cart::where('customer', $user->id)->count();
+        if ($cartnum<1) {
+            return response()->json(["message" => "Cart is Empty", "status" => "error"], 400);
+        }
         if(!empty($error)){
             return response()->json(["message" => $error, "status" => "error"], 400);
         }
