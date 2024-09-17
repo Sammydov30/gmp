@@ -480,7 +480,7 @@ class LogisticsController extends Controller
                     "delivery_time"=> intval($res['delivery_timeline']['timelineduration']),
                     "status" => "success"
                 ];
-                return response()->json($response, 201);
+                return response()->json($response, 200);
             }
         }
     }

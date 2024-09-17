@@ -8,6 +8,7 @@ use App\Http\Requests\MakeOrderRequest;
 use App\Jobs\ConfirmAvailabilityJob;
 use App\Models\Cart;
 use App\Models\Customer;
+use App\Models\CustomerAddress;
 use App\Models\FundingHistory;
 use App\Models\Order;
 use App\Models\Product;
@@ -368,6 +369,7 @@ class CartController extends Controller
 
     public function getShippingRate (Request $request)
     {
+        $user=auth()->user();
         $request->validate([
             'region' => 'required|integer',
             'logisticsprovider' => 'required|integer'
@@ -382,7 +384,72 @@ class CartController extends Controller
         if(!empty($error)){
             return response()->json(["message" => $error, "status" => "error"], 400);
         }
-        $region=$request->region;
+
+        $storeid = $this->getcartItems($user->id)['storeid'];
+        $sellerid =Store::where('id', $storeid)->first()->gmpid;
+        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first()->location;
+        $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
+        if ($request->logisticsprovider=="1") {
+            $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
+            $carts=Cart::where('customer', $user)->get();
+            foreach ($carts as $cart) {
+                try {
+                    $product=Product::where('id', $cart['product'])->first();
+                    array_push($itemtype, $product->itemcat);
+                    if ($product->itemcat=='2') {
+                        array_push($sitem, $product->packagetype);
+                    }else{
+                        array_push($sitem, "1");
+                    }
+                    $vol_wgt = ($product->height * $product->width * $product->length) / 5000;
+                    if ($vol_wgt>$product->weight) {
+                        array_push($itemweight, $vol_wgt);
+                    } else {
+                        array_push($itemweight, $product->weight);
+                    }
+                    array_push($itemvalue, $product->amount);
+                    array_push($quantity, $cart['quantity']);
+                } catch (\Throwable $th) {
+                    continue;
+                }
+
+            }
+            $createrequest = Http::withHeaders([
+                "content-type" => "application/json",
+                // "Authorization" => "Bearer ",
+            ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
+                "pickupvehicle"=>"1",
+                "deliverymode"=>"1",
+                "pickupcenter"=>"1",
+                "sourceregion"=>$sourceregion,
+                "destinationregion"=>$destinationregion,
+                "lat"=>$request->latitude,
+                "lng"=>$request->longitude,
+                "itemtype"=>serialize($itemtype),
+                "sitem"=>serialize($sitem),
+                "itemquantity"=>serialize($quantity),
+                "itemweight"=>serialize($itemweight),
+                "itemvalue"=>serialize($itemvalue)
+            ]);
+            $res=$createrequest->json();
+            //print_r($res); exit();
+            if (!$res['status']) {
+                return response()->json(["message" => "An Error occurred while getting quote", "status" => "error"], 400);
+            }else{
+                if ($res['status']=="error") {
+                    return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
+                }else{
+                    $fee=strval($res['amount']) + 1000;
+                    $response=[
+                        "message" => "Operation Successfully",
+                        "fee" => strval($fee),
+                        "homedelivery" => strval($fee),
+                        "status" => "success"
+                    ];
+                    return response()->json($response, 200);
+                }
+            }
+        }
 
         $response=[
             "message" => "Operation Successfully",
