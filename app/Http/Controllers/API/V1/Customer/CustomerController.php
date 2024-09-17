@@ -142,7 +142,7 @@ class CustomerController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             //'email' => $request->email,
-            'phone' => $request->phone,
+            //'phone' => $request->phone,
         ]);
         $customer=Customer::where('id', $user->id)->first();
         $response=[
