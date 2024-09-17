@@ -395,7 +395,7 @@ class CartController extends Controller
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
         if ($request->logisticsprovider=="1") {
             $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
-            $carts=Cart::where('customer', $user)->get();
+            $carts=Cart::where('customer', $user->id)->get();
             foreach ($carts as $cart) {
                 try {
                     $product=Product::where('id', $cart['product'])->first();
