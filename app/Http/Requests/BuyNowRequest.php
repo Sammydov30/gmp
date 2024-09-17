@@ -35,7 +35,7 @@ class BuyNowRequest extends FormRequest
             'phone' => 'required|string|regex:/^([0-9\s\-\+\(\)]*)$/',
             'orderamount' => 'required',
             'servicefee' => ['required'],
-            'totalamount' => ['required'],
+            // 'totalamount' => ['required'],
             'paymentmethod' => ['required'],
             'logisticsprovider' => ['required'],
             'deliverymode' => ['required'],
