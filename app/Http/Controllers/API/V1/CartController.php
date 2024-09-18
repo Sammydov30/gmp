@@ -602,7 +602,6 @@ class CartController extends Controller
         }else{
             $p_status='0';
         }
-        exit();
         if (empty($error)) {
             $order = Order::create([
                 'orderid' => $orderid,
@@ -721,7 +720,7 @@ class CartController extends Controller
             $p_status='0';
         }
 
-
+        exit();
         $error = array();
         // if(empty($items)){
         //   unset($request->totalamount);
