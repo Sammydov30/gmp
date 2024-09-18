@@ -728,6 +728,7 @@ class CartController extends Controller
         //   unset($request->orderamount);
         //   array_push($error, 'Cart is Empty');
         // }
+        echo $phone; echo $address; echo $region; exit();
         if(empty($phone) || empty($address) || empty($region)){
             array_push($error, 'All fields are required');
         }
