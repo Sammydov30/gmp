@@ -602,6 +602,7 @@ class CartController extends Controller
         }else{
             $p_status='0';
         }
+        exit();
         if (empty($error)) {
             $order = Order::create([
                 'orderid' => $orderid,
