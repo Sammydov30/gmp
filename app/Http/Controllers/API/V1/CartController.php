@@ -404,7 +404,8 @@ class CartController extends Controller
 
         $storeid = $this->getcartItems($user->id)['storeid'];
         $sellerid =Store::where('id', $storeid)->first()->gmpid;
-        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first()->location;
+        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first();
+        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->region;
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
         if ($request->logisticsprovider=="1") {
             $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
