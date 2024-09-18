@@ -595,6 +595,7 @@ class CartController extends Controller
         $orderid='GMPO'.time();
         $order_date=time();
         $totalweight = $this->getcartItems($user->id)['totalweight'];
+        exit();
 
         $error = array();
         if(empty($items)){
