@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\API\V1\Customer\ProductResource;
 use App\Models\Customer;
+use App\Models\CustomerAddress;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\PickupCenter;
@@ -214,6 +215,18 @@ class OrderController extends Controller
         if ($order->logisticsprovider=="1") {
             $buyer=Customer::where('gmpid', $order->customer)->first();
             $seller=Customer::where('gmpid', $order->sellerid)->first();
+            $caddressbook=CustomerAddress::where('gmpid', $seller->gmpid)->where('status', '1')->first();
+            if ($caddressbook) {
+                $cname=$caddressbook->firstname. " ". $caddressbook->lastname;
+                $cphone =$caddressbook->phonenumber;
+                $caddress = $caddressbook->address;
+                $cregion = $caddressbook->location;
+            }else{
+                $cname=$seller->firstname. " ". $seller->lastname;
+                $cphone =$seller->phone;
+                $caddress = $seller->address;
+                $cregion = $seller->region;
+            }
 
             $logistics = Shipment::create([
                 "entity_guid"=>Str::uuid(),
@@ -223,14 +236,14 @@ class OrderController extends Controller
                 "gmppayment"=>$order->paymentmethod,
                 "p_status"=>"1",
                 "deliverymode"=>$order->deliverymode,
-                "cname"=>$seller->firstname. " ". $seller->lastname,
-                "cphone"=>$seller->phone,
-                "caddress"=>$seller->address." ".$seller->location,
+                "cname"=>$cname,
+                "cphone"=>$cphone,
+                "caddress"=>$caddress." ".$cregion,
                 "rname"=>$buyer->firstname. " ". $buyer->lastname,
-                "rphone"=>$buyer->phone,
-                "raddress"=>$buyer->address." ".$buyer->location,
-                "fromregion"=>$seller->region,
-                "toregion"=>$buyer->region,
+                "rphone"=>$order->phone,
+                "raddress"=>$order->address." ".$order->region,
+                "fromregion"=>$cregion,
+                "toregion"=>$order->region,
                 "totalweight"=>$order->totalweight,
                 "amount_collected"=>$order->servicefee,
                 "branch"=>$this->getFirstBranchByRegion($seller->region),

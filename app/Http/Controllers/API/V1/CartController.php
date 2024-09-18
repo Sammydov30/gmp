@@ -496,7 +496,8 @@ class CartController extends Controller
 
         $product=Product::where('id', $request->productid)->first();
         $sellerid =$product->gmpid;
-        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first()->location;
+        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first();
+        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->region;
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
         if ($request->logisticsprovider=="1") {
             $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
@@ -574,9 +575,15 @@ class CartController extends Controller
         }
 
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
-        $phone =$addressbook->phonenumber;
-        $address = $addressbook->address;
-        $region = $addressbook->location;
+        if ($addressbook) {
+            $phone =$addressbook->phonenumber;
+            $address = $addressbook->address;
+            $region = $addressbook->location;
+        }else{
+            $phone =$user->phone;
+            $address = $user->address;
+            $region = $user->region;
+        }
         $items = $this->getcartItems($user->id)['items'];
         $storeid = $this->getcartItems($user->id)['storeid'];
         $sellerid =Store::where('id', $storeid)->first()->gmpid;
@@ -697,9 +704,15 @@ class CartController extends Controller
     {
         $user=auth()->user();
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
-        $phone =$addressbook->phonenumber;
-        $address = $addressbook->address;
-        $region = $addressbook->location;
+        if ($addressbook) {
+            $phone =$addressbook->phonenumber;
+            $address = $addressbook->address;
+            $region = $addressbook->location;
+        }else{
+            $phone =$user->phone;
+            $address = $user->address;
+            $region = $user->region;
+        }
         $items = $request->productid.'|'.$request->quantity;
         $product=Product::where('id', $request->productid)->first();
         $storeid = $product->storeid;
