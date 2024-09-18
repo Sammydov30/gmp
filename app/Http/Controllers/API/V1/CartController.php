@@ -477,6 +477,95 @@ class CartController extends Controller
         return response()->json($response, 200);
     }
 
+    public function getShippingRate2 (Request $request)
+    {
+        $user=auth()->user();
+        $request->validate([
+            'productid' => 'required',
+            'quantity' => 'required',
+            'region' => 'required|integer',
+            'logisticsprovider' => 'required|integer',
+            'deliverymode' => 'required|integer'
+        ]);
+        $error=$output=array();
+
+        if(!empty($error)){
+            return response()->json(["message" => $error, "status" => "error"], 400);
+        }
+
+        $product=Product::where('id', $request->productid)->first();
+        $storeid = $product->storeid;
+        $sellerid =$product->gmpid;
+        $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first()->location;
+        $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
+        if ($request->logisticsprovider=="1") {
+            $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
+
+            try {
+                array_push($itemtype, $product->itemcat);
+                if ($product->itemcat=='2') {
+                    array_push($sitem, $product->packagetype);
+                }else{
+                    array_push($sitem, "1");
+                }
+                $vol_wgt = ($product->height * $product->width * $product->length) / 5000;
+                if ($vol_wgt>$product->weight) {
+                    array_push($itemweight, $vol_wgt);
+                } else {
+                    array_push($itemweight, $product->weight);
+                }
+                array_push($itemvalue, $product->amount);
+                array_push($quantity, $request->quantity);
+            } catch (\Throwable $th) {
+                return response()->json(["message" => 'Caught exception: ',  $th->getMessage(), "status" => "error"], 400);
+            }
+
+            $createrequest = Http::withHeaders([
+                "content-type" => "application/json",
+                // "Authorization" => "Bearer ",
+            ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/shipment/getquote', [
+                "pickupvehicle"=>"1",
+                "deliverymode"=>"1",
+                "pickupcenter"=>"1",
+                "sourceregion"=>$sourceregion,
+                "destinationregion"=>$destinationregion,
+                "lat"=>$request->latitude,
+                "lng"=>$request->longitude,
+                "itemtype"=>serialize($itemtype),
+                "sitem"=>serialize($sitem),
+                "itemquantity"=>serialize($quantity),
+                "itemweight"=>serialize($itemweight),
+                "itemvalue"=>serialize($itemvalue)
+            ]);
+            $res=$createrequest->json();
+            //print_r($res); exit();
+            if (!$res['status']) {
+                return response()->json(["message" => "An Error occurred while getting quote", "status" => "error"], 400);
+            }else{
+                if ($res['status']=="error") {
+                    return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
+                }else{
+                    $fee=strval($res['amount']) + 1000;
+                    $response=[
+                        "message" => "Operation Successfully",
+                        "fee" => strval($fee),
+                        "homedelivery" => strval($fee),
+                        "status" => "success"
+                    ];
+                    return response()->json($response, 200);
+                }
+            }
+        }
+
+        $response=[
+            "message" => "Operation Successfully",
+            "fee" => "2000",
+            "homedelivery" => "2000",
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
+
     public function addToOrder(MakeOrderRequest $request)
     {
         $user=auth()->user();
@@ -491,9 +580,11 @@ class CartController extends Controller
         }else{
             $p_status='0';
         }
-        $phone = $user->phone; //CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->phone;
-        $address = $request->address;
-        $region = $request->region;
+
+        $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
+        $phone =$addressbook->phone;
+        $address = $addressbook->address;
+        $region = $addressbook->location;
         $items = $this->getcartItems($user->id)['items'];
         $storeid = $this->getcartItems($user->id)['storeid'];
         $sellerid =Store::where('id', $storeid)->first()->gmpid;
@@ -613,11 +704,15 @@ class CartController extends Controller
         }else{
             $p_status='0';
         }
-        $phone = $user->phone;
-        $address = $request->address;
-        $region = $request->region;
-        //getcartitems= ['items'=>'product|quantity', 'amount'=>'0'];
+
+        $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
+        $phone =$addressbook->phone;
+        $address = $addressbook->address;
+        $region = $addressbook->location;
         $items = $request->productid.'|'.$request->quantity;
+        $product=Product::where('id', $request->productid)->first();
+        $storeid = $product->storeid;
+        $sellerid =$product->gmpid;
         $orderamount = str_replace(',', '', $request->orderamount);
         $servicefee = str_replace(',', '', $request->servicefee);
         $totalamount = $orderamount+$servicefee;
@@ -625,6 +720,8 @@ class CartController extends Controller
         $deliverymode = $request->deliverymode;
         $orderid='GMPO'.time();
         $order_date=time();
+        $totalweight = $product->weight;
+
 
         $error = array();
         // if(empty($items)){
@@ -639,6 +736,8 @@ class CartController extends Controller
             $order = Order::create([
                 'orderid' => $orderid,
                 'customer' => $user->gmpid,
+                'storeid'=>$storeid,
+                'sellerid'=>$sellerid,
                 'products' => $items,
                 'address'=>$address,
                 'phone'=>$phone,
@@ -646,6 +745,7 @@ class CartController extends Controller
                 'orderamount'=>$orderamount,
                 'servicefee'=>$servicefee,
                 'totalamount'=>$totalamount,
+                'totalweight'=>$totalweight,
                 'odate'=>$order_date,
                 "paymentmethod" => $paymentmethod,
                 "logisticsprovider" => $request->logisticsprovider,
@@ -653,7 +753,6 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
-            $this->clearCart($user->id);
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
@@ -770,6 +869,95 @@ class CartController extends Controller
             if( ($transaction->status=="success") && ($transaction->data->status=="successful")
             && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
                 $this->clearCart($customer->id);
+                date_default_timezone_set("Africa/Lagos");
+                $time=date('d-m-Y h:ia');
+                $sup=Order::where('id', $purchaseid)->update(['p_status' => '1', 'placedtime' => $time]);
+                $sup=Order::where('id', $purchaseid)->first();
+                $customer=Customer::where('gmpid', $sup->customer)->first();
+                $personnelphones=[];
+                $items=explode(",", $sup->products); $item = explode("|", $items[0]);
+                $itemowner=$this->GetItemOwner($item[0]);
+                $ownerphone=Customer::where('gmpid', $itemowner)->first()->phone;
+                array_push($personnelphones, $ownerphone);
+                foreach ($personnelphones as $personnelphone) {
+                    $details = [
+                        'phone'=>'234'.substr($personnelphone, 0),
+                        'message'=>"GMP Order Placed from a customer(".$customer->name.")."
+                    ];
+                    try {
+                        dispatch(new ConfirmAvailabilityJob($details))->delay(now()->addSeconds(1));
+                    } catch (\Throwable $e) {
+                        report($e);
+                        Log::error('Error in sending otp: '.$e->getMessage());
+                        return response()->json(["message" => "Operation Failed", "status" => "error"], 400);
+                    }
+                }
+                $this->NotifyMe("Order Booked Successfully", $sup->orderid, "3", "3");
+                return response()->json([
+                    'message' => 'Payment Successful',
+                    'delivery_details' => $sup,
+                    'status' => 'success'
+                ], 200);
+            } else {
+                //Dont Give Value and return to Failure page
+                $sup=Order::where('id', $purchaseid)->update(['p_status' => '2']);
+                return response()->json([
+                    'message' => "Payment Error. Cross check payment.",
+                    'status' => "error"
+                ], 400);
+            }
+        }
+    }
+
+    public function verifypaymentbuynow(Request $request)
+    {
+        $tranx=$request->tx_ref;
+        if (empty($tranx)) {
+            return response()->json(["message"=>"Verification error. No Transaction Id given.", "status"=>"error"], 400);
+        } else {
+            $tx=Order::where('tx_ref', $tranx)->first();
+            if (!$tx) {
+                return response()->json(["message"=>"Order doesn't exist", "status"=>"error"], 400);
+            }
+            if ($tx->p_status=="1") {
+                return response()->json(["message"=>"Transaction value already given", "status"=>"error"], 400);
+            }
+            $amount = $tx->totalamount;
+            $userid=$tx->customer;
+            $customer = Customer::where('gmpid', $userid)->first();
+            $purchaseid=$tx->id;
+            $currency = 'NGN';
+
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=$tranx",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                  "Authorization: Bearer ".env('FW_KEY'),
+                  "Cache-Control: no-cache",
+                ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            if ($err) {
+                Order::where('orderid', $tranx)->update([
+                    'p_status' => '2'
+                ]);
+                return response()->json(["message"=>"cURL Error #:" . $err, "status"=>"error"], 400);
+            } else {
+                $resp = json_decode($response, true);
+            }
+            //print_r($resp); exit();
+            $transaction = json_decode($response, FALSE);
+            if( ($transaction->status=="success") && ($transaction->data->status=="successful")
+            && ($transaction->data->amount>=$amount) && ($transaction->data->currency=="NGN") ){
                 date_default_timezone_set("Africa/Lagos");
                 $time=date('d-m-Y h:ia');
                 $sup=Order::where('id', $purchaseid)->update(['p_status' => '1', 'placedtime' => $time]);
