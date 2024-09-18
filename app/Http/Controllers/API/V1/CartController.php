@@ -581,7 +581,7 @@ class CartController extends Controller
         }
 
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
-        $phone =$addressbook->phone;
+        $phone =$addressbook->phonenumber;
         $address = $addressbook->address;
         $region = $addressbook->location;
         $items = $this->getcartItems($user->id)['items'];
@@ -705,7 +705,7 @@ class CartController extends Controller
         }
 
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
-        $phone =$addressbook->phone;
+        $phone =$addressbook->phonenumber;
         $address = $addressbook->address;
         $region = $addressbook->location;
         $items = $request->productid.'|'.$request->quantity;
