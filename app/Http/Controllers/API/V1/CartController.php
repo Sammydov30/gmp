@@ -595,7 +595,6 @@ class CartController extends Controller
         $orderid='GMPO'.time();
         $order_date=time();
         $totalweight = $this->getcartItems($user->id)['totalweight'];
-        echo "Yes"; exit();
 
         $error = array();
         if(empty($items)){
@@ -735,7 +734,7 @@ class CartController extends Controller
             $p_status='0';
         }
 
-        exit();
+        echo "Yes"; exit();
         $error = array();
         // if(empty($items)){
         //   unset($request->totalamount);
