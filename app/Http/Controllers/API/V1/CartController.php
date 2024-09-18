@@ -405,7 +405,7 @@ class CartController extends Controller
         $storeid = $this->getcartItems($user->id)['storeid'];
         $sellerid =Store::where('id', $storeid)->first()->gmpid;
         $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first();
-        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->region;
+        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->first()->region;
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
         if ($request->logisticsprovider=="1") {
             $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
@@ -497,7 +497,7 @@ class CartController extends Controller
         $product=Product::where('id', $request->productid)->first();
         $sellerid =$product->gmpid;
         $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first();
-        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->region;
+        $sourceregion =($sourceregion) ? $sourceregion->location : Customer::where('gmpid', $sellerid)->first()->region;
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
         if ($request->logisticsprovider=="1") {
             $quantity=$itemtype=$sitem=$itemweight=$itemvalue=[];
