@@ -571,14 +571,6 @@ class CartController extends Controller
         if(!$this->checkcartItemsA($user->id)){
             return response()->json(["message" => "Some Items may not be Available.", "status" => "error"], 400);
         }
-        if ($request->paymentmethod=='1') {
-            if(!$this->checkWallet($request->totalamount)){
-                return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
-            }
-            $p_status='1';
-        }else{
-            $p_status='0';
-        }
 
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
         $phone =$addressbook->phonenumber;
@@ -601,6 +593,14 @@ class CartController extends Controller
           unset($request->totalamount);
           unset($request->orderamount);
           array_push($error, 'Cart is Empty');
+        }
+        if ($request->paymentmethod=='1') {
+            if(!$this->checkWallet($totalamount)){
+                return response()->json(["message" => ["Insuficient Funds"], "status" => "error"], 400);
+            }
+            $p_status='1';
+        }else{
+            $p_status='0';
         }
         if (empty($error)) {
             $order = Order::create([
@@ -695,15 +695,6 @@ class CartController extends Controller
     public function BuyNow(BuyNowRequest $request)
     {
         $user=auth()->user();
-        if ($request->paymentmethod=='1') {
-            if(!$this->checkWallet($request->totalamount)){
-                return response()->json(["message" => "Insuficient Funds", "status" => "error"], 400);
-            }
-            $p_status='1';
-        }else{
-            $p_status='0';
-        }
-
         $addressbook=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first();
         $phone =$addressbook->phonenumber;
         $address = $addressbook->address;
@@ -720,6 +711,14 @@ class CartController extends Controller
         $orderid='GMPO'.time();
         $order_date=time();
         $totalweight = $product->weight;
+        if ($request->paymentmethod=='1') {
+            if(!$this->checkWallet($totalamount)){
+                return response()->json(["message" => ["Insuficient Funds"], "status" => "error"], 400);
+            }
+            $p_status='1';
+        }else{
+            $p_status='0';
+        }
 
 
         $error = array();
