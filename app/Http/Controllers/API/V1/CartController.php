@@ -494,7 +494,6 @@ class CartController extends Controller
         }
 
         $product=Product::where('id', $request->productid)->first();
-        $storeid = $product->storeid;
         $sellerid =$product->gmpid;
         $sourceregion=CustomerAddress::where('gmpid', $sellerid)->where('status', '1')->first()->location;
         $destinationregion=CustomerAddress::where('gmpid', $user->gmpid)->where('status', '1')->first()->location;
