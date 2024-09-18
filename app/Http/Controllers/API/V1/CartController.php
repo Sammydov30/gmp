@@ -734,7 +734,6 @@ class CartController extends Controller
             $p_status='0';
         }
 
-        echo "Yes"; exit();
         $error = array();
         // if(empty($items)){
         //   unset($request->totalamount);

@@ -150,6 +150,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/wishlist/addtowishlist', [WishlistController::class, 'addtowishlist']);
         Route::post('/customer/wishlist/removefromwishlist', [WishlistController::class, 'removefromwishlist']);
         Route::post('/customer/wishlist/addtocartfromwishlist', [WishlistController::class, 'addtocartfromwishlist']);
+        Route::post('/customer/wishlist/getwishlistItemsarray', [WishlistController::class, 'getwishlistItemsarray']);
         //Route::get('/customer/wishlist/confirmavailability', [WishlistController::class, 'confirmavailability']);
         // Route::get('/customer/wishlist/checkout', [WishlistController::class, 'checkout']);
         // Route::post('/customer/wishlist/addtoorder', [WishlistController::class, 'addToOrder']);

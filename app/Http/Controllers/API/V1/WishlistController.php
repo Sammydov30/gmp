@@ -112,6 +112,21 @@ class WishlistController extends Controller
         }
     }
 
+    public function getwishlistItemsarray(){
+        $user=auth()->user();
+        $wishlists=Wishlist::where('customer', $user->id)->get();
+        $items=array();
+        foreach ($wishlists as $wishlist) {
+          $item=$wishlist['product'];
+          array_push($items, $item);
+        }
+        $response=[
+            "message" => "Successful",
+            'data' => $items,
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
 
     public function getwishlistItems($user){
         $wishlists=Wishlist::where('customer', $user)->get();
