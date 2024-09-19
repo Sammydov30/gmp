@@ -248,4 +248,24 @@ class GeneralController extends Controller
         return response()->json($response, 200);
     }
 
+    public function getirspricelist(Request $request)
+    {
+        $createrequest = Http::withHeaders([
+            "content-type" => "application/json",
+        ])->get(env('SOLVENT_BASE_URL_LIVE').'/api/lists/getirspricelist', [
+            "userid"=>$request->userid,
+        ]);
+        $res=$createrequest->json();
+        //print_r($res); exit();
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "status" => "error"], 400);
+            }else{
+                return response()->json($res, 201);
+            }
+        }
+    }
+
 }
