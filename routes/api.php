@@ -21,6 +21,7 @@ use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OrderController;
+use App\Http\Controllers\API\V1\OrderReportController;
 use App\Http\Controllers\API\V1\PickupCenterController;
 use App\Http\Controllers\API\V1\PickupCentersController;
 use App\Http\Controllers\API\V1\ProductController;
@@ -162,6 +163,10 @@ Route::prefix('v1')->group(function () {
         Route::get('/all/order/getorderitems', [OrderController::class, 'getOrderItems']);
         Route::get('/customer/order/getorder', [OrderController::class, 'getSingleOrder']);
         //Route::get('/customer/seller/order/getorder', [OrderController::class, 'getSingleOrder']);
+
+        //Order Report
+        Route::get('/seller/order/report/fetchall', [OrderReportController::class, 'index']);
+        Route::post('/seller/order/report/makereport', [OrderReportController::class, 'store']);
 
         //Seller Action
         Route::get('/seller/order/getorders', [OrderController::class, 'sellerorderlist']);

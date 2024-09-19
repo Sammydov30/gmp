@@ -291,6 +291,7 @@ class OrderController extends Controller
                 ]);
             }
 
+            Order::where('orderid', $request->orderid)->update(['trackingid', $logistics->trackingid]);
             $response=$this->UpdateDStatus($request->orderid, '2');
         } else {
             $response=$this->UpdateDStatus($request->orderid, '2');
