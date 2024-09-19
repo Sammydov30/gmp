@@ -35,7 +35,7 @@ class OrderController extends Controller
             if (request()->input("ongoing")=='1') {
                 $result->whereIn('status', ['0', '1', '2', '3']);
             }else{
-                $result->whereIn('status', ['4']);
+                $result->whereIn('status', ['4', '5']);
             }
 
         }
@@ -199,6 +199,8 @@ class OrderController extends Controller
             Order::where('orderid', $orderId)->update(['status'=>$status, 'pickuptime'=>$time]);
         }else if ($status=="4") {
             Order::where('orderid', $orderId)->update(['status'=>$status, 'deliverytime'=>$time]);
+        }else if ($status=="5") {
+            Order::where('orderid', $orderId)->update(['status'=>$status]);
         }
         $response=[
             "message" => "Status Updated",
@@ -308,12 +310,12 @@ class OrderController extends Controller
         return response()->json($response, 200);
     }
     public function markDelivered(Request $request){
-        $rider=auth()->user();
         $response=$this->UpdateDStatus($request->orderid, '4');
-        $log=Order::where('orderid', $request->orderId)->first();
-        $location=$log->region;
-        $this->updateEarning($rider->riderid);
-        $howmany=$rider->howmany-1;
+        //$rider=auth()->user();
+        // $log=Order::where('orderid', $request->orderId)->first();
+        // $location=$log->region;
+        // $this->updateEarning($rider->riderid);
+        // $howmany=$rider->howmany-1;
         return response()->json($response, 200);
     }
     public function markCancelled(Request $request){
@@ -337,7 +339,7 @@ class OrderController extends Controller
             if (request()->input("ongoing")=='1') {
                 $result->whereIn('status', ['0', '1', '2', '3']);
             }else{
-                $result->whereIn('status', ['4']);
+                $result->whereIn('status', ['4', '5']);
             }
 
         }
