@@ -14,6 +14,7 @@ class OrderReport extends Model
         'sellerid',
         'gmpid',
         'itemid',
+        'reason',
         'comment',
         'rdate',
         'deleted'

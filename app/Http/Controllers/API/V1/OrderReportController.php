@@ -68,6 +68,7 @@ class OrderReportController extends Controller
             'sellerid'=>$sellerid,
             'gmpid'=>$order->customer,
             'itemid'=>$productid,
+            'reason'=>$request->reason,
             'comment'=>$request->comment,
             'rdate'=>time(),
         ]);

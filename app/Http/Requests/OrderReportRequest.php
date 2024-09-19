@@ -19,6 +19,7 @@ class OrderReportRequest extends FormRequest
     {
         return [
             'orderid' => 'required',
+            'reason' => 'required',
             'comment' => 'required',
         ];
     }
