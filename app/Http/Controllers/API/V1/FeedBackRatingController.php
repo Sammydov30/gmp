@@ -97,6 +97,35 @@ class FeedBackRatingController extends Controller
         return response()->json($response, 200);
     }
 
+    public function update(FeedbackRatingRequest $request, $id)
+    {
+        $user=auth()->user();
+        $feedback=FeedBackRating::find($id);
+        $order=Order::where('orderid', $request->orderid)->first();
+        $checktime=2592000; // 1 Month
+        if (($order->odate+$checktime)<time()) {
+            return response()->json(["message" => 'Feedback cannot be given at this time', "status" => "error"], 400);
+        }
+        $query=FeedBackRating::where('orderid', $request->orderid)->where('gmpid', $user->gmpid)->
+        where('id', '!=', $feedback->id)->first();
+        if ($query) {
+            return response()->json(["message" => 'Feedback already given', "status" => "error"], 400);
+        }
+        $feedback->update([
+            'rate'=>$request->rate,
+            'comment'=>$request->comment,
+            'rdate'=>time(),
+        ]);
+
+        $response=[
+            "message" => "Feedback Saved Successfully",
+            'feedback' => $feedback,
+            "status" => "success"
+        ];
+
+        return response()->json($response, 201);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

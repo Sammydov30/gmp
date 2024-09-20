@@ -101,7 +101,7 @@ class DepositHistoryController extends Controller
                 ]
             ]);
             $payy=$paymentrequest->json();
-            $this->NotifyMe("Deposit Initiated", $depositid, "3", "1");
+            //$this->NotifyMe("Deposit Initiated", $depositid, "3", "1");
             $response=[
                 "message" => "Deposit Initiated",
                 "deposit" => $deposit,

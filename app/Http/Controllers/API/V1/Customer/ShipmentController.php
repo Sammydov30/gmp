@@ -286,8 +286,8 @@ class ShipmentController extends Controller
         //         $tamount = strval($res['amount']);
         //     }
         // }
-        //$tamount=$request->totalamount;
-        $tamount='100';
+        $tamount=$request->totalamount;
+        //$tamount='100';
 
 
         $user=auth()->user();

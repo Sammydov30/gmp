@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/customer/addaddress', [CustomerController::class, 'addaddress']);
         Route::post('/customer/updateaddress', [CustomerController::class, 'editaddress']);
         Route::post('/customer/deleteaddress', [CustomerController::class, 'deleteaddress']);
+        Route::post('/customer/setdefaultaddress', [CustomerController::class, 'setdefaultaddress']);
         Route::post('/customer/changeprofilepicture', [CustomerController::class, 'updateprofilepicture']);
         Route::post('/customer/changepassword', [CustomerController::class, 'updatepassword']);
         Route::post('/customer/deleteaccount', [CustomerController::class, 'deleteaccount']);
@@ -82,6 +83,7 @@ Route::prefix('v1')->group(function () {
         //Feedback Rating
         Route::get('/customer/order/feedback/fetchall', [FeedBackRatingController::class, 'index']);
         Route::post('/customer/order/feedback/addfeedback', [FeedBackRatingController::class, 'store']);
+        Route::post('/customer/order/feedback/updatefeedback/{id}', [FeedBackRatingController::class, 'update']);
 
         //Product Report
         Route::get('/product/report/fetchall', [ProductReportingController::class, 'index']);

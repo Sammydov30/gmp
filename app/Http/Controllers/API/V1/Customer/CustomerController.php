@@ -212,7 +212,6 @@ class CustomerController extends Controller
             CustomerAddress::where('gmpid', $user->gmpid)->update(['status'=>'0']);
         }
         $address=CustomerAddress::where('id', $request->addressid)->update([
-            'gmpid' => $user->gmpid,
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'phonenumber' => $request->phonenumber,
@@ -258,6 +257,25 @@ class CustomerController extends Controller
             'addresses' => $addresses,
             "status" => "success"
         ], 200);
+    }
+
+    public function setdefaultaddress(Request $request)
+    {
+        if(empty($request->addressid)){
+            return response()->json(["message" => "Address ID is required", "status" => "error"], 400);
+        }
+        $user=auth()->user();
+
+        CustomerAddress::where('gmpid', $user->gmpid)->update(['status'=>'0']);
+        $address=CustomerAddress::where('id', $request->addressid)->update([
+            'status'=>'1'
+        ]);
+        $response=[
+            "message" => "Successful",
+            'address' => $address,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
     }
 
     public function updatepassword(ChangePasswordRequest $request)
