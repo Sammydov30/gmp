@@ -101,12 +101,12 @@ class FeedBackRatingController extends Controller
     {
         $user=auth()->user();
         $feedback=FeedBackRating::find($id);
-        $order=Order::where('orderid', $request->orderid)->first();
+        $order=Order::where('orderid', $feedback->orderid)->first();
         $checktime=2592000; // 1 Month
         if (($order->odate+$checktime)<time()) {
             return response()->json(["message" => 'Feedback cannot be given at this time', "status" => "error"], 400);
         }
-        $query=FeedBackRating::where('orderid', $request->orderid)->where('gmpid', $user->gmpid)->
+        $query=FeedBackRating::where('orderid', $feedback->orderid)->where('gmpid', $user->gmpid)->
         where('id', '!=', $feedback->id)->first();
         if ($query) {
             return response()->json(["message" => 'Feedback already given', "status" => "error"], 400);
