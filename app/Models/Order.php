@@ -53,6 +53,10 @@ class Order extends Model
     {
         return $this->hasOne(Customer::class, 'gmpid', 'customer');
     }
+    public function review()
+    {
+        return $this->hasOne(FeedBackRating::class, 'orderid', 'id');
+    }
 
 
     //GET PRODUCT DETAILS

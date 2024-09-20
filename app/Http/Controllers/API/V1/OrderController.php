@@ -26,7 +26,7 @@ class OrderController extends Controller
     public function index()
     {
         $user=auth()->user();
-        $result = Order::with('customer')->where('customer', $user->gmpid)->where('p_status', '1');
+        $result = Order::with('customer', 'review')->where('customer', $user->gmpid)->where('p_status', '1');
         if (request()->input("orderid") != null) {
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
@@ -331,7 +331,7 @@ class OrderController extends Controller
     public function sellerorderlist()
     {
         $user=auth()->user();
-        $result = Order::with('customer')->where('sellerid', $user->gmpid)->where('p_status', '1');
+        $result = Order::with('customer', 'review')->where('sellerid', $user->gmpid)->where('p_status', '1');
         if (request()->input("orderid") != null) {
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);

@@ -62,7 +62,11 @@ class FeedBackRatingController extends Controller
         if ($query) {
             return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
         }
-        $productid=Order::where('id', $request->orderid)->first()->products;
+        $order=Order::where('id', $request->orderid)->first();
+        if ($order->customer!=$user->gmpid) {
+            return response()->json(["message" => 'Action Unauthorize', "status" => "error"], 400);
+        }
+        $productid=$order->products;
         $productid=explode("|", $productid)[0];
         $sellerid=Product::where('id', $productid)->first()->gmpid;
         $feedback = FeedBackRating::create([
