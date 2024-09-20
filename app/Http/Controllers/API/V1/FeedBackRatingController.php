@@ -106,7 +106,7 @@ class FeedBackRatingController extends Controller
         ]);
         $user=auth()->user();
         $feedback=FeedBackRating::find($id);
-        $order=Order::where('orderid', $feedback->orderid)->first();
+        $order=Order::where('id', $feedback->orderid)->first();
         $checktime=2592000; // 1 Month
         if (($order->odate+$checktime)<time()) {
             return response()->json(["message" => 'Feedback cannot be given at this time', "status" => "error"], 400);
