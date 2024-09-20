@@ -7,6 +7,7 @@ use App\Http\Requests\FeedbackRatingRequest;
 use App\Models\FeedBackRating;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\Request;
 
 class FeedBackRatingController extends Controller
 {
@@ -97,8 +98,12 @@ class FeedBackRatingController extends Controller
         return response()->json($response, 200);
     }
 
-    public function update(FeedbackRatingRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            'rate' => 'required',
+            'comment' => 'required',
+        ]);
         $user=auth()->user();
         $feedback=FeedBackRating::find($id);
         $order=Order::where('orderid', $feedback->orderid)->first();
