@@ -112,6 +112,29 @@ class WishlistController extends Controller
         }
     }
 
+    public function removeproductfromwishlist(Request $request)
+    {
+        $user=auth()->user();
+        $wishlist=Wishlist::where('product', $request->productid)->where('customer', $user->id);
+        if ($wishlist->first()) {
+            $wishlist->delete();
+            $wishlistnum=Wishlist::where('customer', $user->id)->get();
+            $twishlistnum=count($wishlistnum);
+            $response=[
+                "totalwishlistnum" => $twishlistnum,
+                "message" => "Item removed from wishlist",
+                "status" => "success"
+            ];
+            return response()->json($response, 201);
+        }else{
+            $response=[
+                "message" => "Item not found",
+                "status" => "error"
+            ];
+            return response()->json($response, 400);
+        }
+    }
+
     public function getwishlistItemsarray(){
         $user=auth()->user();
         $wishlists=Wishlist::where('customer', $user->id)->get();

@@ -152,6 +152,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/wishlist/getwishlistitems', [WishlistController::class, 'index']);
         Route::post('/customer/wishlist/addtowishlist', [WishlistController::class, 'addtowishlist']);
         Route::post('/customer/wishlist/removefromwishlist', [WishlistController::class, 'removefromwishlist']);
+        Route::post('/customer/wishlist/removeproductfromwishlist', [WishlistController::class, 'removeproductfromwishlist']);
         Route::post('/customer/wishlist/addtocartfromwishlist', [WishlistController::class, 'addtocartfromwishlist']);
         Route::get('/customer/wishlist/getwishlistItemsarray', [WishlistController::class, 'getwishlistItemsarray']);
         //Route::get('/customer/wishlist/confirmavailability', [WishlistController::class, 'confirmavailability']);
