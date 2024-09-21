@@ -402,8 +402,8 @@ class GeneralController extends Controller
         $user=auth()->user();
         $year=(isset($request->year)) ? $request->year : Carbon::now()->year;
 
-
         $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(orderamount) as total_sales')
+        ->where('p_status', '1')->where('sellerid', $user->gmpid)
         ->whereYear('created_at', $year) // Filter by current year
         ->groupBy('month')
         ->pluck('total_sales', 'month')
