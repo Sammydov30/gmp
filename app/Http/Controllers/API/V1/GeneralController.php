@@ -403,7 +403,7 @@ class GeneralController extends Controller
         $year=(isset($request->year)) ? $request->year : Carbon::now()->year;
 
 
-        $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(total_amount) as total_sales')
+        $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(orderamount) as total_sales')
         ->whereYear('created_at', $year) // Filter by current year
         ->groupBy('month')
         ->pluck('total_sales', 'month')
