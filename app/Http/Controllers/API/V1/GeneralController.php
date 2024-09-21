@@ -441,7 +441,56 @@ class GeneralController extends Controller
         return response()->json($response, 200);
     }
 
+    public function countCustomers(Request $request)
+    {
+        $user=auth()->user();
+        switch ($request->period) {
+            case 'this-week':
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
+                break;
+            case 'last-week':
+                $start = Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY);
+                $end = Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY);
+                break;
+            case 'last-month':
+                $start = Carbon::now()->subMonth()->startOfMonth();
+                $end = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'this-quarter':
+                $start = Carbon::now()->firstOfQuarter();
+                $end = Carbon::now()->lastOfQuarter();
+                break;
+            case 'last-quarter':
+                $start = Carbon::now()->subQuarter()->firstOfQuarter();
+                $end = Carbon::now()->subQuarter()->lastOfQuarter();
+                break;
+            case 'this-year':
+                $start = Carbon::now()->firstOfYear();
+                $end = Carbon::now()->lastOfYear();
+                break;
+            case 'last-year':
+                $start = Carbon::now()->subYear()->firstOfYear();
+                $end = Carbon::now()->subYear()->lastOfYear();
+                break;
+            default:
+                $start = Carbon::today();
+                $end = Carbon::today();
+                break;
+        }
 
+        // Fetch the count of Customers
+        $totalCustomers = Order::where('p_status', '1')->where('sellerid', $user->gmpid)->distinct()->count('customer');
+        $totalNewCustomers = Order::where('p_status', '1')->where('sellerid', $user->gmpid)->whereBetween('created_at', [$start, $end])
+        ->distinct()->count('customer');
+
+        $response=[
+            "message" => "Successful",
+            'data' => ['totalcustomers'=>$totalCustomers, 'newcustomers'=>$totalNewCustomers, 2],
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
 
 
 
