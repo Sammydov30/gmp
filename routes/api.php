@@ -179,6 +179,8 @@ Route::prefix('v1')->group(function () {
 
         //Analytics
         Route::get('/seller/analytics/item/details', [GeneralController::class, 'countItems']);
+        Route::get('/seller/analytics/sales/details', [GeneralController::class, 'countSales']);
+        Route::get('/seller/analytics/sales/saleschart', [GeneralController::class, 'saleschart']);
 
 
         //Notification

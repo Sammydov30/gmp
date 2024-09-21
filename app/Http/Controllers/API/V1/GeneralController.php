@@ -345,6 +345,89 @@ class GeneralController extends Controller
         return response()->json($response, 200);
     }
 
+    public function countSales(Request $request)
+    {
+        $user=auth()->user();
+        switch ($request->period) {
+            case 'this-week':
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
+                break;
+            case 'last-week':
+                $start = Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY);
+                $end = Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY);
+                break;
+            case 'last-month':
+                $start = Carbon::now()->subMonth()->startOfMonth();
+                $end = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'this-quarter':
+                $start = Carbon::now()->firstOfQuarter();
+                $end = Carbon::now()->lastOfQuarter();
+                break;
+            case 'last-quarter':
+                $start = Carbon::now()->subQuarter()->firstOfQuarter();
+                $end = Carbon::now()->subQuarter()->lastOfQuarter();
+                break;
+            case 'this-year':
+                $start = Carbon::now()->firstOfYear();
+                $end = Carbon::now()->lastOfYear();
+                break;
+            case 'last-year':
+                $start = Carbon::now()->subYear()->firstOfYear();
+                $end = Carbon::now()->subYear()->lastOfYear();
+                break;
+            default:
+                $start = Carbon::today();
+                $end = Carbon::today();
+                break;
+        }
+
+        // Fetch the count of sales
+        $totalSales = Order::where('p_status', '1')->where('sellerid', $user->gmpid)->whereBetween('created_at', [$start, $end])
+        ->count();
+        $totalSalesAmount = Order::where('p_status', '1')->where('sellerid', $user->gmpid)->whereBetween('created_at', [$start, $end])
+        ->sum('orderamount');
+
+        $response=[
+            "message" => "Successful",
+            'data' => ['totalsales'=>$totalSales, 'totalsalesamount'=>number_format($totalSalesAmount, 2)],
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function saleschart(Request $request)
+    {
+        $user=auth()->user();
+        $year=(isset($request->year)) ? $request->year : Carbon::now()->year;
+        $salesData = DB::table('orders')
+        ->select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('SUM(orderamount) as total_sales')
+        )
+        ->whereYear('created_at', $year) // Filter by current year
+        ->groupBy(DB::raw('MONTH(created_at)'))
+        ->orderBy(DB::raw('MONTH(created_at)'))
+        ->get();
+
+        $formattedData = [
+            'months' => $salesData->pluck('month')->map(function ($month) {
+                return Carbon::create()->month($month)->format('M'); // Convert month number to full month name
+            }),
+            'total_sales' => $salesData->pluck('total_sales'),
+        ];
+
+        $response=[
+            "message" => "Successful",
+            'data' => $formattedData,
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
+
+
+
 
 
 
