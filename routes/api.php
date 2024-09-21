@@ -165,7 +165,6 @@ Route::prefix('v1')->group(function () {
         Route::get('/customer/order/getorders', [OrderController::class, 'index']);
         Route::get('/all/order/getorderitems', [OrderController::class, 'getOrderItems']);
         Route::get('/customer/order/getorder', [OrderController::class, 'getSingleOrder']);
-        Route::post('/customer/order/fillorderitem', [GeneralController::class, 'runquery']);
 
         //Order Report
         Route::get('/seller/order/report/fetchall', [OrderReportController::class, 'index']);
@@ -281,6 +280,8 @@ Route::prefix('v1')->group(function () {
     Route::get('/track3p', [GeneralController::class, 'trackfor3p']);
     Route::post('/logistics/getquote', [LogisticsController::class, 'getquote']);
     Route::get('/getirspricelist', [GeneralController::class, 'getirspricelist']);
+
+    Route::post('/customer/order/fillorderitem', [GeneralController::class, 'runquery']);
 
 
 });
