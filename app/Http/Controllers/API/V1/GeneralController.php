@@ -9,8 +9,12 @@ use App\Http\Resources\API\V1\Customer\TrackShipmentResource2;
 use App\Jobs\TPEmailJob;
 use App\Jobs\TPSMSJob;
 use App\Models\ActivationValue;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\Shipment;
 use App\Models\ShipmentInfo;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -266,6 +270,98 @@ class GeneralController extends Controller
                 return response()->json($res, 201);
             }
         }
+    }
+
+    public function CountSAppointments($year)
+    {
+        $doctor=auth()->user();
+        $appointmentdata=[];
+        $monthlyCounts = DB::table('appointments')
+        ->select(DB::raw('count(*) as count_s, month(created_at) as month'))
+        ->where('doctorid', $doctor->doctorid)
+        ->whereIn('status', ['1', '2', '3'])->whereYear('created_at', $year)
+        ->groupBy('month')
+        ->orderBy('month')->pluck('count_s', 'month');
+        $arraydata= json_decode(json_encode($monthlyCounts), 2);
+        for ($i=1; $i <= 12; $i++) {
+            if (isset($arraydata[$i])) {
+                array_push($appointmentdata, $arraydata[$i]);
+            }else{ array_push($appointmentdata, 0); }
+        }
+        return $appointmentdata;
+    }
+
+    public function countItems(Request $request)
+    {
+        $user=auth()->user();
+        switch ($request->period) {
+            case 'this-week':
+                $start = Carbon::now()->startOfWeek();
+                $end = Carbon::now()->endOfWeek();
+                break;
+            case 'last-week':
+                $start = Carbon::now()->subWeek()->startOfWeek(Carbon::SUNDAY);
+                $end = Carbon::now()->subWeek()->endOfWeek(Carbon::SATURDAY);
+                break;
+            case 'last-month':
+                $start = Carbon::now()->subMonth()->startOfMonth();
+                $end = Carbon::now()->subMonth()->endOfMonth();
+                break;
+            case 'this-quarter':
+                $start = Carbon::now()->firstOfQuarter();
+                $end = Carbon::now()->lastOfQuarter();
+                break;
+            case 'last-quarter':
+                $start = Carbon::now()->subQuarter()->firstOfQuarter();
+                $end = Carbon::now()->subQuarter()->lastOfQuarter();
+                break;
+            case 'this-year':
+                $start = Carbon::now()->firstOfYear();
+                $end = Carbon::now()->lastOfYear();
+                break;
+            case 'last-year':
+                $start = Carbon::now()->subYear()->firstOfYear();
+                $end = Carbon::now()->subYear()->lastOfYear();
+                break;
+            default:
+                $start = Carbon::today();
+                $end = Carbon::today();
+                break;
+        }
+
+        // Fetch the count of items added this week
+        $newItemsCount = Product::where('gmpid', $user->gmpid)->whereBetween('created_at', [$start, $end])->count();
+        $ItemsSoldCount = Order::where('p_status', '1')->where('customer', $user->gmpid)->whereBetween('created_at', [$start, $end])->count();
+
+        $response=[
+            "message" => "Successful",
+            'data' => ['no_of_item_added'=>$newItemsCount, 'no_of_item_sold'=>0],
+            "status" => "success"
+        ];
+        return response()->json($response, 200);
+    }
+
+    public function runquery()
+    {
+        $orders=Order::all();
+
+        foreach ($orders as $order) {
+            $pqs=@explode(",", $order->products);
+            for ($i=0; $i < count($pqs); $i++) {
+                $pq=explode("|", $pqs[$i]);
+                $product=Product::where('id', $pq[0])->first();
+                OrderItem::created([
+                    'orderid' => $order->orderid,
+                    'customer' => $order->customer,
+                    'storeid'=>$order->storeid,
+                    'sellerid'=>$order->sellerid,
+                    'product' => $product->id,
+                    'quantity'=>$pq[1],
+                    'unitcost'=>$order->amount,
+                ]);
+            }
+        }
+        return "All Done";
     }
 
 }
