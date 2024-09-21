@@ -281,7 +281,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/logistics/getquote', [LogisticsController::class, 'getquote']);
     Route::get('/getirspricelist', [GeneralController::class, 'getirspricelist']);
 
-    Route::post('/customer/order/fillorderitem', [GeneralController::class, 'runquery']);
+    // Route::post('/customer/order/fillorderitem', [GeneralController::class, 'runquery']);
 
 
 });

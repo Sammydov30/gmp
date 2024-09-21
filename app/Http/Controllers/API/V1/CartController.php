@@ -11,6 +11,7 @@ use App\Models\Customer;
 use App\Models\CustomerAddress;
 use App\Models\FundingHistory;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Store;
 use App\Traits\GMPCustomerBalanceTrait;
@@ -631,6 +632,21 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
+            //Add orderitem
+            $pqs=@explode(",", $order->products);
+            for ($i=0; $i < count($pqs); $i++) {
+                $pq=explode("|", $pqs[$i]);
+                $product=Product::where('id', $pq[0])->first();
+                OrderItem::create([
+                    'orderid' => $order->orderid,
+                    'customer' => $order->customer,
+                    'storeid'=>$order->storeid,
+                    'sellerid'=>$order->sellerid,
+                    'product' => @$product->id,
+                    'quantity'=>$pq[1],
+                    'unitcost'=>@$product->amount,
+                ]);
+            }
             //$this->clearCart($user->id);
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
@@ -764,6 +780,21 @@ class CartController extends Controller
                 'tx_ref'=>$orderid,
                 'currency'=>'NGN'
             ]);
+            //Add orderitem
+            $pqs=@explode(",", $order->products);
+            for ($i=0; $i < count($pqs); $i++) {
+                $pq=explode("|", $pqs[$i]);
+                $product=Product::where('id', $pq[0])->first();
+                OrderItem::create([
+                    'orderid' => $order->orderid,
+                    'customer' => $order->customer,
+                    'storeid'=>$order->storeid,
+                    'sellerid'=>$order->sellerid,
+                    'product' => @$product->id,
+                    'quantity'=>$pq[1],
+                    'unitcost'=>@$product->amount,
+                ]);
+            }
 
             if ($request->paymentmethod=='1') {
                 $this->chargeWallet($totalamount);
