@@ -355,9 +355,9 @@ class GeneralController extends Controller
                     'customer' => $order->customer,
                     'storeid'=>$order->storeid,
                     'sellerid'=>$order->sellerid,
-                    'product' => $product->id,
+                    'product' => @$product->id,
                     'quantity'=>$pq[1],
-                    'unitcost'=>$order->amount,
+                    'unitcost'=>@$product->amount,
                 ]);
             }
         }
