@@ -331,15 +331,24 @@ class GeneralController extends Controller
 
         // Fetch the count of items added this week
         $newItemsCount = Product::where('gmpid', $user->gmpid)->whereBetween('created_at', [$start, $end])->count();
-        $ItemsSoldCount = Order::where('p_status', '1')->where('customer', $user->gmpid)->whereBetween('created_at', [$start, $end])->count();
+        $itemsSoldCount = Order::where('p_status', '1')->where('sellerid', $user->gmpid)->whereBetween('created_at', [$start, $end])
+        ->get()
+        ->sum(function ($order) {
+            return $order->items->sum('quantity');
+        });
 
         $response=[
             "message" => "Successful",
-            'data' => ['no_of_item_added'=>$newItemsCount, 'no_of_item_sold'=>0],
+            'data' => ['no_of_item_added'=>$newItemsCount, 'no_of_item_sold'=>$itemsSoldCount],
             "status" => "success"
         ];
         return response()->json($response, 200);
     }
+
+
+
+
+
 
     public function runquery()
     {

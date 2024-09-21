@@ -39,6 +39,10 @@ class Order extends Model
         'readytime',
         'status'
     ];
+    public function items(){
+        return $this->hasMany(OrderItem::class, 'orderid', 'orderid');
+    }
+
     public function toArray()
     {
         $array = parent::toArray();
