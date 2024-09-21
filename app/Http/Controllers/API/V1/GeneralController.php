@@ -486,7 +486,7 @@ class GeneralController extends Controller
 
         $response=[
             "message" => "Successful",
-            'data' => ['totalcustomers'=>$totalCustomers, 'newcustomers'=>$totalNewCustomers, 2],
+            'data' => ['totalcustomers'=>$totalCustomers, 'newcustomers'=>$totalNewCustomers],
             "status" => "success"
         ];
         return response()->json($response, 200);
