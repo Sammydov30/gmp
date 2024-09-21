@@ -411,24 +411,31 @@ class GeneralController extends Controller
 
         // Prepare an array with all months, defaulting to zero
         $monthlySales = [];
-
         for ($month = 1; $month <= 12; $month++) {
             $monthlySales[$month] = $salesData[$month] ?? 0;
         }
-
         // Format data for JSON output (optional)
-        $formattedData = [];
-
+        $formattedData = $formattedData2 = $months = $totalsales = [];
         foreach ($monthlySales as $month => $sales) {
+            $m=Carbon::createFromDate($year, $month, 1)->format('M');
+            $t=$sales;
             $formattedData[] = [
-                'month' => Carbon::createFromDate($year, $month, 1)->format('M'),
-                'total_sales' => $sales
+                'month' => $m,
+                'total_sales' => $t
             ];
+            array_push($months, $m); array_push($totalsales, $t) ;
+
         }
+
+        $formattedData2 = [
+            'months' => $months,
+            'total_sales' => $totalsales,
+        ];
 
         $response=[
             "message" => "Successful",
             'data' => $formattedData,
+            'data2' => $formattedData2,
             "status" => "success"
         ];
         return response()->json($response, 200);
