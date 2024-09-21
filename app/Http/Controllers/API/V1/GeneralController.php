@@ -401,22 +401,30 @@ class GeneralController extends Controller
     {
         $user=auth()->user();
         $year=(isset($request->year)) ? $request->year : Carbon::now()->year;
-        $salesData = DB::table('orders')
-        ->select(
-            DB::raw('MONTH(created_at) as month'),
-            DB::raw('SUM(orderamount) as total_sales')
-        )
-        ->whereYear('created_at', $year) // Filter by current year
-        ->groupBy(DB::raw('MONTH(created_at)'))
-        ->orderBy(DB::raw('MONTH(created_at)'))
-        ->get();
 
-        $formattedData = [
-            'months' => $salesData->pluck('month')->map(function ($month) {
-                return Carbon::create()->month($month)->format('M'); // Convert month number to full month name
-            }),
-            'total_sales' => $salesData->pluck('total_sales'),
-        ];
+
+        $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(total_amount) as total_sales')
+        ->whereYear('created_at', $year) // Filter by current year
+        ->groupBy('month')
+        ->pluck('total_sales', 'month')
+        ->toArray();
+
+        // Prepare an array with all months, defaulting to zero
+        $monthlySales = [];
+
+        for ($month = 1; $month <= 12; $month++) {
+            $monthlySales[$month] = $salesData[$month] ?? 0;
+        }
+
+        // Format data for JSON output (optional)
+        $formattedData = [];
+
+        foreach ($monthlySales as $month => $sales) {
+            $formattedData[] = [
+                'month' => Carbon::createFromDate($year, $month, 1)->format('M'),
+                'total_sales' => $sales
+            ];
+        }
 
         $response=[
             "message" => "Successful",
