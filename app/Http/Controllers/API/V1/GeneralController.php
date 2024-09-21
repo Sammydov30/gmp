@@ -350,7 +350,7 @@ class GeneralController extends Controller
             for ($i=0; $i < count($pqs); $i++) {
                 $pq=explode("|", $pqs[$i]);
                 $product=Product::where('id', $pq[0])->first();
-                OrderItem::created([
+                OrderItem::create([
                     'orderid' => $order->orderid,
                     'customer' => $order->customer,
                     'storeid'=>$order->storeid,
