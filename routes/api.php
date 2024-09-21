@@ -177,6 +177,9 @@ Route::prefix('v1')->group(function () {
         Route::post('/seller/order/markready', [OrderController::class, 'markReady']);
         Route::post('/seller/order/markcancelled', [OrderController::class, 'markCancelled']);
 
+        //Analytics
+        Route::get('/seller/analytics/item/details', [GeneralController::class, 'countItems']);
+
 
         //Notification
         Route::get('/customer/notification/fetchnotifications', [NotificationController::class, 'fetchnotificationforuser']);
