@@ -17,6 +17,7 @@ use App\Http\Controllers\API\V1\CartController;
 use App\Http\Controllers\API\V1\Customer\ShipmentController;
 use App\Http\Controllers\API\V1\FeedBackRatingController;
 use App\Http\Controllers\API\V1\GeneralController;
+use App\Http\Controllers\API\V1\GeneralStoreController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\NotificationController;
@@ -269,7 +270,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/general/product/{id}', [ProductController::class, 'show']);
     Route::post('/general/productarray', [ProductController::class, 'getproductgroup']);
     //Stores
-    Route::apiResource('/general/stores', StoreController::class);
+    Route::apiResource('/general/stores', GeneralStoreController::class);
     //specialitems
     // Route::get('/specialitems', [SpecialItemController::class, 'index']);
     // Route::get('/specialitem', [SpecialItemController::class, 'getSpecialItem']);
