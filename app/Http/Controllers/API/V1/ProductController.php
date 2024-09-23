@@ -117,6 +117,9 @@ class ProductController extends Controller
             return response()->json(["message" => 'Product Already created in this Store.', "status" => "error"], 400);
         }
         $marketquery=Store::where('id', $request->store)->first();
+        if ($marketquery->gmpid!=$user->gmpid) {
+            return response()->json(["message" => 'Invalid Action', "status" => "error"], 400);
+        }
         $market=($marketquery)?$marketquery->marketid : null;
         $product = Product::create([
             'productid' => 'GMPP'.time(),
