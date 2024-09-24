@@ -199,25 +199,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/customer/auth/checkotp', [CustomerAuthController::class, 'checkotp']);
     Route::post('/customer/auth/login', [CustomerAuthController::class, 'login']);
 
-    // Only for Solvent
-    Route::middleware(['bearer.admin_solvent'])->group(function () {
-        //plan
-        Route::apiResource('/admin/plans', PlanController::class);
-        //Deposit
-        Route::get('/admin/deposit/fetchall', [DepositHistoryController::class, 'index']);
-        Route::get('/admin/deposit/getdeposit/{id}', [DepositHistoryController::class, 'show']);
-
-        //Withdrawal
-        Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
-        Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
-
-        //marketplace
-        Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
-        //category
-        Route::apiResource('/admin/categories', CategoryController::class);
-
-    });
-
     // Only for admin
     Route::middleware(['auth:sanctum', 'type.admin'])->group(function () {
         Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
@@ -279,5 +260,24 @@ Route::prefix('v1')->group(function () {
     // Route::post('/customer/order/fillorderitem', [GeneralController::class, 'runquery']);
 
 
+
+    // Only for Solvent
+    Route::middleware(['bearer.admin_solvent'])->group(function () {
+        //plan
+        Route::apiResource('/admin/plans', PlanController::class);
+        //Deposit
+        Route::get('/admin/deposit/fetchall', [DepositHistoryController::class, 'index']);
+        Route::get('/admin/deposit/getdeposit/{id}', [DepositHistoryController::class, 'show']);
+
+        //Withdrawal
+        Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
+        Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
+
+        //marketplace
+        Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
+        //category
+        Route::apiResource('/admin/categories', CategoryController::class);
+
+    });
 });
 
