@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\CustomerMiddleware;
 use App\Http\Middleware\CustomerSupport;
 use App\Http\Middleware\RestrictotherAdmins;
+use App\Http\Middleware\SolventAdminMiddleware;
 use App\Http\Middleware\TechnicalSupport;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -74,5 +75,6 @@ class Kernel extends HttpKernel
         'restrictothers' => RestrictotherAdmins::class,
         'customersupport' => CustomerSupport::class,
         'techsupport' => TechnicalSupport::class,
+        'bearer.admin_solvent' => SolventAdminMiddleware::class,
     ];
 }
