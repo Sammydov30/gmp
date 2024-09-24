@@ -16,7 +16,7 @@ class StateController extends Controller
      */
     public function index()
     {
-        $result = State::with('regions');
+        $result = State::with('m_states');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
