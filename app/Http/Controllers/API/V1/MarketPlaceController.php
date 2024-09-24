@@ -111,7 +111,7 @@ class MarketPlaceController extends Controller
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
-            'open' => $request->marketstatus
+            'open' => $open,
         ]);
 
         $response=[
