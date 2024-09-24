@@ -69,7 +69,7 @@ class MarketPlaceController extends Controller
         if ($query) {
             return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
         }
-        $open= ($request->marketstatus == null) ? '0' : $request->marketstatus;
+        $open= ($request->marketstatus == null) ? '1' : $request->marketstatus;
         $marketplace = MarketPlace::create([
             'marketid' => 'GMKP'.time(),
             'name' => $request->name,
