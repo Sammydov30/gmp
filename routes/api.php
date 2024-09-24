@@ -232,7 +232,8 @@ Route::prefix('v1')->group(function () {
     //country
     Route::apiResource('/admin/countries', CountryController::class);
     //marketplace
-    Route::apiResource('/marketplaces', MarketPlaceController::class);
+    Route::get('/marketplaces', [MarketPlaceController::class, 'index2']);
+    Route::get('/marketplaces/{id}', [MarketPlaceController::class, 'show']);
     //category
     Route::apiResource('/categories', CategoryController::class);
     //Products

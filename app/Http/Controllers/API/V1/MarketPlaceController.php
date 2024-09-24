@@ -47,6 +47,42 @@ class MarketPlaceController extends Controller
         return response()->json($park, 200);
     }
 
+    public function index2()
+    {
+        $result = MarketPlace::with('region')->withCount('stores')->where('deleted', '0');
+        if (request()->input("search") != null) {
+            $search=request()->input("search");
+            $result->where('name', "like", "%{$search}%");
+        }
+        if (request()->input("region") != null) {
+            $region=request()->input("region");
+            $result->where('region', $region);
+        }
+        if (request()->input("location") != null) {
+            $location=request()->input("location");
+            $result->where('location', $location);
+        }
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
+            $sortBy=request()->input("sortby");
+        }else{
+            $sortBy='id';
+        }
+        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
+            $sortOrder=request()->input("sortorder");
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty(request()->input("perpage"))) {
+            $perPage=request()->input("perpage");
+        } else {
+            $perPage=10;
+        }
+
+        $park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        //$park=$result->orderBY($sortBy, $sortOrder)->get();
+        return response()->json($park, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
