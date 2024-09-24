@@ -36,6 +36,7 @@ use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\WishlistController;
 use App\Http\Controllers\API\V1\WithdrawalController;
+use App\Models\MarketPlace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -275,6 +276,7 @@ Route::prefix('v1')->group(function () {
 
         //marketplace
         Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
+        Route::post('/admin/marketplace/changestatus', [MarketPlaceController::class, 'changestatus']);
         //category
         Route::apiResource('/admin/categories', CategoryController::class);
 

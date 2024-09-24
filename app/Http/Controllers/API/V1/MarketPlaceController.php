@@ -74,6 +74,7 @@ class MarketPlaceController extends Controller
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
+            'open' => $request->open
         ]);
 
         $response=[
@@ -134,6 +135,7 @@ class MarketPlaceController extends Controller
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
+            'open' => $request->open,
         ]);
         $response=[
             "message" => "Market Place Updated Successfully",
@@ -141,7 +143,7 @@ class MarketPlaceController extends Controller
             "status" => "success"
         ];
 
-        return response()->json($response, 200);
+        return response()->json($response, 201);
     }
 
     /**
@@ -168,6 +170,28 @@ class MarketPlaceController extends Controller
             "message" => "Market Place Deleted Successfully",
             "status" => "success"
         ];
-        return response()->json($response, 200);
+        return response()->json($response, 201);
+    }
+    public function changestatus(Request $request)
+    {
+        $marketplace=MarketPlace::where('id', $request->id);
+        $result=$marketplace->first();
+        if (!$result) {
+            return response()->json(["message" => "Market not found", "status" => "error"], 400);
+        }
+        if ($result->open=='0') {
+            $marketplace->update([
+                'open' => '1',
+            ]);
+        }else{
+            $marketplace->update([
+                'open' => '0',
+            ]);
+        }
+        $response=[
+            "message" => "Status Changed Successfully",
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
     }
 }
