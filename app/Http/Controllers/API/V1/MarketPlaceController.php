@@ -49,7 +49,7 @@ class MarketPlaceController extends Controller
 
     public function index2()
     {
-        $result = MarketPlace::with('region')->withCount('stores')->where('deleted', '0');
+        $result = MarketPlace::with('region')->withCount('stores')->where('deleted', '0')->where('open', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
