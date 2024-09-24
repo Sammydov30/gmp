@@ -168,11 +168,12 @@ class MarketPlaceController extends Controller
         if ($query) {
             return response()->json(["message" => 'Record Already exist.', "status" => "error"], 400);
         }
+        $open= ($request->marketstatus == null) ? '1' : $request->marketstatus;
         $marketplace->update([
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
-            'open' => $request->marketstatus
+            'open' => $open
         ]);
         $response=[
             "message" => "Market Place Updated Successfully",
