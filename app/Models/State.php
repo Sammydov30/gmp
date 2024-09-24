@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class State extends Model
 {
     use HasFactory;
-    protected $table="states";
+    protected $table="m_states";
     protected $fillable = [
         'code',
         'name',
