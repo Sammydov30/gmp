@@ -74,7 +74,7 @@ class MarketPlaceController extends Controller
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
-            'open' => $request->open
+            'open' => $request->marketstatus
         ]);
 
         $response=[
@@ -135,7 +135,7 @@ class MarketPlaceController extends Controller
             'name' => $request->name,
             'region'=> $request->region,
             'location'=> $request->location,
-            'open' => $request->open,
+            'open' => $request->marketstatus
         ]);
         $response=[
             "message" => "Market Place Updated Successfully",
