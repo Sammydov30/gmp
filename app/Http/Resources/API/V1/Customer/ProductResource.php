@@ -21,6 +21,7 @@ class ProductResource extends JsonResource
     {
         return [
             'id'      =>  $this->id,
+            'productid' => $this->productid,
             'storeid' => $this->storeid,
             'marketid' => $this->marketid,
             'gmpid' => $this->gmpid ,
