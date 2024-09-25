@@ -50,7 +50,7 @@ class ProductResource extends JsonResource
     private function GetCategoryNames($categories) {
         $category=explode(",", $categories);
         $expcat=[];
-        foreach ($categories as $key) {
+        foreach ($category as $key) {
             $each=Category::where('id', $key)->first();
             if ($each) {
                 array_push($expcat, $each->name);
