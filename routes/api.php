@@ -265,6 +265,17 @@ Route::prefix('v1')->group(function () {
 
     // Only for Solvent
     Route::middleware(['bearer.admin_solvent'])->group(function () {
+        //marketplace
+        Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
+        Route::post('/admin/marketplace/changestatus', [MarketPlaceController::class, 'changestatus']);
+
+        //product
+        Route::apiResource('/admin/products', ProductController::class);
+        Route::post('/admin/product/approve', [ProductController::class, 'approve']);
+
+        //category
+        Route::apiResource('/admin/categories', CategoryController::class);
+
         //plan
         Route::apiResource('/admin/plans', PlanController::class);
         //Deposit
@@ -274,13 +285,6 @@ Route::prefix('v1')->group(function () {
         //Withdrawal
         Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
         Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
-
-        //marketplace
-        Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
-        Route::post('/admin/marketplace/changestatus', [MarketPlaceController::class, 'changestatus']);
-        //category
-        Route::apiResource('/admin/categories', CategoryController::class);
-
     });
 });
 

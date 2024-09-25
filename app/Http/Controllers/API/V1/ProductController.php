@@ -255,4 +255,31 @@ class ProductController extends Controller
         ];
         return response()->json($response, 200);
     }
+
+    public function approve(Request $request)
+    {
+        $request->validate([
+            'id' => 'required', 'itemcat'=>'required'
+        ]);
+        if(empty($request->id)){
+            return response()->json(["message" => "Product ID is required", "status" => "error"], 400);
+        }
+        if($request->itemcat=='2'){
+            if(empty($request->packagetype)){
+                return response()->json(["message" => "Package Type is required", "status" => "error"], 400);
+            }
+        }
+        $item=($request->itemcat=='1') ? '1' : $request->packagetype;
+        $product=Product::where('id', $request->id)->update([
+            'approved' => '1',
+            'itemcat' => $request->itemcat,
+            'packagetype' => $item,
+        ]);
+        $response=[
+            "message" => "Product Approved",
+            'product' => $product,
+            "status" => "success"
+        ];
+        return response()->json($response, 201);
+    }
 }
