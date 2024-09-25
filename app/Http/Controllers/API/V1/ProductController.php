@@ -52,7 +52,7 @@ class ProductController extends Controller
         }
         if (request()->input("approve") != null) {
             $search=request()->input("approve");
-            $result->where('approve', $search);
+            $result->where('approved', $search);
         }
         if (request()->input("status") != null) {
             $search=request()->input("status");
