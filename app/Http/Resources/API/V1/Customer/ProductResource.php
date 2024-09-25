@@ -31,6 +31,7 @@ class ProductResource extends JsonResource
             'length' => $this->length,
             'width' => $this->width,
             'height' => $this->height,
+            'approved' => $this->approved,
             'status' => $this->status,
             'posted' => Carbon::parse($this->created_at)->diffForHumans(),
             'postdate' => Carbon::parse($this->created_at)->format('d-m-Y'),
