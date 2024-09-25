@@ -22,8 +22,22 @@ class ProductController extends Controller
         }
         if (request()->input("gmpid") != null) {
             $search=request()->input("gmpid");
-            $result->where('gmpid', $search);
+            $result->where('gmpid', "like", "%{$search}%");
         }
+        if (request()->input("store") != null) {
+            $search=request()->input("store");
+            $result->where(function ($query) use($search) {
+                $query->whereHas('market', function ($query2) use($search){
+                    $query2->where('name', "like", "%{$search}%")
+                    ->orWhere('marketid', "like", "%{$search}%");
+                })
+                ->orWhereHas('store', function ($query2) use($search){
+                    $query2->where('name', "like", "%{$search}%")
+                    ->orWhere('storeid', "like", "%{$search}%");
+                });
+            });
+        }
+
         if (request()->input("categoryid") != null) {
             $search=request()->input("categoryid");
             $result->where('category', $search);
@@ -35,6 +49,14 @@ class ProductController extends Controller
         if (request()->input("storeid") != null) {
             $search=request()->input("storeid");
             $result->where('storeid', $search);
+        }
+        if (request()->input("approve") != null) {
+            $search=request()->input("approve");
+            $result->where('approve', $search);
+        }
+        if (request()->input("status") != null) {
+            $search=request()->input("status");
+            $result->where('status', $search);
         }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortby");
