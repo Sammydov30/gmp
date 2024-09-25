@@ -70,6 +70,12 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function addressbook()
+    {
+        return $this->hasMany(CustomerAddress::class, 'gmpid', 'gmpid')->with('locationdata');
+    }
+
     public function toArray()
     {
         $array = parent::toArray();
@@ -79,7 +85,6 @@ class Customer extends Authenticatable
         $url = env('APP_UURL');
         $array['profilepicture'] =($this->profilepicture=="https://res.cloudinary.com/examqueat/image/upload/v1664654734/handshake.jpg")? $this->profilepicture :
         $url.$this->profilepicture;
-        $array['activename'] = ($this->active=='1')? "Online" : 'Offline';
         return $array;
     }
 

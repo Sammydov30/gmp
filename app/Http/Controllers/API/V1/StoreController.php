@@ -48,6 +48,44 @@ class StoreController extends Controller
         return response()->json($park, 200);
     }
 
+    public function index2()
+    {
+        $result = Store::with('market')->withCount(['products' => function($query) {
+            $query->where('deleted', '0');
+        }])->where('deleted', '0');
+
+        if (request()->input("search") != null) {
+            $search=request()->input("search");
+            $result->where('name', "like", "%{$search}%");
+        }
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', $search);
+        }
+        if (request()->input("marketid") != null) {
+            $search=request()->input("marketid");
+            $result->where('marketid', $search);
+        }
+        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
+            $sortBy=request()->input("sortby");
+        }else{
+            $sortBy='id';
+        }
+        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
+            $sortOrder=request()->input("sortorder");
+        }else{
+            $sortOrder='desc';
+        }
+        if (!empty(request()->input("perpage"))) {
+            $perPage=request()->input("perpage");
+        } else {
+            $perPage=10;
+        }
+
+        $park=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
+        return response()->json($park, 200);
+    }
+
     public function store(CreateRequest $request)
     {
         $user=auth()->user();

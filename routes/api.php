@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\Admin\AdminController;
+use App\Http\Controllers\API\V1\Admin\Customer\CustomerController as CustomerCustomerController;
+use App\Http\Controllers\API\V1\Admin\Order\OrderController as OrderOrderController;
 use App\Http\Controllers\API\V1\Admin\Plan\PlanController;
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\AdminAuthController;
@@ -269,9 +271,36 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('/admin/marketplaces', MarketPlaceController::class);
         Route::post('/admin/marketplace/changestatus', [MarketPlaceController::class, 'changestatus']);
 
+        //store
+        Route::get('/admin/stores', [StoreController::class, 'index2']);
+        Route::get('/admin/stores/{id}', [StoreController::class, 'show']);
+        Route::delete('/admin/stores/{id}', [StoreController::class, 'destroy']);
+
         //product
         Route::apiResource('/admin/products', ProductController::class);
         Route::post('/admin/product/approve', [ProductController::class, 'approve']);
+
+        //customers
+        Route::get('/admin/customers', [CustomerCustomerController::class, 'index']);
+        Route::get('/admin/customers/show', [CustomerCustomerController::class, 'editprofile']);
+        Route::post('/admin/customers/updateprofile', [CustomerCustomerController::class, 'updateprofile']);
+        Route::post('/admin/customers/updatepassword', [CustomerCustomerController::class, 'updatepassword']);
+
+        //FundingHistory
+        Route::get('/admin/funding/fetchall', [TransactionController::class, 'index']);
+        Route::get('/admin/funding/getfunding/{id}', [TransactionController::class, 'show']);
+
+        //orders
+        Route::get('/admin/order/getorders', [OrderOrderController::class, 'index']);
+        Route::get('/admin/order/getorderitems', [OrderOrderController::class, 'getOrderItems']);
+        Route::get('/admin/order/getorder', [OrderOrderController::class, 'getSingleOrder']);
+
+        //Order Action
+        Route::post('/admin/order/markaccepted', [OrderOrderController::class, 'markAccepted']);
+        Route::post('/admin/order/markready', [OrderOrderController::class, 'markReady']);
+        Route::post('/admin/order/markpickedup', [OrderOrderController::class, 'markPickedUp']);
+        Route::post('/admin/order/markdelivered', [OrderOrderController::class, 'markDelivered']);
+        Route::post('/admin/order/markcancelled', [OrderOrderController::class, 'markCancelled']);
 
         //category
         Route::apiResource('/admin/categories', CategoryController::class);
