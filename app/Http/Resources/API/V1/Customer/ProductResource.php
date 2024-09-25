@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources\API\V1\Customer;
 
+use App\Models\Category;
 use App\Models\FeedBackRating;
+use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -25,6 +27,7 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'price' => $this->amount,
             'categoryid' => $this->category,
+            'categoryname' => $this->GetCategoryNames($this->category),
             'description' => $this->description,
             'quantity' => $this->quantity,
             'weight' => $this->weight,
@@ -42,6 +45,19 @@ class ProductResource extends JsonResource
             'productreviews' => $this->productreviews,
             'groupedRatings' => $this->getGroupedreview($this->id)
         ];
+    }
+
+    private function GetCategoryNames($categories) {
+        $category=explode(",", $categories);
+        $expcat=[];
+        foreach ($categories as $key) {
+            $each=Category::where('id', $key)->first();
+            if ($each) {
+                array_push($expcat, $each->name);
+            }
+        }
+        return implode(",", $expcat);
+
     }
 
     //GET ORDER REVIEW
