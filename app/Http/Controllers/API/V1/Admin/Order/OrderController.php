@@ -25,7 +25,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $result = Order::withh('customer', 'review');
+        $result = Order::with('customer', 'review');
         if (request()->input("orderid") != null) {
             $orderid=request()->input("orderid");
             $result->where('orderid', $orderid);
