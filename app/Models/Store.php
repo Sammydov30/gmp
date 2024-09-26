@@ -34,9 +34,22 @@ class Store extends Model
     {
         $array = parent::toArray();
         $array['categories'] = $this->GetCategoriesDetails($this->category);
+        $array['categoryname'] = $this->GetCategoryNames($this->category);
         return $array;
     }
 
+    private function GetCategoryNames($categories) {
+        $category=explode(",", $categories);
+        $expcat=[];
+        foreach ($category as $key) {
+            $each=Category::where('id', $key)->first();
+            if ($each) {
+                array_push($expcat, $each->name);
+            }
+        }
+        return implode(",", $expcat);
+
+    }
     private function GetCategoriesDetails($categories){
         $cat=explode(',', $categories);
         $category=Category::whereIn('id', $cat)->get();
