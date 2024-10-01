@@ -15,6 +15,7 @@ use App\Jobs\Customer\RegisterEmailJob;
 use App\Jobs\CustomerForgotPasswordEmailJob;
 use App\Models\Customer;
 use App\Models\CustomerAddress;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -29,6 +30,13 @@ class CustomerAuthController extends Controller
         $customer = Customer::where('email', $request->email)->first();
         if (!$customer || !Hash::check($request->password, $customer->password)) {
             return response()->json(["message" => "The provided credentials are incorrect", "status" => "error"], 400);
+        }
+        $sup=Subscription::where("gmpid", $customer->gmpid)->latest()->first();
+        $currtime=time();
+        if ($sup) {
+            if ($currtime>$sup->expiredtime) {
+                Subscription::where('id', $sup->id)->update(["used"=>"1"]);
+            }
         }
         return response()->json([
             'customer' => $customer,

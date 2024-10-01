@@ -33,6 +33,10 @@ class Product extends Model implements HasMedia
 
     ];
 
+    public function owner()
+    {
+        return $this->hasOne(Customer::class, 'gmpid', 'gmpid')->with('subscription');
+    }
     public function categori()
     {
         return $this->belongsTo(Category::class, 'category');

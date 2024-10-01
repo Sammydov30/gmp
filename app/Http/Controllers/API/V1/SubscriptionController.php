@@ -138,8 +138,9 @@ class SubscriptionController extends Controller
         }
         Customer::where('gmpid', $user->gmpid)->update(["seller"=>"1"]);
         $time=time();
-        $subscription=Subscription::create([
-            'gmpid' => $user->gmpid,
+        $subscription=Subscription::updateOrCreate(
+        ['gmpid' => $user->gmpid],
+        [
             'plan' => '1',
             'currtime' => $time,
             'expiredtime' => $time+$activationvalue->subscriptionduration,

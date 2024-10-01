@@ -76,6 +76,11 @@ class Customer extends Authenticatable
         return $this->hasMany(CustomerAddress::class, 'gmpid', 'gmpid')->with('locationdata');
     }
 
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class, 'gmpid', 'gmpid')->latest()->first();
+    }
+
     public function toArray()
     {
         $array = parent::toArray();

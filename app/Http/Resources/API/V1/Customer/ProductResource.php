@@ -39,6 +39,7 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'posted' => Carbon::parse($this->created_at)->diffForHumans(),
             'postdate' => Carbon::parse($this->created_at)->format('d-m-Y'),
+            'owner' => $this->owner,
             'category' => $this->categori,
             'market'   => $this->market,
             'store' => $this->store,
