@@ -78,7 +78,7 @@ class Customer extends Authenticatable
 
     public function subscription()
     {
-        return $this->hasOne(Subscription::class, 'gmpid', 'gmpid')->latest()->first();
+        return $this->hasOne(Subscription::class, 'gmpid', 'gmpid')->latest();
     }
 
     public function toArray()
