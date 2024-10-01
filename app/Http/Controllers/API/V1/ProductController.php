@@ -152,6 +152,11 @@ class ProductController extends Controller
             'category'=> $request->category,
             'amount'=> $request->price,
             'description'=> $request->description,
+            'quantity' => $request->quantity,
+            'weight' => $request->weight,
+            'height' => $request->height,
+            'length' => $request->length,
+            'width' => $request->width,
         ]);
         if ($images =$request->file('images')) {
             foreach ($images as $image) {
@@ -212,6 +217,11 @@ class ProductController extends Controller
             'category'=> $request->category,
             'amount'=> $request->price,
             'description'=> $request->description,
+            'quantity' => $request->quantity,
+            'weight' => $request->weight,
+            'height' => $request->height,
+            'length' => $request->length,
+            'width' => $request->width,
         ]);
         if ($images = $request->images) {
             $product->clearMediaCollection('images');
@@ -307,30 +317,15 @@ class ProductController extends Controller
 
     public function topup(Request $request, $id)
     {
+        if(empty($request->quantity)){
+            return response()->json(["message" => "Top Up Quantity is required", "status" => "error"], 400);
+        }
         $product=Product::find($id);
-        $query=Product::where('name', $request->name)->where('storeid', $request->store)->
-        where('id', '!=', $product->id)->first();
-        if ($query) {
-            return response()->json(["message" => 'Product Already created in this Market.', "status" => "error"], 400);
-        }
-        $market=Store::where('id', $request->store)->first()->marketid;
         $product->update([
-            'storeid' => $request->store,
-            'marketid'=> $market,
-            'name' => $request->name,
-            'category'=> $request->category,
-            'amount'=> $request->price,
-            'description'=> $request->description,
+            'quantity' => 'quantity'+$request->quantity,
         ]);
-        if ($images = $request->images) {
-            $product->clearMediaCollection('images');
-            foreach ($images as $image) {
-                $product->addMedia($image)->toMediaCollection('images');
-            }
-        }
         $response=[
-            "message" => "Product Updated Successfully",
-            'product' => new ProductResource($product),
+            "message" => "Quantity Topup Successfully",
             "status" => "success"
         ];
 

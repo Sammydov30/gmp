@@ -133,6 +133,7 @@ Route::prefix('v1')->group(function () {
 
         //product
         Route::apiResource('/customer/products', ProductController::class);
+        Route::post('/customer/product/topup/{id}', [ProductController::class, 'topup']);
         Route::post('/customer/product/makeavailable', [ProductController::class, 'available']);
         Route::post('/customer/product/makeunavailable', [ProductController::class, 'unavailable']);
 
