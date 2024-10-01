@@ -304,4 +304,36 @@ class ProductController extends Controller
         ];
         return response()->json($response, 201);
     }
+
+    public function topup(Request $request, $id)
+    {
+        $product=Product::find($id);
+        $query=Product::where('name', $request->name)->where('storeid', $request->store)->
+        where('id', '!=', $product->id)->first();
+        if ($query) {
+            return response()->json(["message" => 'Product Already created in this Market.', "status" => "error"], 400);
+        }
+        $market=Store::where('id', $request->store)->first()->marketid;
+        $product->update([
+            'storeid' => $request->store,
+            'marketid'=> $market,
+            'name' => $request->name,
+            'category'=> $request->category,
+            'amount'=> $request->price,
+            'description'=> $request->description,
+        ]);
+        if ($images = $request->images) {
+            $product->clearMediaCollection('images');
+            foreach ($images as $image) {
+                $product->addMedia($image)->toMediaCollection('images');
+            }
+        }
+        $response=[
+            "message" => "Product Updated Successfully",
+            'product' => new ProductResource($product),
+            "status" => "success"
+        ];
+
+        return response()->json($response, 200);
+    }
 }
