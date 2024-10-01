@@ -280,6 +280,7 @@ Route::prefix('v1')->group(function () {
         //product
         Route::apiResource('/admin/products', ProductController::class);
         Route::post('/admin/product/approve', [ProductController::class, 'approve']);
+        Route::post('/admin/product/topup/{id}', [ProductController::class, 'topup']);
 
         //customers
         Route::get('/admin/customers', [CustomerCustomerController::class, 'index']);
