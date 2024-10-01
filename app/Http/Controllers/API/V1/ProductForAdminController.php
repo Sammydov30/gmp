@@ -10,23 +10,20 @@ use App\Models\ProductImage;
 use App\Models\Store;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class ProductForAdminController extends Controller
 {
 
     public function index()
     {
-        $user=auth()->user();
-        $result = Product::with('owner', 'categori', 'productimages', 'market', 'store', 'productreviews')
-        ->where('gmpid', $user->gmpid)
-        ->where('deleted', '0');
+        $result = Product::with('owner', 'categori', 'productimages', 'market', 'store', 'productreviews')->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
             $result->where('name', "like", "%{$search}%");
         }
-        // if (request()->input("gmpid") != null) {
-        //     $search=request()->input("gmpid");
-        //     $result->where('gmpid', "like", "%{$search}%");
-        // }
+        if (request()->input("gmpid") != null) {
+            $search=request()->input("gmpid");
+            $result->where('gmpid', "like", "%{$search}%");
+        }
         if (request()->input("store") != null) {
             $search=request()->input("store");
             $result->where(function ($query) use($search) {
@@ -60,57 +57,6 @@ class ProductController extends Controller
         if (request()->input("status") != null) {
             $search=request()->input("status");
             $result->where('status', $search);
-        }
-        if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
-            $sortBy=request()->input("sortby");
-        }else{
-            $sortBy='id';
-        }
-        if ((request()->input("sortorder")!=null) && in_array(request()->input("sortorder"), ['asc', 'desc'])) {
-            $sortOrder=request()->input("sortorder");
-        }else{
-            $sortOrder='desc';
-        }
-        if (!empty(request()->input("perpage"))) {
-            $perPage=request()->input("perpage");
-        } else {
-            $perPage=10;
-        }
-
-        $products=$result->orderBY($sortBy, $sortOrder)->paginate($perPage);
-        return ProductResource::collection($products);
-        //return response()->json($products, 200);
-    }
-
-    public function index2()
-    {
-        $result = Product::with('owner', 'categori', 'productimages', 'market', 'store', 'productreviews')->where('approved', '1')
-        ->whereHas('owner', function ($query) {
-            $query->where('seller', '1')->whereHas('subscription', function ($subQuery) {
-                // Add any condition for subscription status if needed
-                $subQuery->where('used', '0'); // Example: only active subscriptions
-            });
-        })
-        ->where('deleted', '0');
-        if (request()->input("search") != null) {
-            $search=request()->input("search");
-            $result->where('name', "like", "%{$search}%");
-        }
-        if (request()->input("gmpid") != null) {
-            $search=request()->input("gmpid");
-            $result->where('gmpid', $search);
-        }
-        if (request()->input("categoryid") != null) {
-            $search=request()->input("categoryid");
-            $result->where('category', $search);
-        }
-        if (request()->input("marketid") != null) {
-            $search=request()->input("marketid");
-            $result->where('marketid', $search);
-        }
-        if (request()->input("storeid") != null) {
-            $search=request()->input("storeid");
-            $result->where('storeid', $search);
         }
         if ((request()->input("sortby")!=null) && in_array(request()->input("sortby"), ['id', 'name', 'created_at'])) {
             $sortBy=request()->input("sortby");
