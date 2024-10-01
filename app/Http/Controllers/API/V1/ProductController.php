@@ -322,7 +322,7 @@ class ProductController extends Controller
         }
         $product=Product::find($id);
         $product->update([
-            'quantity' => 'quantity'+$request->quantity,
+            'quantity' => $product->quantity+$request->quantity,
         ]);
         $response=[
             "message" => "Quantity Topup Successfully",
