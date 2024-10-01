@@ -83,10 +83,11 @@ class ProductController extends Controller
     {
         $result = Product::with('owner', 'categori', 'productimages', 'market', 'store', 'productreviews')->where('approved', '1')
         ->whereHas('owner', function ($query) {
-            $query->whereHas('subscription', function ($subQuery) {
+            $query->where('seller', '1')->whereHas('subscription', function ($subQuery) {
                 // Add any condition for subscription status if needed
                 $subQuery->where('used', '0'); // Example: only active subscriptions
-            })
+            });
+        })
         ->where('deleted', '0');
         if (request()->input("search") != null) {
             $search=request()->input("search");
