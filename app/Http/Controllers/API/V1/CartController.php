@@ -126,6 +126,12 @@ class CartController extends Controller
         if (!$checkitem) {
             return response()->json(["message" => "Item not available.", "status" => "error"], 400);
         }
+        if ($checkitem->quantity<2) {
+            return response()->json(["message" => "Item not available.", "status" => "error"], 400);
+        }
+        if ($checkitem->approved!=='1') {
+            return response()->json(["message" => "Item not available.", "status" => "error"], 400);
+        }
         $query=Cart::where('product', $request->item)->where('customer', $user->id)->first();
         if ($query) {
             $cart = Cart::where('product', $request->item)->where('customer', $user->id)->update([
@@ -170,6 +176,12 @@ class CartController extends Controller
             $checkitem=Product::find($item);
             if (!$checkitem) {
                 return response()->json(["message" => "An Item not available.", "status" => "error"], 400);
+            }
+            if ($checkitem->quantity<2) {
+                return response()->json(["message" => $checkitem->name." not available.", "status" => "error"], 400);
+            }
+            if ($checkitem->approved!=='1') {
+                return response()->json(["message" => $checkitem->name." not available.", "status" => "error"], 400);
             }
             $query=Cart::where('product', $item)->where('customer', $user->id)->first();
             if ($query) {
@@ -331,7 +343,22 @@ class CartController extends Controller
         $carts=Cart::where('customer', $user)->get();
         $items=array();
         $amount=0;
+
         foreach ($carts as $c) {
+            try {
+                $checkitem=Product::where('id', $c['product'])->first();
+                if (!$checkitem) {
+                    return response()->json(["message" => "An Item not available.", "status" => "error"], 400);
+                }
+                if ($checkitem->quantity<2) {
+                    return response()->json(["message" => $checkitem->name." not available.", "status" => "error"], 400);
+                }
+                if ($checkitem->approved!=='1') {
+                    return response()->json(["message" => $checkitem->name." not available.", "status" => "error"], 400);
+                }
+            } catch (\Throwable $th) {
+                continue;
+            }
             if($c['confirmed']!='1'){
                 return false;
             }
