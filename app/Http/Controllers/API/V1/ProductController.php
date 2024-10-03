@@ -214,6 +214,7 @@ class ProductController extends Controller
 
     public function update(CreateRequest $request, $id)
     {
+        $prid=$id;
         $product=Product::find($id);
         $query=Product::where('name', $request->name)->where('storeid', $request->store)->
         where('id', '!=', $product->id)->first();
@@ -260,6 +261,7 @@ class ProductController extends Controller
                 $product->addMedia($newImage)->toMediaCollection('images'); // Add new images to the collection
             }
         }
+        $product=Product::find($prid);
         $response=[
             "message" => "Product Updated Successfully",
             'product' => new ProductResource($product),
