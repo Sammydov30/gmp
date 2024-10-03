@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-class CreateRequest extends FormRequest
+class UpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -39,7 +39,8 @@ class CreateRequest extends FormRequest
             'height' => 'required|numeric|min:1',
             'length' => 'required|numeric|min:1',
             'width' => 'required|numeric|min:1',
-            'images.*' => 'required|image|mimes:jpg,png,jpeg,svg|max:2048',
+            'images.*' => 'nullable|image|mimes:jpg,png,jpeg,svg|max:2048',
+            'removedImages' => 'required'
         ];
     }
 

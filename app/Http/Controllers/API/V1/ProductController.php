@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CreateRequest;
+use App\Http\Requests\Product\UpdateRequest;
 use App\Http\Resources\API\V1\Customer\ProductResource;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -212,7 +213,7 @@ class ProductController extends Controller
         return response()->json($response, 200);
     }
 
-    public function update(CreateRequest $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         $prid=$id;
         $product=Product::find($id);
@@ -238,7 +239,7 @@ class ProductController extends Controller
 
         $newImages = $request->images; // New images sent as files
         try {
-            $removedImages = json_decode($request->get('removedImages'), true); // Links for exiting images
+            $removedImages = @json_decode($request->get('removedImages'), true) ?? []; // Links for exiting images
             //print_r($removedImages); exit();
             // Remove old images that are not in the existingImages array
             $mediaItems = $product->getMedia('images'); // Assuming interactsWithMedia is set up correctly
