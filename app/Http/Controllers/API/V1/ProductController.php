@@ -244,10 +244,8 @@ class ProductController extends Controller
         $newImages = $request->images; // New images sent as files
         try {
             $removedImages = $request->get('removedImages', []); // Links for exiting images
-            //print_r($removedImages); exit();
             // Remove old images that are not in the existingImages array
-            $mediaItems = json_decode(json_encode($product->getMedia('images'))); // Assuming interactsWithMedia is set up correctly
-            print_r($mediaItems); exit();
+            $mediaItems = $product->getMedia('images'); // Assuming interactsWithMedia is set up correctly
             foreach ($mediaItems as $mediaItem) {
                 if (in_array($mediaItem->getUrl(), $removedImages)) {
                     print_r($mediaItem->getUrl()); exit();
