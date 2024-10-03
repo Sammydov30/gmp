@@ -264,7 +264,7 @@ class ProductController extends Controller
         // Add any new images
         if ($newImages) {
             foreach ($newImages as $newImage) {
-                $product->addMedia($newImage)->toMediaCollection(); // Add new images to the collection
+                $product->addMedia($newImage)->toMediaCollection('images'); // Add new images to the collection
             }
         }
         $response=[
