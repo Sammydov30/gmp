@@ -234,12 +234,6 @@ class ProductController extends Controller
             'length' => $request->length,
             'width' => $request->width,
         ]);
-        // if ($images = $request->images) {
-        //     $product->clearMediaCollection('images');
-        //     foreach ($images as $image) {
-        //         $product->addMedia($image)->toMediaCollection('images');
-        //     }
-        // }
 
         $newImages = $request->images; // New images sent as files
         try {
@@ -248,8 +242,8 @@ class ProductController extends Controller
             // Remove old images that are not in the existingImages array
             $mediaItems = $product->getMedia('images'); // Assuming interactsWithMedia is set up correctly
             foreach ($mediaItems as $mediaItem) {
+                //print_r($mediaItem->getUrl()); exit();
                 if (in_array($mediaItem->getUrl(), $removedImages)) {
-                    print_r($mediaItem->getUrl()); exit();
                     $mediaItem->delete(); // Delete images that no longer exist
                 }
             }
@@ -259,7 +253,6 @@ class ProductController extends Controller
             // Handle any other type of exception
             return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 400);
         }
-
 
         // Add any new images
         if ($newImages) {
