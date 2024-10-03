@@ -8,6 +8,7 @@ use App\Http\Resources\API\V1\Customer\ProductResource;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Store;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -233,10 +234,38 @@ class ProductController extends Controller
             'length' => $request->length,
             'width' => $request->width,
         ]);
-        if ($images = $request->images) {
-            $product->clearMediaCollection('images');
-            foreach ($images as $image) {
-                $product->addMedia($image)->toMediaCollection('images');
+        // if ($images = $request->images) {
+        //     $product->clearMediaCollection('images');
+        //     foreach ($images as $image) {
+        //         $product->addMedia($image)->toMediaCollection('images');
+        //     }
+        // }
+
+
+        try {
+            $removedImages = $request->get('removedImages', []); // Links for exiting images
+            $newImages = $request->file('images', []); // New images sent as files
+
+            // Remove old images that are not in the existingImages array
+            $mediaItems = $product->getMedia(); // Assuming interactsWithMedia is set up correctly
+
+            foreach ($mediaItems as $mediaItem) {
+                if (in_array($mediaItem->getUrl(), $removedImages)) {
+                    $mediaItem->delete(); // Delete images that no longer exist
+                }
+            }
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Something went wrong', 'details' => $th->getMessage()], 400);
+        }catch (Exception $e) {
+            // Handle any other type of exception
+            return response()->json(['error' => 'Something went wrong', 'details' => $e->getMessage()], 400);
+        }
+
+
+        // Add any new images
+        if ($newImages) {
+            foreach ($newImages as $newImage) {
+                $product->addMedia($newImage)->toMediaCollection(); // Add new images to the collection
             }
         }
         $response=[
