@@ -244,6 +244,7 @@ class ProductController extends Controller
 
         try {
             $removedImages = $request->get('removedImages', []); // Links for exiting images
+            print_r($removedImages); exit();
             $newImages = $request->file('images', []); // New images sent as files
 
             // Remove old images that are not in the existingImages array
@@ -255,10 +256,10 @@ class ProductController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'Something went wrong', 'details' => $th->getMessage()], 400);
+            return response()->json(['error' => 'Something went wrong', 'message' => $th->getMessage()], 400);
         }catch (Exception $e) {
             // Handle any other type of exception
-            return response()->json(['error' => 'Something went wrong', 'details' => $e->getMessage()], 400);
+            return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 400);
         }
 
 
