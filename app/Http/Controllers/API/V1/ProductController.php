@@ -249,10 +249,10 @@ class ProductController extends Controller
                 }
             }
         } catch (\Throwable $th) {
-            return response()->json(['error' => 'Something went wrong', 'message' => $th->getMessage()], 400);
+            return response()->json(['error' => 'Something went wrong', 'message' => "ERR 1"], 400);
         }catch (Exception $e) {
             // Handle any other type of exception
-            return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 400);
+            return response()->json(['error' => 'Something went wrong', 'message' => "ERR 2"], 400);
         }
 
         // Add any new images
