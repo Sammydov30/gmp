@@ -247,7 +247,6 @@ class ProductController extends Controller
             // Remove old images that are not in the existingImages array
             $mediaItems = $product->getMedia('images'); // Assuming interactsWithMedia is set up correctly
             foreach ($mediaItems as $mediaItem) {
-                print_r($mediaItem->getUrl()); exit();
                 if (in_array($mediaItem->getUrl(), $removedImages)) {
                     print_r($mediaItem->getUrl()); exit();
                     $mediaItem->delete(); // Delete images that no longer exist
