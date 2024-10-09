@@ -32,7 +32,7 @@ class FundingHistory extends Model
     }
     public function logistic()
     {
-        return $this->hasOne(Logistic::class, 'id', 'fundingid');
+        return $this->hasOne(Shipment::class, 'id', 'fundingid');
     }
     public function order()
     {
