@@ -168,11 +168,11 @@ class Shipment extends Model
     }
 
     private function GetCountryName($id){
-        $name=Country::where('id', $id)->first()->name;
+        $name=@Country::where('id', $id)->first()->name;
         return $name;
     }
     private function GetRegionName($id){
-        $name=Region::where('id', $id)->first()->name;
+        $name=@Region::where('id', $id)->first()->name;
         return $name;
     }
 
