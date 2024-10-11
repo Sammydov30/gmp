@@ -188,7 +188,7 @@ class TrackShipmentResource extends JsonResource
         return Region::where('id', $id)->first()->name;
     }
     public function getBranchName($id) {
-        return PickupCenter::where('id', $id)->first()->name;
+        return @PickupCenter::where('id', $id)->first()->name;
     }
     public function fetchItemsforShipment($trip) {
         return DB::table('trip')->where('tripno', $trip)->first();
