@@ -91,7 +91,7 @@ class StoreController extends Controller
         $user=auth()->user();
         $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->where('deleted', '0')->first();
         if ($query) {
-            return response()->json(["message" => 'Store Already created in this Market.', "status" => "error"], 400);
+            return response()->json(["message" => ['Store Already created in this Market.'], "status" => "error"], 400);
         }
         $store = Store::create([
             'storeid' => 'GMPS'.time(),
@@ -154,7 +154,7 @@ class StoreController extends Controller
     {
         $store=Store::find($id);
         if (!$store) {
-            return response()->json(["message" => "Store not found", "status" => "error"], 400);
+            return response()->json(["message" => ["Store not found"], "status" => "error"], 400);
         }
         $store->update([
             'deleted' => '1',
