@@ -132,7 +132,7 @@ class StoreController extends Controller
         $query=Store::where('name', "like", "%{$request->name}%")->where('marketid', $request->market)->where('deleted', '0')->
         where('id', '!=', $store->id)->first();
         if ($query) {
-            return response()->json(["message" => 'Store Already created in this Market.', "status" => "error"], 400);
+            return response()->json(["message" => ['Store Already created in this Market.'], "status" => "error"], 400);
         }
         $store->update([
             'marketid'=> $request->market,
