@@ -273,20 +273,20 @@ class ShipmentController extends Controller
             array_push($quantity, "1");
         }
 
-        // $res=$this->callToGetQuote($request->pickupvehicle, $request->deliverymode, $request->pickupcenter,
-        // $request->sourceregion, $request->destinationregion,
-        // $request->latitude, $request->longitude, $request->itemtype,
-        // $quantity, $request->item, $request->itemweight, $request->itemvalue);
-        // if (!$res['status']) {
-        //     return response()->json(["message" => "An Error occurred while balancing quote", "status" => "error"], 400);
-        // }else{
-        //     if ($res['status']=="error") {
-        //         return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
-        //     }else{
-        //         $tamount = strval($res['amount']);
-        //     }
-        // }
-        $tamount=$request->totalamount;
+        $res=$this->callToGetQuote($request->pickupvehicle, $request->deliverymode, $request->pickupcenter,
+        $request->sourceregion, $request->destinationregion,
+        $request->latitude, $request->longitude, $request->itemtype,
+        $quantity, $request->item, $request->itemweight, $request->itemvalue);
+        if (!$res['status']) {
+            return response()->json(["message" => "An Error occurred while balancing quote", "status" => "error"], 400);
+        }else{
+            if ($res['status']=="error") {
+                return response()->json(["message" => $res['message'], "amount"=>$res['amount'], "status" => "error"], 400);
+            }else{
+                $tamount = strval($res['amount']);
+            }
+        }
+        $tamount=($tamount>$request->totalamount) ? $tamount : $request->totalamount;
         //$tamount='100';
 
 
