@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Region extends Model
 {
     use HasFactory;
-    protected $table="regions";
+    protected $table="states";
     protected $fillable = [
         'entity_guid',
         'country',
