@@ -22,7 +22,7 @@ class Region extends Model
     {
         return $this->belongsTo(Country::class, 'country');
     }
-    public function mstate()
+    public function state()
     {
         return $this->hasOne(State::class, 'id', 'state');
     }
