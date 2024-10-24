@@ -17,6 +17,6 @@ class State extends Model
 
     public function regions()
     {
-        return $this->hasMany(Region::class, 'state')->where('status', '1');
+        return $this->hasMany(Region::class, 'state', 'id')->where('status', '1');
     }
 }
