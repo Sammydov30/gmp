@@ -24,6 +24,6 @@ class Region extends Model
     }
     public function mstate()
     {
-        return $this->belongsTo(State::class, 'id', 'state');
+        return $this->hasOne(State::class, 'id', 'state');
     }
 }
