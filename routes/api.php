@@ -8,6 +8,7 @@ use App\Http\Controllers\API\V1\Admin\Plan\PlanController;
 use App\Http\Controllers\API\V1\Admin\State\StateController;
 use App\Http\Controllers\API\V1\Auth\AdminAuthController;
 use App\Http\Controllers\API\V1\Auth\CustomerAuthController;
+use App\Http\Controllers\API\V1\Auth\RepController;
 use App\Http\Controllers\API\V1\BankController;
 use App\Http\Controllers\API\V1\CategoryController;
 use App\Http\Controllers\API\V1\ComplaintController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\API\V1\Customer\CustomerController;
 use App\Http\Controllers\API\V1\Customer\LogisticsController;
 use App\Http\Controllers\API\V1\DepositHistoryController;
 use App\Http\Controllers\API\V1\CartController;
+use App\Http\Controllers\API\V1\ConversationController;
 use App\Http\Controllers\API\V1\Customer\ShipmentController;
 use App\Http\Controllers\API\V1\FeedBackRatingController;
 use App\Http\Controllers\API\V1\GeneralController;
@@ -39,9 +41,12 @@ use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\WishlistController;
 use App\Http\Controllers\API\V1\WithdrawalController;
+use App\Http\Controllers\V2\MessageController;
+use Illuminate\Support\Facades\Broadcast;
 use App\Models\MarketPlace;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -320,3 +325,19 @@ Route::prefix('v1')->group(function () {
     });
 });
 
+// Broadcast::routes();
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+Route::prefix('v3')->group(function () {
+    Route::post('/conversations', [ConversationController::class, 'startConversation']);
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'sendMessage']);
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'fetchMessages']);
+    Route::patch('/conversations/{conversation}/close', [ConversationController::class, 'endConversation']);
+    Route::get('/conversations/{id}/rep', [ConversationController::class, 'fetchRepConversation']); //fetch rep's conversations
+
+
+
+    Route::post('/rep/auth/login', [RepController::class, 'login']);
+    Route::post('/rep/auth/register', [RepController::class, 'register']);
+
+});
