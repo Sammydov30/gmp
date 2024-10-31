@@ -13,6 +13,7 @@ class CustomerRep extends Model
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    protected $table ="representatives";
     protected $fillable = [
         'name',
         'email',
