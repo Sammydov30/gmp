@@ -23,6 +23,7 @@ use App\Http\Controllers\API\V1\GeneralStoreController;
 use App\Http\Controllers\API\V1\HaulageController;
 use App\Http\Controllers\API\V1\MarketPlaceController;
 use App\Http\Controllers\API\V1\MessageController;
+use App\Http\Controllers\API\V1\MonnifyWebHookController;
 use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OrderController;
 use App\Http\Controllers\API\V1\OrderReportController;
@@ -320,6 +321,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/admin/withdrawal/fetchall', [WithdrawalController::class, 'index']);
         Route::get('/admin/withdrawal/getwithdrawal/{id}', [WithdrawalController::class, 'show']);
     });
+    Route::post('/handlemonnifydepositsolvent', [MonnifyWebHookController::class, 'depositSolventAction']);
 });
 
 // Broadcast::routes();

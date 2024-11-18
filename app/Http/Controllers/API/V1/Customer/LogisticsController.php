@@ -394,7 +394,6 @@ class LogisticsController extends Controller
                     return response()->json($res, 201);
                 }
             }
-
         }else{
             ///Pay with payment gateway
             $useragent=$_SERVER['HTTP_USER_AGENT'];
